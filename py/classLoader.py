@@ -9,8 +9,25 @@ def readClassFile(path):
 
 # 打印读入的class文件内容
 def printClassFile(_file):
-	for line in _file:
-		print line
+	#for line in _file:
+	#	print line
+	#_file.seek(0,0) #定位到文件开头，offset->0
+	data = []
+	while True:
+		t_byte = _file.read(1)
+		if t_byte == '\n':
+			#print 'this is line end.'
+			data.append(t_byte)
+		if len(t_byte) == 0:
+			break
+		else:
+			data.append('%.2x' % ord(t_byte)) # "0x%.2X" % ord(t_byte)
+			# data.append(ord(t_byte))
+	for x in range(0,len(data)):
+		print data[x],
+	return data	
+
+
 
 # 默认执行该class文件的main方法
 def execute():
@@ -67,9 +84,9 @@ def isAbstractClass():
 
 # 程序入口
 if __name__=="__main__":
-	# argv,第一个参数是python后面算起的，我们的启动命令是：python py/classLoader.py info.txt
-	# 很显然，我们要读取的是info.txt文件，是第二个参数，故而我们用argv[1]
+	# argv,第一个参数是python后面算起的，我们的启动命令是：python py/classLoader.py cls/demo.class
+	# 很显然，我们要读取的是class文件，是第二个参数，故而我们用argv[1]
 	path = argv[1]
-	print "the path is [%s]." % path
+	print "The class path is [%s]." % path
 	if path:
 		readClassFile(path)
