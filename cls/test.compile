@@ -1,0 +1,59 @@
+public class cls.test {
+  public cls.test();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: aload_0
+       1: iconst_0
+       2: aaload
+       3: astore_1
+       4: aload_0
+       5: iconst_1
+       6: aaload
+       7: astore_2
+       8: new           #2                  // class java/lang/StringBuilder
+      11: dup
+      12: invokespecial #3                  // Method java/lang/StringBuilder."<init>":()V
+      15: ldc           #4                  // String The [
+      17: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      20: aload_1
+      21: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      24: ldc           #6                  // String  ] is %s than [
+      26: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      29: aload_2
+      30: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      33: ldc           #7                  // String  ].\n
+      35: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      38: invokevirtual #8                  // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+      41: astore_3
+      42: aload_1
+      43: aload_2
+      44: invokevirtual #9                  // Method java/lang/String.compareTo:(Ljava/lang/String;)I
+      47: ifle          70
+      50: getstatic     #10                 // Field java/lang/System.out:Ljava/io/PrintStream;
+      53: aload_3
+      54: iconst_1
+      55: anewarray     #11                 // class java/lang/Object
+      58: dup
+      59: iconst_0
+      60: ldc           #12                 // String bigger
+      62: aastore
+      63: invokevirtual #13                 // Method java/io/PrintStream.printf:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+      66: pop
+      67: goto          87
+      70: getstatic     #10                 // Field java/lang/System.out:Ljava/io/PrintStream;
+      73: aload_3
+      74: iconst_1
+      75: anewarray     #11                 // class java/lang/Object
+      78: dup
+      79: iconst_0
+      80: ldc           #14                 // String smaller
+      82: aastore
+      83: invokevirtual #13                 // Method java/io/PrintStream.printf:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+      86: pop
+      87: return
+}

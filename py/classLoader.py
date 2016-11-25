@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 from sys import argv
+from cmd import inner_cmd
 
 # 根据java class名称读取相应java class文件的内容
 def readClassFile(path):
@@ -15,16 +16,26 @@ def printClassFile(_file):
 	data = []
 	while True:
 		t_byte = _file.read(1)
-		if t_byte == '\n':
-			#print 'this is line end.'
-			data.append(t_byte)
+		# 到达文件结尾，直接跳出
 		if len(t_byte) == 0:
 			break
+		# 回车符直接打印，不需要转码
+		elif t_byte == '\n':
+			print 'line is end'
+			data.append(t_byte)
+		#将编码转化为16进制数据添加进data数组
 		else:
 			data.append('%.2x' % ord(t_byte)) # "0x%.2X" % ord(t_byte)
 			# data.append(ord(t_byte))
-	for x in range(0,len(data)):
+	# 此处不用range，是因为range直接返回一个list，如果class文件很大的话，需要分配很多内存空间，性能不佳；
+	# 而xrange只是返回一个生成器【每请求一次就返回+1的数字】，list(xrange(5)) 效果等同于 range(5)
+	for x in xrange(0,len(data)):
+		# 尾部加上逗号，是为了打印不换行
 		print data[x],
+		# temp = inner_cmd.get(data[x],data[x])
+		# if temp == 'nop':
+		# 	continue
+		# print temp
 	return data	
 
 
@@ -87,6 +98,7 @@ if __name__=="__main__":
 	# argv,第一个参数是python后面算起的，我们的启动命令是：python py/classLoader.py cls/demo.class
 	# 很显然，我们要读取的是class文件，是第二个参数，故而我们用argv[1]
 	path = argv[1]
+	print inner_cmd['0xab']
 	print "The class path is [%s]." % path
 	if path:
 		readClassFile(path)

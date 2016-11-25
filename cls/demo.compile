@@ -1,0 +1,25 @@
+public class cls.demo {
+  public cls.demo();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: iconst_1
+       1: istore_1
+       2: iconst_2
+       3: istore_2
+       4: iload_1
+       5: iload_2
+       6: if_icmple     20
+       9: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      12: ldc           #3                  // String bigger
+      14: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+      17: goto          28
+      20: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      23: ldc           #5                  // String smaller
+      25: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+      28: return
+}
