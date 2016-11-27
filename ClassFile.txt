@@ -1,0 +1,193 @@
+ClassFile {
+	u4 magic;
+	u2 minor_version;
+	u2 major_version;
+	u2 constant_pool_count;
+	cp_info constant_pool[constant_pool_count-1];
+	u2 access_flags;
+	u2 this_class;
+	u2 super_class;
+	u2 interfaces_count;
+	u2 interfaces[interfaces_count];
+	u2 fields_count;
+	field_info fields[fields_count];
+	u2 methods_count;
+	method_info methods[methods_count];
+	u2 attributes_count;
+	attribute_info attributes[attributes_count];
+}
+
+常量池的 tag 项说明
+常量类型					值	len
+CONSTANT_Class 			7	1+2
+CONSTANT_Fieldref 		9	1+2+2
+CONSTANT_Methodref 		10	1+2+2
+CONSTANT_InterfaceMeth	11	1+2+2
+ odref 
+CONSTANT_String 		8	1+2
+CONSTANT_Integer 		3	1+4
+CONSTANT_Float 			4	1+4
+CONSTANT_Long 			5	1+4+4
+CONSTANT_Double 		6	1+4+4
+CONSTANT_NameAndType 	12	1+2+2
+CONSTANT_Utf8 			1	1+2+1...
+CONSTANT_MethodHandle 	15	1+1+2
+CONSTANT_MethodType 	16	1+2
+CONSTANT_InvokeDynamic 	18	1+2+2
+
+CONSTANT_Class_info {
+	u1 tag;
+	u2 name_index;
+}
+
+CONSTANT_Fieldref_info {
+u1 tag;
+u2 class_index;
+u2 name_and_type_index;
+}
+
+CONSTANT_Methodref_info {
+u1 tag;
+u2 class_index;
+u2 name_and_type_index;
+}
+
+CONSTANT_InterfaceMethodref_info {
+u1 tag;
+u2 class_index;
+u2 name_and_type_index;
+}
+
+CONSTANT_String_info {
+u1 tag;
+u2 string_index;
+}
+
+CONSTANT_Integer_info {
+u1 tag;
+u4 bytes;
+}
+
+CONSTANT_Float_info {
+u1 tag;
+u4 bytes;
+}
+
+CONSTANT_Long_info {
+u1 tag;
+u4 high_bytes;
+u4 low_bytes;
+}
+
+CONSTANT_Double_info {
+u1 tag;
+u4 high_bytes;
+u4 low_bytes;
+}
+
+CONSTANT_NameAndType_info {
+u1 tag;
+u2 name_index;
+u2 descriptor_index;
+}
+
+CONSTANT_Utf8_info {
+u1 tag;
+u2 length;
+u1 bytes[length];
+}
+
+CONSTANT_MethodHandle_info {
+u1 tag;
+u1 reference_kind;
+u2 reference_index;
+}
+
+CONSTANT_MethodType_info {
+u1 tag;
+u2 descriptor_index;
+}
+
+CONSTANT_InvokeDynamic_info {
+u1 tag;
+u2 bootstrap_method_attr_index;
+u2 name_and_type_index;
+}
+-----------------------------------------------------
+field_info {
+u2 access_flags;
+u2 name_index;
+u2 descriptor_index;
+u2 attributes_count;
+attribute_info attributes[attributes_count];
+}
+access_flags:
+0x0001	ACC_PUBLIC		public,表示字段可以从任何包访问。
+0x0002	ACC_PRIVATE		private,表示字段仅能该类自身调用。
+0x0004	ACC_PROTECTED	protected,表示字段可以被子类调用。
+0x0008	ACC_STATIC		static,表示静态字段。
+0x0010	ACC_FINAL		final,表示字段定义后值无法修改(JLS_§17.5)。
+0x0040	ACC_VOLATILE	volatile,表示字段是易变的。
+0x0080	ACC_TRANSIENT	transient,表示字段不会被序列化。
+0x1000	ACC_SYNTHETIC	表示字段由编译器自动产生。
+0x4000	ACC_ENUM		enum,表示字段为枚举类型。
+
+----------------------------------------------------
+method_info {
+u2 access_flags;
+u2 name_index;
+u2 descriptor_index;
+u2 attributes_count;
+attribute_info attributes[attributes_count];
+}
+access_flags:
+0x0001	ACC_PUBLIC		public,方法可以从包外访问
+0x0002	ACC_PRIVATE		private,方法只能本类中访问
+0x0004	ACC_PROTECTED	protected,方法在自身和子类可以访问
+0x0008	ACC_STATIC		static,静态方法
+0x0010	ACC_FINAL		final,方法不能被重写(覆盖)
+0x0020	ACC_SYNCHRONIZED	synchronized,方法由管程同步
+0x0040	ACC_BRIDGE		bridge,方法由编译器产生
+0x0080	ACC_VARARGS		表示方法带有变长参数
+0x0100	ACC_NATIVE		native,方法引用非java语言的本地方法
+0x0400	ACC_ABSTRACT	abstract,方法没有具体实现
+0x0800	ACC_STRICT		strictfp,方法使用FP-strict浮点格式
+0x1000	ACC_SYNTHETIC	方法在源文件中不出现,由编译器产生
+
+-----------------------------------------------------
+attribute_info {
+u2 attribute_name_index;
+u4 attribute_length;
+u1 info[attribute_length];
+}
+预定义属性：
+ConstantValue
+	ConstantValue_attribute {
+		u2 attribute_name_index;
+		u4 attribute_length;
+		u2 constantvalue_index;
+	}
+Code
+
+StackMapTable
+Exceptions
+InnerClasses
+EnclosingMethod
+Synthetic
+Signature
+SourceFile
+SourceDebugExtension
+LineNumberTable
+LocalVariableTable
+LocalVariableTypeTable
+Deprecated
+RuntimeVisibleAnnotations
+RuntimeInvisibleAnnotations
+RuntimeVisibleParameterAnnotations
+RuntimeInvisibleParameterAnnotations
+AnnotationDefault
+BootstrapMethods
+
+
+
+

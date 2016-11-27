@@ -1,12 +1,13 @@
 # -*- coding:utf-8 -*-
 from sys import argv
-from cmd import inner_cmd
+import javaParser as jp
 
 # 根据java class名称读取相应java class文件的内容
 def readClassFile(path):
+	data = []
 	with open(path,'rb') as _file:
-		printClassFile(_file)
-	return False or True
+		data = printClassFile(_file)
+	return data
 
 # 打印读入的class文件内容
 def printClassFile(_file):
@@ -15,24 +16,29 @@ def printClassFile(_file):
 	#_file.seek(0,0) #定位到文件开头，offset->0
 	data = []
 	while True:
-		t_byte = _file.read(1)
+		b = _file.read(1)
 		# 到达文件结尾，直接跳出
-		if len(t_byte) == 0:
+		if len(b) == 0:
 			break
-		# 回车符直接打印，不需要转码
-		elif t_byte == '\n':
-			print 'line is end'
-			data.append(t_byte)
+		# 回车符直接打印，不需要转码【被自己坑，class里面就没有一个多余的字符】
+		# elif b == '\n':
+		# 	print 'line is end'
+		# 	data.append(b)
 		#将编码转化为16进制数据添加进data数组
 		else:
-			data.append('%.2x' % ord(t_byte)) # "0x%.2X" % ord(t_byte)
-			# data.append(ord(t_byte))
+			data.append('0x%.2x' % ord(b)) # "0x%.2X" % ord(b)
+			# data.append('%.2d' % ord(b))
 	# 此处不用range，是因为range直接返回一个list，如果class文件很大的话，需要分配很多内存空间，性能不佳；
 	# 而xrange只是返回一个生成器【每请求一次就返回+1的数字】，list(xrange(5)) 效果等同于 range(5)
+	print data
 	for x in xrange(0,len(data)):
+		#为了格式整齐，每十六个输出一个换行
+		if x%16 == 0:
+			print
 		# 尾部加上逗号，是为了打印不换行
 		print data[x],
-		# temp = inner_cmd.get(data[x],data[x])
+		
+		# temp = jp.inner_cmd.get(data[x],data[x])
 		# if temp == 'nop':
 		# 	continue
 		# print temp
@@ -97,8 +103,10 @@ def isAbstractClass():
 if __name__=="__main__":
 	# argv,第一个参数是python后面算起的，我们的启动命令是：python py/classLoader.py cls/demo.class
 	# 很显然，我们要读取的是class文件，是第二个参数，故而我们用argv[1]
-	path = argv[1]
-	print inner_cmd['0xab']
+	# path = argv[1]
+	path = '/home/yucy/git/jvm.py/cls/demo.class'
+	print jp.inner_cmd['0xab']
 	print "The class path is [%s]." % path
 	if path:
-		readClassFile(path)
+		data = readClassFile(path)
+		# jp.javap(data)
