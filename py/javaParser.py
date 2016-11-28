@@ -346,12 +346,14 @@ inner_cmd = {
 	'0xff':'impdep1',#用于在特定硬件中使用的语言后门。
 }
 
+# 将多个十六进制整合转化为十进制，并返回
 def getDecimal(arr):
 	if len(arr) == 0:
 		return None
 	else:
 		return int('0x%s' % ''.join(arr).replace('0x',''),16)
 
+# 获取常量类型结构定义
 def getStruct(struct_name):
 	return getattr(struct,struct_name)
 
