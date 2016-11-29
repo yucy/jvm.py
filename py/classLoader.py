@@ -30,7 +30,7 @@ def printClassFile(_file):
 			# data.append('%.2d' % ord(b))
 	# 此处不用range，是因为range直接返回一个list，如果class文件很大的话，需要分配很多内存空间，性能不佳；
 	# 而xrange只是返回一个生成器【每请求一次就返回+1的数字】，list(xrange(5)) 效果等同于 range(5)
-	print data
+	# print data
 	for x in xrange(0,len(data)):
 		#为了格式整齐，每十六个输出一个换行
 		if x%16 == 0:
@@ -43,7 +43,6 @@ def printClassFile(_file):
 		# 	continue
 		# print temp
 	return data	
-
 
 
 # 默认执行该class文件的main方法
@@ -104,9 +103,10 @@ if __name__=="__main__":
 	# argv,第一个参数是python后面算起的，我们的启动命令是：python py/classLoader.py cls/demo.class
 	# 很显然，我们要读取的是class文件，是第二个参数，故而我们用argv[1]
 	# path = argv[1]
-	path = '/home/yucy/git/jvm.py/cls/demo.class'
+	path = '/home/yucy/git/jvm.py/cls/test.class'
 	print jp.inner_cmd['0xab']
 	print "The class path is [%s]." % path
 	if path:
 		data = readClassFile(path)
-		# jp.javap(data)
+		print data
+		jp.javap(data)

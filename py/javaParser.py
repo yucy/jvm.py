@@ -1,170 +1,192 @@
 # -*- coding:utf-8 -*-
 import struct,accessFlags
 
-#3405691582
+# 3405691582
 _MAGIC = int('0XCAFEBABE',16)
 # 保存常量池
 constant_pool = []
+offset = 0
+data = []
 
-def javap(data):
-	index = 0
+def cursor(step):
+	global offset
+	# print '------data',data
+	if step == 0:
+		return None
+	result = data[offset:offset+step]
+	offset += step
+	return result
+
+def javap(_data):
+	global data
+	data = _data
 	# u4 magic;
-	magic = ''.join(data[:4]).replace('0x','')
+	magic = ''.join(cursor(4)).replace('0x','')
 	print 'magic:',magic
 	if getDecimal(magic) != _MAGIC:
 		print 'This is not a valid class file.'
 		return
 	# u2 minor_version;
-	print 'minor_version:',getDecimal(data[4:6])
+	print 'minor_version:',getDecimal(cursor(2))
 	# u2 major_version;
-	print 'major_version:',getDecimal(data[6:8])
+	print 'major_version:',getDecimal(cursor(2))
 	# u2 constant_pool_count;
-	constant_pool_count = getDecimal(data[8:10])-1
-	index = 10
+	constant_pool_count = getDecimal(cursor(2))-1
 	print 'constant_pool_count:',constant_pool_count
 	# cp_info constant_pool[constant_pool_count-1];
 	constant_pool_index = 0
-	is_utf8 = False
 	while constant_pool_count > constant_pool_index:
+		# print 'constant_pool_count:%d constant_pool_index:%d' % (constant_pool_count , constant_pool_index)
 		constant_pool_index += 1
-		tag = getDecimal(data[index])
-		index += 1
-		# print 'tag:%d' % tag,'index:%d' % index
+		tag = getDecimal(cursor(1))
 		constant_name = constant_type.get(tag)
-		# print 'constant_name:%s' % constant_name
+		# print 'tag:%d\tconstant_name:%s' % (tag,constant_name)
 		_struct = getStruct(constant_name)
-		constant_incr = 0
-		ref_index = ''
-		utf8_data = ''
+		ref_index,utf8_data = '',''
+		up,down,is_longORdouble  = '','',False
 		if tag == 7:# Class
 			# u1 tag;
 			# u2 name_index;
-			ref_index,constant_incr=constant_2(2,index)
+			ref_index=constant_2(2)
 		elif tag in (9,10,11):# Fieldref,Methodref,InterfaceMethodref
 			# u1 tag;
 			# u2 class_index;
 			# u2 name_and_type_index;
-			ref_index,constant_incr=constant_3(2,2,index)
+			ref_index=constant_3(2,2)
 		elif tag == 8:# String
 			# u1 tag;
 			# u2 string_index;
-			ref_index,constant_incr=constant_2(2,index)
+			ref_index=constant_2(2)
 		elif tag in (3,4):# Integer,Float
 			# u1 tag;
 			# u4 bytes;
-			ref_index,constant_incr=constant_2(4,index)
+			ref_index=constant_2(4)
+		# 在 Class 文件的常量池中,所有的 8 字节的常量都占两个表成员(项)的空间。如果一个
+		# CONSTANT_Long_info 或 CONSTANT_Double_info 结构的项在常量池中的索引为 n,则常量
+		# 池中下一个有效的项的索引为 n+2,此时常量池中索引为 n+1 的项有效但必须被认为不可用
 		elif tag in (5,6):# long , double
+			constant_pool_index += 1
 			# u1 tag;
 			# u4 high_bytes;
 			# u4 low_bytes;
-			ref_index,constant_incr=constant_3(4,4,index)
+			is_longORdouble = True
+			up,down = cursor(4),cursor(4)
 		elif tag == 12:# NameAndType
 			# u1 tag;
 			# u2 name_index;
 			# u2 descriptor_index;
-			ref_index,constant_incr=constant_3(2,2,index)
+			ref_index=constant_3(2,2)
 		elif tag == 1:# UTF8
 			# u1 tag;
 			# u2 length;
 			# u1 bytes[length];
-			is_utf8 = True
-			bytes_len = getDecimal(data[index:index +2])
-			index += 2
-			utf8_data = ''.join([chr(int(data[i],16)) for i in xrange(index,index+bytes_len)])
-			index += bytes_len
+			bytes_len = getDecimal(cursor(2))
+			utf8_data = ''.join([chr(int(b,16)) for b in cursor(bytes_len)])
 			# print 'utf8_data:%s' % utf8_data
 		elif tag == 15:# MethodHandler
 			# u1 tag;
 			# u1 reference_kind;
 			# u2 reference_index;
-			ref_index,constant_incr=constant_3(1,2,index)
+			ref_index=constant_3(1,2)
 		elif tag == 16:# MethodType
 			# u1 tag;
 			# u2 descriptor_index;
-			ref_index,constant_incr=constant_2(2,index)
+			ref_index=constant_2(2)
 		elif tag == 18:# InvokeDynamic
 			# u1 tag;
 			# u2 bootstrap_method_attr_index;
 			# u2 name_and_type_index;
-			ref_index,constant_incr=constant_3(2,2,index)
-		# class位置下标
-		index += constant_incr
-		# print 'constant_incr:%d' % constant_incr,'index:%d' % index
+			ref_index=constant_3(2,2)
 		constant_info = ref_index+utf8_data
-		constant_name_simple = constant_name[9:-5]
-		constant_pool.append(constant_info)
-		print '#%d %s\t\t%s' % (constant_pool_index,constant_name_simple,constant_info)
+		if is_longORdouble:
+			constant_pool.extend([up,down])
+		else:
+			constant_pool.append(constant_info)
+		print '#%d %s\t\t%s' % (constant_pool_index,constant_name[9:-5],constant_info)
 	# u2 access_flags;
-	access_flag_class = accessFlags.getAccessFlag('class',getDecimal(data[index:index+2]))
+	access_flag_class = accessFlags.getAccessFlag('class',getDecimal(cursor(2)))
 	print 'access_flags:%s'% access_flag_class
-	index+=2
 	# u2 this_class;
-	print 'this_class:',getConstant(getDecimal(data[index:index+2]))
-	index+=2
+	class_index = getDecimal(cursor(2))
+	print 'this_class:',getConstant(class_index)
 	# u2 super_class;
-	print 'super_class:',getConstant(getDecimal(data[index:index+2]))
-	index+=2
+	print 'super_class:',getConstant(getDecimal(cursor(2)))
 	# u2 interfaces_count;
-	interfaces_count = getDecimal(data[index:index+2])
-	index+=2
+	interfaces_count = getDecimal(cursor(2))
 	print 'interfaces_count:',interfaces_count
 	if interfaces_count > 0:
 		# u2 interfaces[interfaces_count];
-		index += interfaces_count*2
-		begins = [i for i in xrange(interfaces_count*2) if i %2 == 0]
-		interfaces = [getDecimal(data[index+i:index+i+1]) for i in begins]
+		interfaces = [getDecimal(cursor(2)) for i in xrange(interfaces_count)]
 		print interfaces
 	# u2 fields_count;
-	fields_count = getDecimal(data[index:index+2])
-	index+=2
+	fields_count = getDecimal(cursor(2))
 	print 'fields_count:',fields_count
+	# field_info fields[fields_count];
 	if fields_count > 0:
-		# field_info fields[fields_count];
-		index += fields_count*2
-		pass
-	
+		methodAndFieldHandler('field',fields_count)
 	# u2 methods_count;
-	methods_count = getDecimal(data[index:index+2])
-	index+=2
+	methods_count = getDecimal(cursor(2))
 	print 'methods_count:',methods_count
+	# method_info methods[methods_count];
 	if methods_count > 0:
-		# method_info methods[methods_count];
-		index += methods_count*2
-		pass
-
+		methodAndFieldHandler('method',methods_count)
 	# u2 attributes_count;
-	attributes_count = getDecimal(data[index:index+2])
-	index+=2
+	attributes_count = getDecimal(cursor(2))
 	print 'attributes_count:',attributes_count
+	# attribute_info attributes[attributes_count];
 	if attributes_count > 0:
-		# attribute_info attributes[attributes_count];
-		pass
+		attrHandler()
 
 # 处理常量类型结构里元素数量等于2的
-def constant_2(second,index):
-	constant_incr = second
-	# print 'constant_2',constant_incr,second
-	ref_index = '#%d' % getDecimal(data[index:index+constant_incr])
-	return ref_index,constant_incr
+def constant_2(second):
+	ref_index = '#%d' % getDecimal(cursor(second))
+	return ref_index
 
 # 处理常量类型结构里元素数量等于3的
-def constant_3(second,third,index):
-	constant_incr = second+third
-	# print 'constant_3',constant_incr,second
-	end = index+constant_incr
-	temp = index+second
-	ref_index = '#%d,#%d' % (getDecimal(data[index:temp]),getDecimal(data[temp:end]))
-	return ref_index,constant_incr
+def constant_3(second,third):
+	ref_index = '#%d,#%d' % (getDecimal(cursor(second)),getDecimal(cursor(third)))
+	return ref_index
 
 # 从常量池中获取值
 def getConstant(num):
-	data = constant_pool[num-1]
-	if data.__contains__('#'):
-		temp = data.replace('#','')
+	source = constant_pool[num-1]
+	if source.__contains__('#'):
+		temp = source.replace('#','')
 		pointers = temp.split(',')
-		values = [constant_pool[int(i)-1] for i in pointers]
-		return values
-	return data
+		target = [constant_pool[int(i)-1] for i in pointers]
+		return target
+	return source
+
+def attrHandler():
+	# u2 attribute_name_index;
+	print '\t attribute_name_index:',getConstant(getDecimal(cursor(2)))
+	# u4 attribute_length;
+	attribute_length = getDecimal(cursor(4))
+	print '\t attribute_length:',attribute_length
+	# u1 info[attribute_length];
+	# _attrInfo = ''.join([chr(int(b,16)) for b in cursor(attribute_length)])
+	print '\t attribute_info:',cursor(attribute_length)
+
+def methodAndFieldHandler(_type,count):
+	if count <= 0:
+		print 'count can not lower than zero.[methodAndFieldHandler]'
+		return None
+	for i in xrange(count):
+		print '\t %s:%d' % (_type,i)
+		# u2 access_flags;
+		print '\t access_flags:' , accessFlags.getAccessFlag(_type,getDecimal(cursor(2)))
+		# u2 name_index;
+		print '\t name_index:',getConstant(getDecimal(cursor(2)))
+		# u2 descriptor_index;
+		print '\t descriptor_index:',getConstant(getDecimal(cursor(2)))
+		# u2 attributes_count;
+		attributes_count = getDecimal(cursor(2))
+		print '\t attributes_count:',attributes_count
+		# attribute_info attributes[attributes_count];
+		if attributes_count > 0:
+			attrHandler()
+		print '\t---------------'
+
 
 constant_type={
 	1:'CONSTANT_Utf8_info',
@@ -402,11 +424,9 @@ def getDecimal(arr):
 def getStruct(struct_name):
 	return getattr(struct,struct_name)
 
-# data = ['202', '254', '186', '190', '00', '00', '00', '51', '00', '32', '10', '00', '07', '00', '17', '09', '00', '18', '00', '19', '08', '00', '20', '10', '00', '21', '00', '22', '08', '00', '23', '07', '00', '24', '07', '00', '25', '01', '00', '06', '60', '105', '110', '105', '116', '62', '01', '00', '03', '40', '41', '86', '01', '00', '04', '67', '111', '100', '101', '01', '00', '15', '76', '105', '110', '101', '78', '117', '109', '98', '101', '114', '84', '97', '98', '108', '101', '01', '00', '04', '109', '97', '105', '110', '01', '00', '22', '40', '91', '76', '106', '97', '118', '97', '47', '108', '97', '110', '103', '47', '83', '116', '114', '105', '110', '103', '59', '41', '86', '01', '00', '13', '83', '116', '97', '99', '107', '77', '97', '112', '84', '97', '98', '108', '101', '01', '00', '10', '83', '111', '117', '114', '99', '101', '70', '105', '108', '101', '01', '00', '09', '100', '101', '109', '111', '46', '106', '97', '118', '97', '12', '00', '08', '00', '09', '07', '00', '26', '12', '00', '27', '00', '28', '01', '00', '06', '98', '105', '103', '103', '101', '114', '07', '00', '29', '12', '00', '30', '00', '31', '01', '00', '07', '115', '109', '97', '108', '108', '101', '114', '01', '00', '08', '99', '108', '115', '47', '100', '101', '109', '111', '01', '00', '16', '106', '97', '118', '97', '47', '108', '97', '110', '103', '47', '79', '98', '106', '101', '99', '116', '01', '00', '16', '106', '97', '118', '97', '47', '108', '97', '110', '103', '47', '83', '121', '115', '116', '101', '109', '01', '00', '03', '111', '117', '116', '01', '00', '21', '76', '106', '97', '118', '97', '47', '105', '111', '47', '80', '114', '105', '110', '116', '83', '116', '114', '101', '97', '109', '59', '01', '00', '19', '106', '97', '118', '97', '47', '105', '111', '47', '80', '114', '105', '110', '116', '83', '116', '114', '101', '97', '109', '01', '00', '07', '112', '114', '105', '110', '116', '108', '110', '01', '00', '21', '40', '76', '106', '97', '118', '97', '47', '108', '97', '110', '103', '47', '83', '116', '114', '105', '110', '103', '59', '41', '86', '00', '33', '00', '06', '00', '07', '00', '00', '00', '00', '00', '02', '00', '01', '00', '08', '00', '09', '00', '01', '00', '10', '00', '00', '00', '29', '00', '01', '00', '01', '00', '00', '00', '05', '42', '183', '00', '01', '177', '00', '00', '00', '01', '00', '11', '00', '00', '00', '06', '00', '01', '00', '00', '00', '03', '00', '09', '00', '12', '00', '13', '00', '01', '00', '10', '00', '00', '00', '87', '00', '02', '00', '03', '00', '00', '00', '29', '04', '60', '05', '61', '27', '28', '164', '00', '14', '178', '00', '02', '18', '03', '182', '00', '04', '167', '00', '11', '178', '00', '02', '18', '05', '182', '00', '04', '177', '00', '00', '00', '02', '00', '11', '00', '00', '00', '26', '00', '06', '00', '00', '00', '06', '00', '02', '00', '07', '00', '04', '00', '08', '00', '09', '00', '09', '00', '20', '00', '11', '00', '28', '00', '13', '00', '14', '00', '00', '00', '08', '00', '02', '253', '00', '20', '01', '01', '07', '00', '01', '00', '15', '00', '00', '00', '02', '00', '16']
-data = ['0xca', '0xfe', '0xba', '0xbe', '0x00', '0x00', '0x00', '0x33', '0x00', '0x20', '0x0a', '0x00', '0x07', '0x00', '0x11', '0x09', '0x00', '0x12', '0x00', '0x13', '0x08', '0x00', '0x14', '0x0a', '0x00', '0x15', '0x00', '0x16', '0x08', '0x00', '0x17', '0x07', '0x00', '0x18', '0x07', '0x00', '0x19', '0x01', '0x00', '0x06', '0x3c', '0x69', '0x6e', '0x69', '0x74', '0x3e', '0x01', '0x00', '0x03', '0x28', '0x29', '0x56', '0x01', '0x00', '0x04', '0x43', '0x6f', '0x64', '0x65', '0x01', '0x00', '0x0f', '0x4c', '0x69', '0x6e', '0x65', '0x4e', '0x75', '0x6d', '0x62', '0x65', '0x72', '0x54', '0x61', '0x62', '0x6c', '0x65', '0x01', '0x00', '0x04', '0x6d', '0x61', '0x69', '0x6e', '0x01', '0x00', '0x16', '0x28', '0x5b', '0x4c', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x6c', '0x61', '0x6e', '0x67', '0x2f', '0x53', '0x74', '0x72', '0x69', '0x6e', '0x67', '0x3b', '0x29', '0x56', '0x01', '0x00', '0x0d', '0x53', '0x74', '0x61', '0x63', '0x6b', '0x4d', '0x61', '0x70', '0x54', '0x61', '0x62', '0x6c', '0x65', '0x01', '0x00', '0x0a', '0x53', '0x6f', '0x75', '0x72', '0x63', '0x65', '0x46', '0x69', '0x6c', '0x65', '0x01', '0x00', '0x09', '0x64', '0x65', '0x6d', '0x6f', '0x2e', '0x6a', '0x61', '0x76', '0x61', '0x0c', '0x00', '0x08', '0x00', '0x09', '0x07', '0x00', '0x1a', '0x0c', '0x00', '0x1b', '0x00', '0x1c', '0x01', '0x00', '0x06', '0x62', '0x69', '0x67', '0x67', '0x65', '0x72', '0x07', '0x00', '0x1d', '0x0c', '0x00', '0x1e', '0x00', '0x1f', '0x01', '0x00', '0x07', '0x73', '0x6d', '0x61', '0x6c', '0x6c', '0x65', '0x72', '0x01', '0x00', '0x08', '0x63', '0x6c', '0x73', '0x2f', '0x64', '0x65', '0x6d', '0x6f', '0x01', '0x00', '0x10', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x6c', '0x61', '0x6e', '0x67', '0x2f', '0x4f', '0x62', '0x6a', '0x65', '0x63', '0x74', '0x01', '0x00', '0x10', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x6c', '0x61', '0x6e', '0x67', '0x2f', '0x53', '0x79', '0x73', '0x74', '0x65', '0x6d', '0x01', '0x00', '0x03', '0x6f', '0x75', '0x74', '0x01', '0x00', '0x15', '0x4c', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x69', '0x6f', '0x2f', '0x50', '0x72', '0x69', '0x6e', '0x74', '0x53', '0x74', '0x72', '0x65', '0x61', '0x6d', '0x3b', '0x01', '0x00', '0x13', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x69', '0x6f', '0x2f', '0x50', '0x72', '0x69', '0x6e', '0x74', '0x53', '0x74', '0x72', '0x65', '0x61', '0x6d', '0x01', '0x00', '0x07', '0x70', '0x72', '0x69', '0x6e', '0x74', '0x6c', '0x6e', '0x01', '0x00', '0x15', '0x28', '0x4c', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x6c', '0x61', '0x6e', '0x67', '0x2f', '0x53', '0x74', '0x72', '0x69', '0x6e', '0x67', '0x3b', '0x29', '0x56', '0x00', '0x21', '0x00', '0x06', '0x00', '0x07', '0x00', '0x00', '0x00', '0x00', '0x00', '0x02', '0x00', '0x01', '0x00', '0x08', '0x00', '0x09', '0x00', '0x01', '0x00', '0x0a', '0x00', '0x00', '0x00', '0x1d', '0x00', '0x01', '0x00', '0x01', '0x00', '0x00', '0x00', '0x05', '0x2a', '0xb7', '0x00', '0x01', '0xb1', '0x00', '0x00', '0x00', '0x01', '0x00', '0x0b', '0x00', '0x00', '0x00', '0x06', '0x00', '0x01', '0x00', '0x00', '0x00', '0x03', '0x00', '0x09', '0x00', '0x0c', '0x00', '0x0d', '0x00', '0x01', '0x00', '0x0a', '0x00', '0x00', '0x00', '0x57', '0x00', '0x02', '0x00', '0x03', '0x00', '0x00', '0x00', '0x1d', '0x04', '0x3c', '0x05', '0x3d', '0x1b', '0x1c', '0xa4', '0x00', '0x0e', '0xb2', '0x00', '0x02', '0x12', '0x03', '0xb6', '0x00', '0x04', '0xa7', '0x00', '0x0b', '0xb2', '0x00', '0x02', '0x12', '0x05', '0xb6', '0x00', '0x04', '0xb1', '0x00', '0x00', '0x00', '0x02', '0x00', '0x0b', '0x00', '0x00', '0x00', '0x1a', '0x00', '0x06', '0x00', '0x00', '0x00', '0x06', '0x00', '0x02', '0x00', '0x07', '0x00', '0x04', '0x00', '0x08', '0x00', '0x09', '0x00', '0x09', '0x00', '0x14', '0x00', '0x0b', '0x00', '0x1c', '0x00', '0x0d', '0x00', '0x0e', '0x00', '0x00', '0x00', '0x08', '0x00', '0x02', '0xfd', '0x00', '0x14', '0x01', '0x01', '0x07', '0x00', '0x01', '0x00', '0x0f', '0x00', '0x00', '0x00', '0x02', '0x00', '0x10']
-
 # 程序入口
 if __name__=="__main__":
+	data = ['0xca', '0xfe', '0xba', '0xbe', '0x00', '0x00', '0x00', '0x33', '0x00', '0x20', '0x0a', '0x00', '0x07', '0x00', '0x11', '0x09', '0x00', '0x12', '0x00', '0x13', '0x08', '0x00', '0x14', '0x0a', '0x00', '0x15', '0x00', '0x16', '0x08', '0x00', '0x17', '0x07', '0x00', '0x18', '0x07', '0x00', '0x19', '0x01', '0x00', '0x06', '0x3c', '0x69', '0x6e', '0x69', '0x74', '0x3e', '0x01', '0x00', '0x03', '0x28', '0x29', '0x56', '0x01', '0x00', '0x04', '0x43', '0x6f', '0x64', '0x65', '0x01', '0x00', '0x0f', '0x4c', '0x69', '0x6e', '0x65', '0x4e', '0x75', '0x6d', '0x62', '0x65', '0x72', '0x54', '0x61', '0x62', '0x6c', '0x65', '0x01', '0x00', '0x04', '0x6d', '0x61', '0x69', '0x6e', '0x01', '0x00', '0x16', '0x28', '0x5b', '0x4c', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x6c', '0x61', '0x6e', '0x67', '0x2f', '0x53', '0x74', '0x72', '0x69', '0x6e', '0x67', '0x3b', '0x29', '0x56', '0x01', '0x00', '0x0d', '0x53', '0x74', '0x61', '0x63', '0x6b', '0x4d', '0x61', '0x70', '0x54', '0x61', '0x62', '0x6c', '0x65', '0x01', '0x00', '0x0a', '0x53', '0x6f', '0x75', '0x72', '0x63', '0x65', '0x46', '0x69', '0x6c', '0x65', '0x01', '0x00', '0x09', '0x64', '0x65', '0x6d', '0x6f', '0x2e', '0x6a', '0x61', '0x76', '0x61', '0x0c', '0x00', '0x08', '0x00', '0x09', '0x07', '0x00', '0x1a', '0x0c', '0x00', '0x1b', '0x00', '0x1c', '0x01', '0x00', '0x06', '0x62', '0x69', '0x67', '0x67', '0x65', '0x72', '0x07', '0x00', '0x1d', '0x0c', '0x00', '0x1e', '0x00', '0x1f', '0x01', '0x00', '0x07', '0x73', '0x6d', '0x61', '0x6c', '0x6c', '0x65', '0x72', '0x01', '0x00', '0x08', '0x63', '0x6c', '0x73', '0x2f', '0x64', '0x65', '0x6d', '0x6f', '0x01', '0x00', '0x10', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x6c', '0x61', '0x6e', '0x67', '0x2f', '0x4f', '0x62', '0x6a', '0x65', '0x63', '0x74', '0x01', '0x00', '0x10', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x6c', '0x61', '0x6e', '0x67', '0x2f', '0x53', '0x79', '0x73', '0x74', '0x65', '0x6d', '0x01', '0x00', '0x03', '0x6f', '0x75', '0x74', '0x01', '0x00', '0x15', '0x4c', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x69', '0x6f', '0x2f', '0x50', '0x72', '0x69', '0x6e', '0x74', '0x53', '0x74', '0x72', '0x65', '0x61', '0x6d', '0x3b', '0x01', '0x00', '0x13', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x69', '0x6f', '0x2f', '0x50', '0x72', '0x69', '0x6e', '0x74', '0x53', '0x74', '0x72', '0x65', '0x61', '0x6d', '0x01', '0x00', '0x07', '0x70', '0x72', '0x69', '0x6e', '0x74', '0x6c', '0x6e', '0x01', '0x00', '0x15', '0x28', '0x4c', '0x6a', '0x61', '0x76', '0x61', '0x2f', '0x6c', '0x61', '0x6e', '0x67', '0x2f', '0x53', '0x74', '0x72', '0x69', '0x6e', '0x67', '0x3b', '0x29', '0x56', '0x00', '0x21', '0x00', '0x06', '0x00', '0x07', '0x00', '0x00', '0x00', '0x00', '0x00', '0x02', '0x00', '0x01', '0x00', '0x08', '0x00', '0x09', '0x00', '0x01', '0x00', '0x0a', '0x00', '0x00', '0x00', '0x1d', '0x00', '0x01', '0x00', '0x01', '0x00', '0x00', '0x00', '0x05', '0x2a', '0xb7', '0x00', '0x01', '0xb1', '0x00', '0x00', '0x00', '0x01', '0x00', '0x0b', '0x00', '0x00', '0x00', '0x06', '0x00', '0x01', '0x00', '0x00', '0x00', '0x03', '0x00', '0x09', '0x00', '0x0c', '0x00', '0x0d', '0x00', '0x01', '0x00', '0x0a', '0x00', '0x00', '0x00', '0x57', '0x00', '0x02', '0x00', '0x03', '0x00', '0x00', '0x00', '0x1d', '0x04', '0x3c', '0x05', '0x3d', '0x1b', '0x1c', '0xa4', '0x00', '0x0e', '0xb2', '0x00', '0x02', '0x12', '0x03', '0xb6', '0x00', '0x04', '0xa7', '0x00', '0x0b', '0xb2', '0x00', '0x02', '0x12', '0x05', '0xb6', '0x00', '0x04', '0xb1', '0x00', '0x00', '0x00', '0x02', '0x00', '0x0b', '0x00', '0x00', '0x00', '0x1a', '0x00', '0x06', '0x00', '0x00', '0x00', '0x06', '0x00', '0x02', '0x00', '0x07', '0x00', '0x04', '0x00', '0x08', '0x00', '0x09', '0x00', '0x09', '0x00', '0x14', '0x00', '0x0b', '0x00', '0x1c', '0x00', '0x0d', '0x00', '0x0e', '0x00', '0x00', '0x00', '0x08', '0x00', '0x02', '0xfd', '0x00', '0x14', '0x01', '0x01', '0x07', '0x00', '0x01', '0x00', '0x0f', '0x00', '0x00', '0x00', '0x02', '0x00', '0x10']
 	javap(data)
 	# print _MAGIC
 	# print range(40,46)
