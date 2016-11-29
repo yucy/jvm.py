@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 CONSTANT_Class_info = {
 	#u1 tag
 	'tag':1,

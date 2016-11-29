@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-import struct
+import struct,accessFlags
 
 #3405691582
 _MAGIC = int('0XCAFEBABE',16)
@@ -22,6 +22,7 @@ def javap(data):
 	print 'constant_pool_count:',constant_pool_count
 	constant_pool_index = 0
 	is_utf8 = False
+	# cp_info constant_pool[constant_pool_count-1];
 	while constant_pool_count > constant_pool_index:
 		constant_pool_index += 1
 		tag = getDecimal(data[index])
@@ -36,81 +37,104 @@ def javap(data):
 		if tag == 7:# Class
 			# u1 tag;
 			# u2 name_index;
-			index,ref_index,constant_incr=constant_2(2,index)
+			ref_index,constant_incr=constant_2(2,index)
 		elif tag in (9,10,11):# Fieldref,Methodref,InterfaceMethodref
 			# u1 tag;
 			# u2 class_index;
 			# u2 name_and_type_index;
-			index,ref_index,constant_incr=constant_3(2,2,index)
+			ref_index,constant_incr=constant_3(2,2,index)
 		elif tag == 8:# String
 			# u1 tag;
 			# u2 string_index;
-			index,ref_index,constant_incr=constant_2(2,index)
+			ref_index,constant_incr=constant_2(2,index)
 		elif tag in (3,4):# Integer,Float
 			# u1 tag;
 			# u4 bytes;
-			index,ref_index,constant_incr=constant_2(4,index)
+			ref_index,constant_incr=constant_2(4,index)
 		elif tag in (5,6):# long , double
 			# u1 tag;
 			# u4 high_bytes;
 			# u4 low_bytes;
-			index,ref_index,constant_incr=constant_3(4,4,index)
+			ref_index,constant_incr=constant_3(4,4,index)
 		elif tag == 12:# NameAndType
 			# u1 tag;
 			# u2 name_index;
 			# u2 descriptor_index;
-			index,ref_index,constant_incr=constant_3(2,2,index)
+			ref_index,constant_incr=constant_3(2,2,index)
 		elif tag == 1:# UTF8
 			# u1 tag;
 			# u2 length;
 			# u1 bytes[length];
 			is_utf8 = True
-			bytes_begin = index +2
-			bytes_len = getDecimal(data[index:bytes_begin])
-			index += 2 +bytes_len
-			utf8_data = ''.join([chr(int(data[i],16)) for i in xrange(bytes_begin,index)])
+			bytes_len = getDecimal(data[index:index +2])
+			index += 2
+			utf8_data = ''.join([chr(int(data[i],16)) for i in xrange(index,index+bytes_len)])
+			index += bytes_len
 			# print 'utf8_data:%s' % utf8_data
 		elif tag == 15:# MethodHandler
 			# u1 tag;
 			# u1 reference_kind;
 			# u2 reference_index;
-			index,ref_index,constant_incr=constant_3(1,2,index)
+			ref_index,constant_incr=constant_3(1,2,index)
 		elif tag == 16:# MethodType
 			# u1 tag;
 			# u2 descriptor_index;
-			index,ref_index,constant_incr=constant_2(2,index)
+			ref_index,constant_incr=constant_2(2,index)
 		elif tag == 18:# InvokeDynamic
 			# u1 tag;
 			# u2 bootstrap_method_attr_index;
 			# u2 name_and_type_index;
-			index,ref_index,constant_incr=constant_3(2,2,index)
+			ref_index,constant_incr=constant_3(2,2,index)
 
 		index += constant_incr
 		# print 'constant_incr:%d' % constant_incr,'index:%d' % index
 		constant_info = ref_index+utf8_data
 		constant_name_simple = constant_name[9:-5]
 		print '#%d %s\t\t%s' % (constant_pool_index,constant_name_simple,constant_info)
-		
-
-	# cp_info constant_pool[constant_pool_count-1];
 	# u2 access_flags;
+	print 'access_flags:',accessFlags.access_flags_class.get(getDecimal(data[index:index+2]))
 	# u2 this_class;
+	print 'this_class:',getDecimal(data[index:index+4])
 	# u2 super_class;
+	print 'super_class:',getDecimal(data[index:index+6])
 	# u2 interfaces_count;
-	# u2 interfaces[interfaces_count];
-	# u2 fields_count;
-	# field_info fields[fields_count];
-	# u2 methods_count;
-	# method_info methods[methods_count];
-	# u2 attributes_count;
-	# attribute_info attributes[attributes_count];
+	interfaces_count = getDecimal(data[index:index+8])
+	index += 8
+	# print 'interfaces_count:',interfaces_count
+	# if interfaces_count > 0:
+	# 	# u2 interfaces[interfaces_count];
+	# 	index += interfaces_count*2
+	# 	begins = [i for i in xrange(interfaces_count*2) if i %2 == 0]
+	# 	interfaces = [getDecimal(data[index+i:index+i+1]) for i in begins]
+	# 	print interfaces
+	# # u2 fields_count;
+	# fields_count = getDecimal(data[index:index+2])
+	# print 'fields_count:',fields_count
+	# if fields_count > 0:
+	# 	# field_info fields[fields_count];
+	# 	index += fields_count*2
+	# 	pass
+	
+	# # u2 methods_count;
+	# methods_count = getDecimal(data[index:index+2])
+	# print 'methods_count:',methods_count
+	# if methods_count > 0:
+	# 	# method_info methods[methods_count];
+	# 	index += methods_count*2
+	# 	pass
+
+	# # u2 attributes_count;
+	# attributes_count = getDecimal(data[index:index+2])
+	# print 'attributes_count:',attributes_count
+	# if attributes_count > 0:
+	# 	# attribute_info attributes[attributes_count];
+	# 	pass
 
 def constant_2(second,index):
 	constant_incr = second
 	# print 'constant_2',constant_incr,second
-	end = index+constant_incr
-	ref_index = '#%d' % getDecimal(data[index:end])
-	return index,ref_index,constant_incr
+	ref_index = '#%d' % getDecimal(data[index:index+constant_incr])
+	return ref_index,constant_incr
 
 def constant_3(second,third,index):
 	constant_incr = second+third
@@ -118,7 +142,7 @@ def constant_3(second,third,index):
 	end = index+constant_incr
 	temp = index+second
 	ref_index = '#%d #%d' % (getDecimal(data[index:temp]),getDecimal(data[temp:end]))
-	return index,ref_index,constant_incr
+	return ref_index,constant_incr
 
 
 constant_type={
