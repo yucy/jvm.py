@@ -3,6 +3,8 @@ import struct,accessFlags
 
 #3405691582
 _MAGIC = int('0XCAFEBABE',16)
+# 保存常量池
+constant_pool = []
 
 def javap(data):
 	index = 0
@@ -20,9 +22,9 @@ def javap(data):
 	constant_pool_count = getDecimal(data[8:10])-1
 	index = 10
 	print 'constant_pool_count:',constant_pool_count
+	# cp_info constant_pool[constant_pool_count-1];
 	constant_pool_index = 0
 	is_utf8 = False
-	# cp_info constant_pool[constant_pool_count-1];
 	while constant_pool_count > constant_pool_index:
 		constant_pool_index += 1
 		tag = getDecimal(data[index])
@@ -85,65 +87,84 @@ def javap(data):
 			# u2 bootstrap_method_attr_index;
 			# u2 name_and_type_index;
 			ref_index,constant_incr=constant_3(2,2,index)
-
+		# class位置下标
 		index += constant_incr
 		# print 'constant_incr:%d' % constant_incr,'index:%d' % index
 		constant_info = ref_index+utf8_data
 		constant_name_simple = constant_name[9:-5]
+		constant_pool.append(constant_info)
 		print '#%d %s\t\t%s' % (constant_pool_index,constant_name_simple,constant_info)
 	# u2 access_flags;
-	print 'access_flags:',accessFlags.access_flags_class.get(getDecimal(data[index:index+2]))
+	access_flag_class = accessFlags.getAccessFlag('class',getDecimal(data[index:index+2]))
+	print 'access_flags:%s'% access_flag_class
+	index+=2
 	# u2 this_class;
-	print 'this_class:',getDecimal(data[index:index+4])
+	print 'this_class:',getConstant(getDecimal(data[index:index+2]))
+	index+=2
 	# u2 super_class;
-	print 'super_class:',getDecimal(data[index:index+6])
+	print 'super_class:',getConstant(getDecimal(data[index:index+2]))
+	index+=2
 	# u2 interfaces_count;
-	interfaces_count = getDecimal(data[index:index+8])
-	index += 8
-	# print 'interfaces_count:',interfaces_count
-	# if interfaces_count > 0:
-	# 	# u2 interfaces[interfaces_count];
-	# 	index += interfaces_count*2
-	# 	begins = [i for i in xrange(interfaces_count*2) if i %2 == 0]
-	# 	interfaces = [getDecimal(data[index+i:index+i+1]) for i in begins]
-	# 	print interfaces
-	# # u2 fields_count;
-	# fields_count = getDecimal(data[index:index+2])
-	# print 'fields_count:',fields_count
-	# if fields_count > 0:
-	# 	# field_info fields[fields_count];
-	# 	index += fields_count*2
-	# 	pass
+	interfaces_count = getDecimal(data[index:index+2])
+	index+=2
+	print 'interfaces_count:',interfaces_count
+	if interfaces_count > 0:
+		# u2 interfaces[interfaces_count];
+		index += interfaces_count*2
+		begins = [i for i in xrange(interfaces_count*2) if i %2 == 0]
+		interfaces = [getDecimal(data[index+i:index+i+1]) for i in begins]
+		print interfaces
+	# u2 fields_count;
+	fields_count = getDecimal(data[index:index+2])
+	index+=2
+	print 'fields_count:',fields_count
+	if fields_count > 0:
+		# field_info fields[fields_count];
+		index += fields_count*2
+		pass
 	
-	# # u2 methods_count;
-	# methods_count = getDecimal(data[index:index+2])
-	# print 'methods_count:',methods_count
-	# if methods_count > 0:
-	# 	# method_info methods[methods_count];
-	# 	index += methods_count*2
-	# 	pass
+	# u2 methods_count;
+	methods_count = getDecimal(data[index:index+2])
+	index+=2
+	print 'methods_count:',methods_count
+	if methods_count > 0:
+		# method_info methods[methods_count];
+		index += methods_count*2
+		pass
 
-	# # u2 attributes_count;
-	# attributes_count = getDecimal(data[index:index+2])
-	# print 'attributes_count:',attributes_count
-	# if attributes_count > 0:
-	# 	# attribute_info attributes[attributes_count];
-	# 	pass
+	# u2 attributes_count;
+	attributes_count = getDecimal(data[index:index+2])
+	index+=2
+	print 'attributes_count:',attributes_count
+	if attributes_count > 0:
+		# attribute_info attributes[attributes_count];
+		pass
 
+# 处理常量类型结构里元素数量等于2的
 def constant_2(second,index):
 	constant_incr = second
 	# print 'constant_2',constant_incr,second
 	ref_index = '#%d' % getDecimal(data[index:index+constant_incr])
 	return ref_index,constant_incr
 
+# 处理常量类型结构里元素数量等于3的
 def constant_3(second,third,index):
 	constant_incr = second+third
 	# print 'constant_3',constant_incr,second
 	end = index+constant_incr
 	temp = index+second
-	ref_index = '#%d #%d' % (getDecimal(data[index:temp]),getDecimal(data[temp:end]))
+	ref_index = '#%d,#%d' % (getDecimal(data[index:temp]),getDecimal(data[temp:end]))
 	return ref_index,constant_incr
 
+# 从常量池中获取值
+def getConstant(num):
+	data = constant_pool[num-1]
+	if data.__contains__('#'):
+		temp = data.replace('#','')
+		pointers = temp.split(',')
+		values = [constant_pool[int(i)-1] for i in pointers]
+		return values
+	return data
 
 constant_type={
 	1:'CONSTANT_Utf8_info',
@@ -386,16 +407,15 @@ data = ['0xca', '0xfe', '0xba', '0xbe', '0x00', '0x00', '0x00', '0x33', '0x00', 
 
 # 程序入口
 if __name__=="__main__":
-	# for x in xrange(0,len(data)):
-	# 	#为了格式整齐，每十六个输出一个换行
-	# 	if x%16 == 0:
-	# 		print
-	# 	# 尾部加上逗号，是为了打印不换行
-	# 	print data[x],
-	# print _MAGIC
 	javap(data)
+	# print _MAGIC
 	# print range(40,46)
 	# print ''.join([chr(int(data[i],16)) for i in xrange(40,46)])
 	# print getStruct(constant_type.get('1'))
+
+	# constant_pool = [1,2,3,4,5,6]
+	# pointers = [2,3]
+	# print tuple([constant_pool[i-1] for i in pointers])
+	# print '%s %s' % tuple([constant_pool[i-1] for i in pointers])
 	
 

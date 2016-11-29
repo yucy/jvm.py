@@ -140,11 +140,11 @@ cp_info constant_pool[constant_pool_count-1]
 	u2 super_class
 00 00
 	u2 interfaces_count
-ps:interfaces_count = 0 ,so,this item is null
+PS:interfaces_count = 0 ,so,this item is null
 	u2 interfaces[interfaces_count]
 00 00
 	u2 fields_count
-ps:fields_count = 0 ,so,this item is null
+PS:fields_count = 0 ,so,this item is null
 	field_info fields[fields_count]
 
 00 02
