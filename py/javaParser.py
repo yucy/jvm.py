@@ -11,8 +11,6 @@ data = []
 def cursor(step):
 	global offset
 	# print '------data',data
-	if step == 0:
-		return None
 	result = data[offset:offset+step]
 	offset += step
 	return result
