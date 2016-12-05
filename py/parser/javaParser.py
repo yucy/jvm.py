@@ -4,7 +4,7 @@ sys.path.append('..')
 
 import accessFlags
 from common.utils import getDecimal
-from common.content import constant_type
+from common.content import constant_type,cmd
 
 # 3405691582
 _MAGIC = int('0XCAFEBABE',16)
@@ -196,14 +196,58 @@ def attrHandler():
 	# _attrInfo = ''.join([chr(int(b,16)) for b in cursor(attribute_length)])
 	print '\t attribute_info:',
 	if attribute_name == 'Code':#方法表，Java代码编译成的字节码指令
-		'''XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'''
-		pass
+		# u2 max_stack; 
+		# u2 max_locals; 
+		# u4 code_length; 
+		# u1 code[code_length]; 
+		# u2 exception_table_length; 
+		# { 
+		# 	u2 start_pc; 
+		# 	u2 end_pc; 
+		# 	u2 handler_pc; 
+		# 	u2 catch_type; 
+		# } exception_table[exception_table_length]; 
+		# u2 attributes_count; 
+		# attribute_info attributes[attributes_count];
+
+		print 'max_stack:',getDecimal(cursor(2))
+		print 'max_locals:',getDecimal(cursor(2))
+		code_length = getDecimal(cursor(4))
+		print 'code_length:',code_length
+		codes = [cmd.get('0x%.2x' % ord(cursor(x))) for x in xrange(code_length)]
+		print codes
+		exception_table_length = getDecimal(cursor(2))
+		print 'exception_table_length:',exception_table_length
+		if exception_table_length > 0:
+			exceptions = []
+			for x in xrange(exception_table_length):
+				temp = {}
+				temp['start_pc'] = getDecimal(cursor(2))
+				temp['end_pc'] = getDecimal(cursor(2))
+				temp['handler_pc'] = getDecimal(cursor(2))
+				temp['catch_type'] = getDecimal(cursor(2))
+				exceptions.append(temp)
+			print 'exceptions:',exceptions
+		attributes_count = getDecimal(cursor(2))
+		for x in xrange(attributes_count):
+			attrHandler()
 	elif attribute_name == 'ConstantValue':#字段表，field定义的常量池
 		# 结构：u2 constantvalue_index , attribute_length === 2
 		print getConstant(cursor(attribute_length))
 	elif attribute_name == 'StackMapTable':#Code属性 ，JDK1.6中新增的属性，供新的类型检查检验器检查和处理目标方法的局部变量和操作数有所需要的类是否匹配 
+		# u2 number_of_entries; 
+		# stack_map_frame entries[number_of_entries];
+		# union stack_map_frame { 
+		# 	same_frame; 
+		# 	same_locals_1_stack_item_frame; 
+		# 	same_locals_1_stack_item_frame_extended; 
+		# 	chop_frame; 
+		# 	same_frame_extended; 
+		# 	append_frame; 
+		# 	full_frame; 
+		# }
+		number_of_entries = getDecimal(cursor(2))
 		'''XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'''
-		pass
 	elif attribute_name == 'Exceptions':#方法表 ，方法抛出的异常
 		# u2 number_of_exceptions;
 		# u2 exception_index_table[number_of_exceptions];
@@ -422,7 +466,7 @@ if __name__=="__main__":
 	# print tuple([constant_pool[i-1] for i in pointers])
 	# print '%s %s' % tuple([constant_pool[i-1] for i in pointers])
 	print 123
-	print ['this %s at %d' % ('getConstant(cursor(2))',i) for i in xrange(0)] 
+	print ['this %s at %d' % ('getConstant(cursor(2))',i) for i in xrange(2)]
 	print constant_pool[0]
 	print 
 
