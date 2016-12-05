@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 from sys import argv
-import javaParser as jp
+import parser.javaParser as jp
 
 # 根据java class名称读取相应java class文件的内容
 def readClassFile(path):
@@ -102,9 +102,8 @@ def isAbstractClass():
 if __name__=="__main__":
 	# argv,第一个参数是python后面算起的，我们的启动命令是：python py/classLoader.py cls/demo.class
 	# 很显然，我们要读取的是class文件，是第二个参数，故而我们用argv[1]
-	path = argv[1]
-	# path = 'cls/test.class'
-	print jp.inner_cmd['0xab']
+	# path = argv[1]
+	path = '/home/yucy/git/jvm.py/cls/demo.class'
 	print "The class path is [%s]." % path
 	if path:
 		data = readClassFile(path)

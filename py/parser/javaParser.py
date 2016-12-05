@@ -23,6 +23,16 @@ def cursor(step):
 	offset += step
 	return result
 
+def toInt(arg):
+	_type = type(arg)
+	result = ''
+	if _type == 'list':
+		for x in arg:
+			result+=int(x,16)
+	elif _type == 'str':
+		result = int(arg,16)
+	return result
+
 # 解析class文件
 def javap(_data):
 	global data
@@ -48,7 +58,7 @@ def javap(_data):
 		tag = getDecimal(cursor(1))
 		constant_name = constant_type.get(tag)
 		# print 'tag:%d\tconstant_name:%s' % (tag,constant_name)
-		_struct = getStruct(constant_name)
+		# _struct = getStruct(constant_name)
 		ref_index,utf8_data = '',''
 		up,down,is_longORdouble  = '','',False
 		if tag == 7:# Class
@@ -187,7 +197,7 @@ def methodAndFieldHandler(_type,count):
 
 def attrHandler():
 	# u2 attribute_name_index;
-	attribute_name = getConstant(cursor(2))
+	attribute_name = getConstant(getDecimal(cursor(2)))
 	print '\t attribute_name_index:',attribute_name
 	# u4 attribute_length;
 	attribute_length = getDecimal(cursor(4))
@@ -214,7 +224,7 @@ def attrHandler():
 		print 'max_locals:',getDecimal(cursor(2))
 		code_length = getDecimal(cursor(4))
 		print 'code_length:',code_length
-		codes = [cmd.get('0x%.2x' % ord(cursor(x))) for x in xrange(code_length)]
+		codes = [cmd.get(toInt(cursor(1))) for x in xrange(code_length)]
 		print codes
 		exception_table_length = getDecimal(cursor(2))
 		print 'exception_table_length:',exception_table_length
@@ -233,8 +243,9 @@ def attrHandler():
 			attrHandler()
 	elif attribute_name == 'ConstantValue':#字段表，field定义的常量池
 		# 结构：u2 constantvalue_index , attribute_length === 2
-		print getConstant(cursor(attribute_length))
-	elif attribute_name == 'StackMapTable':#Code属性 ，JDK1.6中新增的属性，供新的类型检查检验器检查和处理目标方法的局部变量和操作数有所需要的类是否匹配 
+		print getConstant(getDecimal(cursor(attribute_length)))
+	# 一个方法的 Code 属性最多只能有一个 StackMapTable 属性,否则将抛出 ClassFormatError 异常
+	elif attribute_name == 'StackMapTable':#Code属性 ，JDK1.6中新增的属性，供新的类型检验器检查和处理目标方法的局部变量和操作数有所需要的类是否匹配 
 		# u2 number_of_entries; 
 		# stack_map_frame entries[number_of_entries];
 		# union stack_map_frame { 
@@ -247,12 +258,78 @@ def attrHandler():
 		# 	full_frame; 
 		# }
 		number_of_entries = getDecimal(cursor(2))
-		'''XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'''
+		'''XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+		使用时帧的字节偏移量计算方法为:前一帧的字节码偏移量(Bytecode Offset)加上 offset_delta 的值再加 1,如果前一个帧是方法的初始帧
+		(Initial Frame),那这时候字节码偏移量就是 offset_delta。
+		方法的初始帧是隐式的,它通过方法描述符计算得出
+
+		'''
+		for x in xrange(number_of_entries):
+			frame_type = getDecimal(cursor(1))
+			# same_frame {
+			# u1 frame_type = SAME; /* 0-63 */
+			# }
+			# 当前帧拥有和前一个栈映射帧完全相同的 locals[]数组,并且对应的 stack 项的成员个数为 0。
+			# 当前帧的 offset_delta 值就使用 frame_type 项的值来表示
+			if 0<=frame_type<64:
+				print 'SAME,offset_delta:%d' % frame_type
+			# same_locals_1_stack_item_frame {
+			# u1 frame_type = SAME_LOCALS_1_STACK_ITEM;/* 64-127 */
+			# verification_type_info stack[1];
+			# }
+			# 前帧拥有和前一个栈映射帧完全相同的 locals[]数组,同时对应的 stack[]数组的成员个数为 1。当前帧的 offset_delta 值为 frame_type-64。
+			# 并且有一个 verification_type_info 项跟随在此帧类型之后,用于表示那一个 stack 项的成员。
+			elif 64<=frame_type<128:
+				print 'SAME_LOCALS_1_STACK_ITEM,offset_delta:%d' % frame_type-64
+				verification_type_info()
+			# same_locals_1_stack_item_frame_extended {
+			# 	u1 frame_type = SAME_LOCALS_1_STACK_ITEM_EXTENDED;/* 247 */
+			# 	u2 offset_delta;
+			# 	verification_type_info stack[1];
+			# }
+			# 当前帧拥有和前一个栈映射帧完全相同的 locals[]数组,同时对应的 stack[]数组的成员个数为 1。
+			# 当前帧的 offset_delta 的值需要由 offset_delta 项明确指定。有一个 stack[]数组的成员跟随在 offset_delta 项之后。
+			elif frame_type == 247:
+				offset_delta = getDecimal(cursor(2))
+				verification_type_info()
+				print 'SAME_LOCALS_1_STACK_ITEM_EXTENDED,offset_delta:%d' % offset_delta
+			# chop_frame {
+			# u1 frame_type = CHOP; /* 248-250 */
+			# u2 offset_delta;
+			# }
+			# 对应的操作数栈为空,并且拥有和前一个栈映射帧相同的 locals[]数组,不过其中的第 k 个之后的 locals 项是不存在的。
+			# k 的值由 251-frame_type 确定
+			elif 248<=frame_type<251:
+				offset_delta = getDecimal(cursor(2))
+				k = 251-frame_type
+				print 'chop_frame,k:%d,offset_delta:%d' % (k,offset_delta)
+
+			# same_frame_extended {
+			# 	u1 frame_type = SAME_FRAME_EXTENDED; /* 251 */
+			# 	u2 offset_delta;
+			# }
+			# 当前帧有拥有和前一个栈映射帧的完全相同的locals[]数组,同时对应的 stack[]数组的成员数量为 0。
+			elif frame_type == 251:
+				offset_delta = getDecimal(cursor(2))
+				print 'same_frame_extended,offset_delta:%d' % offset_delta
+			
+			# append_frame {
+			# 	u1 frame_type = APPEND; /* 252-254 */
+			# 	u2 offset_delta;
+			# 	verification_type_info locals[frame_type - 251];
+			# }
+			# 对应操作数栈为空,并且包含和前一个栈映射帧相同的 locals[]数组,不过还额外附加 k 个的 locals 项。k 值为 frame_type-251。
+			elif 252<=frame_type<255:
+				offset_delta = getDecimal(cursor(2))
+				k = frame_type-251
+				verification_type_info()
+				print 'append_frame,k:%d,offset_delta:%d' % (k,offset_delta)
+
 	elif attribute_name == 'Exceptions':#方法表 ，方法抛出的异常
 		# u2 number_of_exceptions;
 		# u2 exception_index_table[number_of_exceptions];
 		number_of_exceptions = getDecimal(cursor(2))
-		print [getConstant(cursor(2)) for i in xrange(number_of_exceptions)] 
+		print [getConstant(getDecimal(cursor(2))) for i in xrange(number_of_exceptions)] 
 	elif attribute_name == 'InnerClass':#类文件 ，内部类列表 
 		# u2 number_of_classes;
 		# {
@@ -262,22 +339,22 @@ def attrHandler():
 		# 	u2 inner_class_access_flags;
 		# } classes[number_of_classes];
 		number_of_classes = getDecimal(cursor(2))
-		print ['inner_class_info:%s,outer_class_info:%s,inner_name:%s,inner_class_access:%s\n\t' % (getConstant(cursor(2))\
-			,getConstant(cursor(2)),getConstant(cursor(2)),accessFlags.getAccessFlag('class',getDecimal(cursor(2)))) \
-			for i in xrange(number_of_exceptions)] 
+		print ['inner_class_info:%s,outer_class_info:%s,inner_name:%s,inner_class_access:%s' % (getConstant(getDecimal(cursor(2)))\
+			,getConstant(getDecimal(cursor(2))),getConstant(getDecimal(cursor(2))),accessFlags.getAccessFlag('class',getDecimal(cursor(2)))) \
+			for i in xrange(number_of_classes)] 
 	elif attribute_name == 'EnclosingMethod':#类文件 ，仅当一个类为局部类或者匿名类是才能拥有这个属性，这个属性用于标识这个类所在的外围方法 
 		# u2 class_index
 		# u2 method_index;
-		print 'class:%s , method:%s' % (getConstant(cursor(2)),getConstant(cursor(2)))
+		print 'class:%s , method:%s' % (getConstant(getDecimal(cursor(2))),getConstant(getDecimal(cursor(2))))
 	elif attribute_name == 'Synthetic':#类，方法表，字段表 ，标志方法或字段为编译器自动生成的 
 		# ACC_SYNTHETIC ,attribute_length === 0
 		print 'ACC_SYNTHETIC'
 	elif attribute_name == 'Signature':#类，方法表，字段表 ，用于支持泛型情况下的方法签名
 		# u2 signature_index;
-		print 'signature:',getConstant(cursor(2))
+		print 'signature:',getConstant(getDecimal(cursor(2)))
 	elif attribute_name == 'SourceFile':#类文件 ，记录源文件名称 
 		# u2 sourcefile_index;
-		print 'sourcefile:',getConstant(cursor(2))
+		print 'sourcefile:',getConstant(getDecimal(cursor(2)))
 	elif attribute_name == 'SourceDebugExtension':#类文件 ，用于存储额外的调试信息 
 		# u1 debug_extension[attribute_length];
 		print ''.join([chr(getDecimal(cursor(1))) for i in xrange(attribute_length)])
@@ -288,8 +365,9 @@ def attrHandler():
 		# 	u2 line_number;
 		# } line_number_table[line_number_table_length];
 		line_number_table_length = getDecimal(cursor(2))
-		print ['start_pc:%d,line_number:%d\n\t' % (getDecimal(cursor(2)),getDecimal(cursor(2))) \
-			for i in xrange(number_of_exceptions)] 
+		print ['start_pc:%d,line_number:%d' % (getDecimal(cursor(2)),getDecimal(cursor(2))) \
+			for i in xrange(line_number_table_length)] 
+	# Code 属性中的每个局部变量最多只能有一个 LocalVariableTable 属性
 	elif attribute_name == 'LocalVariableTable':#Code属性 ，方法的局部变量描述 
 		# u2 local_variable_table_length;
 		# {
@@ -300,12 +378,23 @@ def attrHandler():
 		# 	u2 index;
 		# } local_variable_table[local_variable_table_length];
 		local_variable_table_length = getDecimal(cursor(2))
-		'''XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'''
-		# print ['start_pc:%s,length:%s,name:%s,descriptor:%s,index:%s\n\t' % (getDecimal(cursor(2))\
-		# 	,getDecimal(cursor(2)),getConstant(cursor(2)),getConstant(cursor(2)),getDecimal(cursor(2))) \
-		# 	for i in xrange(number_of_exceptions)] 
+		print ['start_pc:%s,length:%s,name:%s,descriptor:%s,index:%s' % (getDecimal(cursor(2))\
+			,getDecimal(cursor(2)),getConstant(getDecimal(cursor(2))),getConstant(getDecimal(cursor(2))),getDecimal(cursor(2))) \
+			for i in xrange(local_variable_table_length)] 
 	elif attribute_name == 'LocalVariableTypeTable':#类 ，使用特征签名代替描述符，是为了引入泛型语法之后能描述泛型参数化类型而添加 
-		pass
+		# u2 local_variable_type_table_length;
+		# {
+		# 	u2 start_pc;
+		# 	u2 length;
+		# 	u2 name_index;
+		# 	u2 signature_index;
+		# 	u2 index;
+		# 	}local_variable_type_table[local_variable_type_table_length
+		# }
+		local_variable_type_table_length = getDecimal(cursor(2))
+		print ['start_pc:%s,length:%s,name:%s,signature:%s,index:%s' % (getDecimal(cursor(2))\
+			,getDecimal(cursor(2)),getConstant(getDecimal(cursor(2))),getConstant(getDecimal(cursor(2))),getDecimal(cursor(2))) \
+			for i in xrange(local_variable_type_table_length)] 
 	elif attribute_name == 'Deprecated':#类，方法，字段表，被声明为deprecated的方法和字段
 		# attribute_length === 0
 		print 'Deprecated'
@@ -358,14 +447,94 @@ def attrHandler():
 			注意:此 CONSTANT_MethodHandle_info 结构的 reference_kind 项应为值 6	(REF_invokeStatic)或 8(REF_newInvokeSpecial)
 			(§5.4.3.5),否则在 invokedynamic 指令解析调用点限定符时,引导方法会执行失败。
 			'''
-			bootstrap_method = getConstant(cursor(2))
+			bootstrap_method = getConstant(getDecimal(cursor(2)))
 			print 'bootstrap_method:',bootstrap_method
 			num_bootstrap_arguments = getDecimal(cursor(2))
-			print [getConstant(cursor(2)) for x in xrange(num_bootstrap_arguments)]
+			print [getConstant(getDecimal(cursor(2))) for x in xrange(num_bootstrap_arguments)]
 	else:
 		print 'ERROR:cannot parse this attribute %s' % attribute_name ,\
 		 '\t attribute_info:',cursor(attribute_length)
 		
+# 结构的第一个字节 tag 作为类型标记,之后跟随 0 至多个字节表示由 tag 类型所决定的信息
+def verification_type_info():
+	tag = getDecimal(cursor(1))
+	# Top_variable_info 类型说明这个局部变量拥有验证类型 top(ᴛ)。
+	# Top_variable_info {
+	# u1 tag = ITEM_Top; /* 0 */
+	# }
+	if tag == 0:
+		print 'ITEM_Top'
+	# Integer_variable_info 类型说明这个局部变量包含验证类型 int
+	# Integer_variable_info {
+	# u1 tag = ITEM_Integer; /* 1 */
+	# }
+	elif tag == 1:
+		print 'ITEM_Integer'
+	# Float_variable_info 类型说明局部变量包含验证类型 float
+	# Float_variable_info {
+	# u1 tag = ITEM_Float; /* 2 */
+	# }
+	elif tag == 2:
+		print 'ITEM_Float'
+	# Long_variable_info 类型说明存储单元包含验证类型 long,如果存储单元是局部变量,
+	# 则要求:
+	# 1. 不能是最大索引值的局部变量。
+	# 2. 按顺序计数的下一个局部变量包含验证类型 ᴛ
+	# 如果单元存储是操作数栈成员,则要求:
+	# 1. 当前的存储单元不能在栈顶。
+	# 2. 靠近栈顶方向的下一个存储单元包含验证类型 ᴛ。
+	# Long_variable_info 结构在局部变量表或操作数栈中占用 2 个存储单元。
+	# Long_variable_info {
+	# u1 tag = ITEM_Long; /* 4 */
+	# }
+	elif tag == 4:
+		print 'ITEM_Long'
+	# Double_variable_info 类型说明存储单元包含验证类型 double。如果存储单元是局部
+	# 变量,则要求:
+	#  1.不能是最大索引值的局部变量。
+	#  2.按顺序计数的下一个局部变量包含验证类型 ᴛ
+	# 如果单元存储是操作数栈成员,则要求:
+	# 1.当前的存储单元不能在栈顶。
+	# 2.靠近栈顶方向的下一个存储单元包含验证类型 ᴛ。
+	# Double_variable_info 结构在局部变量表或操作数栈中占用 2 个存储单元。
+	# Double_variable_info {
+	# u1 tag = ITEM_Double; /* 3 */
+	# }
+	elif tag == 3:
+		print 'ITEM_Double'
+	# Null_variable_info 类型说明存储单元包含验证类型 null。
+	# Null_variable_info {
+	# u1 tag = ITEM_Null; /* 5 */
+	# }
+	elif tag == 5:
+		print 'ITEM_Null'
+	# UninitializedThis_variable_info 类型说明存储单元包含验证类型
+	# uninitializedThis。
+	# UninitializedThis_variable_info {
+	# u1 tag = ITEM_UninitializedThis; /* 6 */
+	# }
+	elif tag == 6:
+		print 'ITEM_UninitializedThis'
+	# Object_variable_info 类型说明存储单元包含某个 Class 的实例。由常量池在
+	# cpool_index 给出的索引处的 CONSTANT_CLASS_Info(§4.4.1)结构表示。
+	# Object_variable_info {
+	# u1 tag = ITEM_Object; /* 7 */
+	# u2 cpool_index;
+	# }
+	elif tag == 7:
+		cpool = getConstant(getDecimal(cursor(2)))
+		print 'ITEM_Object:',cpool
+	# Uninitialized_variable_info 说明存储单元包含验证类型
+	# uninitialized(offset)。offset 项给出了一个偏移量,表示在包含此 StackMapTable 属
+	# 性的 Code 属性中,new 指令创建的对象所存储的位置。
+	# Uninitialized_variable_info {
+	# u1 tag = ITEM_Uninitialized /* 8 */
+	# u2 offset;
+	# }
+	elif tag == 8:
+		_offset = getDecimal(cursor(2))
+		print 'Uninitialized_variable_info,_offset:',_offset
+	
 def handlerAnnotation():
 	annotation = {}
 	'''
@@ -379,12 +548,12 @@ def handlerAnnotation():
 	}
 	------------------------------------------------
 	'''
-	annotation['type_index'] = getConstant(cursor(2))
+	annotation['type_index'] = getConstant(getDecimal(cursor(2)))
 	num_element_value_pairs = getDecimal(cursor(2))
 	annotation['num_element_value_pairs'] = num_element_value_pairs
 	pairs = {}
 	for x in xrange(num_element_value_pairs):
-		pairs['element_name_index'] = getConstant(cursor(2))
+		pairs['element_name_index'] = getConstant(getDecimal(cursor(2)))
 		pairs['element_value'] = hadlerAnnotation_element()
 	return annotation
 
@@ -431,12 +600,12 @@ def hadlerAnnotation_element():
 	'''
 	tag = chr(getDecimal(cursor(1)))
 	element['tag'] = tag
-	element['const_value'] = getConstant(cursor(2))
+	element['const_value'] = getConstant(getDecimal(cursor(2)))
 	if 'e' == tag:
-		element['type_name'] = getConstant(cursor(2))
-		element['const_name'] = getConstant(cursor(2))
+		element['type_name'] = getConstant(getDecimal(cursor(2)))
+		element['const_name'] = getConstant(getDecimal(cursor(2)))
 	elif 'c' == tag:
-		element['class_info'] = getConstant(cursor(2))
+		element['class_info'] = getConstant(getDecimal(cursor(2)))
 	elif '@' == tag:
 		element['annotation'] = handlerAnnotation()
 	elif '[' == tag:
@@ -466,7 +635,8 @@ if __name__=="__main__":
 	# print tuple([constant_pool[i-1] for i in pointers])
 	# print '%s %s' % tuple([constant_pool[i-1] for i in pointers])
 	print 123
-	print ['this %s at %d' % ('getConstant(cursor(2))',i) for i in xrange(2)]
+	print ['this %s at %d' % ('getConstant(getDecimal(cursor(2)))',i) for i in xrange(2)]
 	print constant_pool[0]
-	print 
+	print [x for x in xrange(10) if 0<x<8]
+	print hex(int('0x0f',16))
 
