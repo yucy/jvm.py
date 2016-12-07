@@ -34,6 +34,7 @@ def toInt(arg):
 def javap(_data):
 	global data
 	data = _data
+	_class = {}
 	# u4 magic;
 	magic = ''.join(cursor(4)).replace('0x','')
 	print 'magic:',magic
@@ -41,14 +42,22 @@ def javap(_data):
 		print 'This is not a valid class file.'
 		return
 	# u2 minor_version;
-	print 'minor_version:',getDecimal(cursor(2))
+	minor_version=getDecimal(cursor(2))
 	# u2 major_version;
-	print 'major_version:',getDecimal(cursor(2))
+	major_version=getDecimal(cursor(2))
 	# u2 constant_pool_count;
 	constant_pool_count = getDecimal(cursor(2))-1
 	print 'constant_pool_count:',constant_pool_count
+	_class.update({
+		'magic':magic,
+		'minor_version':minor_version,
+		'major_version':major_version,
+		'constant_pool_count':constant_pool_count,
+		'cp_info':constant_pool
+		})
 	# cp_info constant_pool[constant_pool_count-1];
 	constant_pool_index = 0
+	cp_info = {}
 	while constant_pool_count > constant_pool_index:
 		# print 'constant_pool_count:%d constant_pool_index:%d' % (constant_pool_count , constant_pool_index)
 		constant_pool_index += 1
@@ -119,23 +128,27 @@ def javap(_data):
 		print '#%d %s\t\t%s' % (constant_pool_index,constant_name[9:-5],constant_info)
 	# =============常量池处理完毕==================================================
 	# u2 access_flags;
-	access_flag_class = accessFlags.getAccessFlag('class',getDecimal(cursor(2)))
-	print 'access_flags:%s'% access_flag_class
+	access_flags = accessFlags.getAccessFlag('class',getDecimal(cursor(2)))
 	# u2 this_class;
-	class_index = getDecimal(cursor(2))
-	print 'this_class:',getConstant(class_index)
+	this_class = getConstant(getDecimal(cursor(2)))
 	# u2 super_class;
-	print 'super_class:',getConstant(getDecimal(cursor(2)))
+	super_class = getConstant(getDecimal(cursor(2)))
 	# u2 interfaces_count;
 	interfaces_count = getDecimal(cursor(2))
-	print 'interfaces_count:',interfaces_count
+	interfaces = []
 	if interfaces_count > 0:
 		# u2 interfaces[interfaces_count];
 		interfaces = [getDecimal(cursor(2)) for i in xrange(interfaces_count)]
-		print interfaces
 	# u2 fields_count;
 	fields_count = getDecimal(cursor(2))
-	print 'fields_count:',fields_count
+	_class.update({
+		'access_flags':access_flags,
+		'this_class':this_class,
+		'super_class':super_class,
+		'interfaces_count':interfaces_count,
+		'fields_count':fields_count,
+		'interfaces':interfaces
+		})
 	# field_info fields[fields_count];
 	if fields_count > 0:
 		methodAndFieldHandler('field',fields_count)
@@ -175,26 +188,34 @@ def getConstant(num):
 	except Exception, e:
 		print '==========================',num,len(constant_pool)
 	
-
+methods = []
+fields = []
 def methodAndFieldHandler(_type,count):
+	global methods,fields
 	if count <= 0:
 		print 'count can not lower than zero.[methodAndFieldHandler]'
 		return None
+	temp = []
 	for i in xrange(count):
 		print '\t %s:%d' % (_type,i)
 		# u2 access_flags;
-		print '\t access_flags:' , accessFlags.getAccessFlag(_type,getDecimal(cursor(2)))
 		# u2 name_index;
-		print '\t name_index:',getConstant(getDecimal(cursor(2)))
 		# u2 descriptor_index;
-		print '\t descriptor_index:',getConstant(getDecimal(cursor(2)))
 		# u2 attributes_count;
-		attributes_count = getDecimal(cursor(2))
-		print '\t attributes_count:',attributes_count
+		aa = {
+			'access_flags':accessFlags.getAccessFlag(_type,getDecimal(cursor(2))),
+			'name':getConstant(getDecimal(cursor(2))),
+			'descriptor':getConstant(getDecimal(cursor(2))),
+			'attributes_count':getDecimal(cursor(2))
+		}
 		# attribute_info attributes[attributes_count];
 		if attributes_count > 0:
-			attrHandler()
-		print '\t---------------'
+			aa.append(attrHandler())
+		temp.append(aa)
+	if _type == 'field':
+		fields.append(temp)
+	else:
+		methods.append(temp)
 
 
 # 获取常量类型结构定义

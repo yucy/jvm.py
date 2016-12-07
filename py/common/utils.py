@@ -10,10 +10,11 @@ def getDecimal(arr):
 
 if __name__ == '__main__':
 	d = {'a':getDecimal('0x0f')
-,'b':[i for i in xrange(10)]
+	,'b':[i for i in xrange(10)]
 	}
 	print d['a']
 	b = d
 	print b
-	d['a'] = 2
+	d.update({'c':123})
+	print d
 	print isinstance(d,dict)
