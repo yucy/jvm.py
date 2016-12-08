@@ -3,6 +3,7 @@
 import sys
 sys.path.append('..')
 import accessFlags
+from common.content import cmd
 from common.utils import getDecimal
 
 
@@ -51,21 +52,28 @@ class MethodInfo(object):
 		self.name = arg.get('name',None) # u2 
 		self.descriptor = arg.get('descriptor',None) # u2 
 		self.attributes_count = arg.get('attributes_count',0) # u2 
-		self.attributes = arg.get('attributes',[])
-		self.code = arg.get('code',None)
+		allAttr = arg.get('attributes',[])
+		attributes = []
+		for attr in allAttr:
+			if attr.attribute_name == 'Code':
+				self.code = attr
+			else:
+				attributes.append(attr)
+		self.attributes = attributes
+		
 
 # =================================================================
 class AttributeInfo(object):
 	"""docstring for AttributeInfo"""
 	def __init__(self, arg,pool=[]):
 		self.__offset = 0
-		self.code = {}
-		if isinstance(arg,dict):
-			self.init(arg)
-		else:
-			self.__data = arg
-			self.__constant_pool = pool
-			self.__attrHandler()
+		self.__data = arg
+		self.__constant_pool = pool
+		self.attribute_name,self.attribute_length,self.info = self.__attrHandler()
+		# 构造完成之后，释放这两个私有成员
+		# 否则外部可以通过_AttributeInfo__data来访问此变量，大爷的，私有属性表现在哪里了
+		self.__data = None
+		self.__constant_pool = None
 
 	def __cursor(self,step):
 		# print '------__data',__data
@@ -73,10 +81,12 @@ class AttributeInfo(object):
 		self.__offset += step
 		return result
 
-	def init(self,arg):
-		self.attribute_name = arg.get('attribute_name',None) # u2 
-		self.attribute_length = arg.get('attribute_length',0) # u4 
-		self.info = arg.get('info',{}) # u1 
+	def __toInt(self,arg):
+		result = 0
+		for x in arg:
+			result+=int(x,16)
+		# print arg,'================================',result
+		return result
 
 	# 从常量池中获取值
 	def __getConstant(self,num):
@@ -92,14 +102,14 @@ class AttributeInfo(object):
 			print '==========================',num,len(self.__constant_pool)
 
 	def __attrHandler(self):
-		# u2 self.attribute_name_index;
-		self.attribute_name = self.__getConstant(getDecimal(self.__cursor(2)))
-		# u4 self.attribute_length;
-		self.attribute_length = getDecimal(self.__cursor(4))
-		print '\t self.attribute_length:',self.attribute_length
-		# u1 info[self.attribute_length];
-		# _attrInfo = ''.join([chr(int(b,16)) for b in self.__cursor(self.attribute_length)])
-		if self.attribute_name == 'Code':#方法表，Java代码编译成的字节码指令
+		attr = {}
+		# u2 attribute_name_index;
+		attribute_name = self.__getConstant(getDecimal(self.__cursor(2)))
+		# u4 attribute_length;
+		attribute_length = getDecimal(self.__cursor(4))
+		# u1 info[attribute_length];
+		# _attrInfo = ''.join([chr(int(b,16)) for b in self.__cursor(attribute_length)])
+		if attribute_name == 'Code':#方法表，Java代码编译成的字节码指令
 			# u2 max_stack; 
 			# u2 max_locals; 
 			# u4 code_length; 
@@ -114,14 +124,13 @@ class AttributeInfo(object):
 			# u2 attributes_count; 
 			# attribute_info attributes[attributes_count];
 			
-			self.code['max_stack']= getDecimal(self.__cursor(2))
-			self.code['max_locals']= getDecimal(self.__cursor(2))
+			attr['max_stack']= getDecimal(self.__cursor(2))
+			attr['max_locals']= getDecimal(self.__cursor(2))
 			code_length = getDecimal(self.__cursor(4))
-			self.code['code_length']= code_length
-			codes = [cmd.get(toInt(self.__cursor(1))) for x in xrange(code_length)]
-			print codes
+			attr['code_length']= code_length
+			attr['codes']= [cmd.get(self.__toInt(self.__cursor(1))) for x in xrange(code_length)]
 			exception_table_length = getDecimal(self.__cursor(2))
-			self.code['exception_table_length']= exception_table_length
+			attr['exception_table_length']= exception_table_length
 			if exception_table_length > 0:
 				exceptions = []
 				for x in xrange(exception_table_length):
@@ -131,15 +140,17 @@ class AttributeInfo(object):
 					temp['handler_pc'] = getDecimal(self.__cursor(2))
 					temp['catch_type'] = getDecimal(self.__cursor(2))
 					exceptions.append(temp)
-				self.code['exceptions:']= exceptions
+				attr['exceptions:']= exceptions
 			attributes_count = getDecimal(self.__cursor(2))
-			for x in xrange(attributes_count):
-				self.__attrHandler()
-		elif self.attribute_name == 'ConstantValue':#字段表，field定义的常量池
-			# 结构：u2 constantvalue_index , self.attribute_length === 2
-			self.ConstantValue = self.__getConstant(getDecimal(self.__cursor(self.attribute_length)))
+			attr.update({
+				'attributes_count':attributes_count,
+				'code_attr':[self.__attrHandler() for x in xrange(attributes_count)]
+				})
+		elif attribute_name == 'ConstantValue':#字段表，field定义的常量池
+			# 结构：u2 constantvalue_index , attribute_length === 2
+			attr['ConstantValue'] = self.__getConstant(getDecimal(self.__cursor(attribute_length)))
 		# 一个方法的 Code 属性最多只能有一个 StackMapTable 属性,否则将抛出 ClassFormatError 异常
-		elif self.attribute_name == 'StackMapTable':#Code属性 ，JDK1.6中新增的属性，供新的类型检验器检查和处理目标方法的局部变量和操作数有所需要的类是否匹配 
+		elif attribute_name == 'StackMapTable':#Code属性 ，JDK1.6中新增的属性，供新的类型检验器检查和处理目标方法的局部变量和操作数有所需要的类是否匹配 
 			# u2 number_of_entries; 
 			# stack_map_frame entries[number_of_entries];
 			# union stack_map_frame { 
@@ -152,18 +163,18 @@ class AttributeInfo(object):
 			# 	full_frame; 
 			# }
 			number_of_entries = getDecimal(self.__cursor(2))
-			self.info['number_of_entries'] = number_of_entries
+			attr['number_of_entries'] = number_of_entries
 			'''
 			使用时帧的字节偏移量计算方法为:前一帧的字节码偏移量(Bytecode Offset)加上 offset_delta 的值再加 1,如果前一个帧是方法的初始帧
 			(Initial Frame),那这时候字节码偏移量就是 offset_delta。
 			方法的初始帧是隐式的,它通过方法描述符计算得出
 			'''
 			entries = []
-			self.info['entries'] = entries
+			attr['entries'] = entries
 			for x in xrange(number_of_entries):
 				entry = {}
 				frame_type = getDecimal(self.__cursor(1))
-				entry['type'] = frame_type
+				entry['frame_type'] = frame_type
 				# same_frame {
 				# u1 frame_type = SAME; /* 0-63 */
 				# }
@@ -224,17 +235,17 @@ class AttributeInfo(object):
 					# print 'append_frame,k:%d,offset_delta:%d' % (k,offset_delta)
 				entries.append(entry)
 
-		elif self.attribute_name == 'Exceptions':#方法表 ，方法抛出的异常
+		elif attribute_name == 'Exceptions':#方法表 ，方法抛出的异常
 			# u2 number_of_exceptions;
 			# u2 exception_index_table[number_of_exceptions];
 			number_of_exceptions = getDecimal(self.__cursor(2))
-			self.info = {
+			attr = {
 				'number_of_exceptions': number_of_exceptions,
 				'exception_index_table':  [self.__getConstant(getDecimal(self.__cursor(2))) \
 					for i in xrange(number_of_exceptions)]
 			}
 
-		elif self.attribute_name == 'InnerClass':#类文件 ，内部类列表 
+		elif attribute_name == 'InnerClass':#类文件 ，内部类列表 
 			# u2 number_of_classes;
 			# {
 			# 	u2 inner_class_info_index;
@@ -244,9 +255,9 @@ class AttributeInfo(object):
 			# } classes[number_of_classes];
 
 			number_of_classes = getDecimal(self.__cursor(2))
-			self.info['number_of_classes'] = number_of_classes
+			attr['number_of_classes'] = number_of_classes
 			classes = []
-			self.info['classes'] = classes
+			attr['classes'] = classes
 			for i in xrange(number_of_classes):
 				inner_class = {
 					'inner_class_info': self.__getConstant(getDecimal(self.__cursor(2))),
@@ -259,37 +270,37 @@ class AttributeInfo(object):
 			# print ['inner_class_info:%s,outer_class_info:%s,inner_name:%s,inner_class_access:%s' % (\
 			# 	,self.__getConstant(getDecimal(self.__cursor(2))),self.__getConstant(getDecimal(self.__cursor(2))),accessFlags.getAccessFlag('class',getDecimal(self.__cursor(2)))) \
 			# 	for i in xrange(number_of_classes)] 
-		elif self.attribute_name == 'EnclosingMethod':#类文件 ，仅当一个类为局部类或者匿名类是才能拥有这个属性，这个属性用于标识这个类所在的外围方法 
+		elif attribute_name == 'EnclosingMethod':#类文件 ，仅当一个类为局部类或者匿名类是才能拥有这个属性，这个属性用于标识这个类所在的外围方法 
 			# u2 class_index
 			# u2 method_index;
-			self.info = {
+			attr = {
 				'class':self.__getConstant(getDecimal(self.__cursor(2))),
 				'method':self.__getConstant(getDecimal(self.__cursor(2)))
 			}
 			# print 'class:%s , method:%s' % (self.__getConstant(getDecimal(self.__cursor(2))),self.__getConstant(getDecimal(self.__cursor(2))))
-		elif self.attribute_name == 'Synthetic':#类，方法表，字段表 ，标志方法或字段为编译器自动生成的 
-			# ACC_SYNTHETIC ,self.attribute_length === 0
-			self.info['Synthetic'] = 1
-			print 'ACC_SYNTHETIC'
-		elif self.attribute_name == 'Signature':#类，方法表，字段表 ，用于支持泛型情况下的方法签名
+		elif attribute_name == 'Synthetic':#类，方法表，字段表 ，标志方法或字段为编译器自动生成的 
+			# ACC_SYNTHETIC ,attribute_length === 0
+			attr['Synthetic'] = 1
+			# print 'ACC_SYNTHETIC'
+		elif attribute_name == 'Signature':#类，方法表，字段表 ，用于支持泛型情况下的方法签名
 			# u2 signature_index;
-			self.info['signature'] = self.__getConstant(getDecimal(self.__cursor(2)))
-		elif self.attribute_name == 'SourceFile':#类文件 ，记录源文件名称 
+			attr['signature'] = self.__getConstant(getDecimal(self.__cursor(2)))
+		elif attribute_name == 'SourceFile':#类文件 ，记录源文件名称 
 			# u2 sourcefile_index;
-			self.info['sourcefile'] =  self.__getConstant(getDecimal(self.__cursor(2)))
-		elif self.attribute_name == 'SourceDebugExtension':#类文件 ，用于存储额外的调试信息 
-			# u1 debug_extension[self.attribute_length];
-			self.info['debug_extension'] = ''.join([chr(getDecimal(self.__cursor(1))) for i in xrange(self.attribute_length)])
-		elif self.attribute_name == 'LineNumberTable':#Code属性 ，Java源码的行号与字节码指令的对应关系 
+			attr['sourcefile'] =  self.__getConstant(getDecimal(self.__cursor(2)))
+		elif attribute_name == 'SourceDebugExtension':#类文件 ，用于存储额外的调试信息 
+			# u1 debug_extension[attribute_length];
+			attr['debug_extension'] = ''.join([chr(getDecimal(self.__cursor(1))) for i in xrange(attribute_length)])
+		elif attribute_name == 'LineNumberTable':#Code属性 ，Java源码的行号与字节码指令的对应关系 
 			# u2 line_number_table_length;
 			# {
 			# 	u2 start_pc;
 			# 	u2 line_number;
 			# } line_number_table[line_number_table_length];
 			line_number_table_length = getDecimal(self.__cursor(2))
-			self.info['line_number_table_length'] = line_number_table_length
+			attr['line_number_table_length'] = line_number_table_length
 			line_number_table = []
-			self.info['line_number_table'] = line_number_table
+			attr['line_number_table'] = line_number_table
 			for i in xrange(line_number_table_length):
 				_table = {
 					'start_pc':getDecimal(self.__cursor(2)),
@@ -299,7 +310,7 @@ class AttributeInfo(object):
 			# print ['start_pc:%d,line_number:%d' % (getDecimal(self.__cursor(2)),getDecimal(self.__cursor(2))) \
 			# 	for i in xrange(line_number_table_length)] 
 		# Code 属性中的每个局部变量最多只能有一个 LocalVariableTable 属性
-		elif self.attribute_name == 'LocalVariableTable':#Code属性 ，方法的局部变量描述 
+		elif attribute_name == 'LocalVariableTable':#Code属性 ，方法的局部变量描述 
 			# u2 local_variable_table_length;
 			# {
 			# 	u2 start_pc;
@@ -309,9 +320,9 @@ class AttributeInfo(object):
 			# 	u2 index;
 			# } local_variable_table[local_variable_table_length];
 			local_variable_table_length = getDecimal(self.__cursor(2))
-			self.info['local_variable_table_length'] = local_variable_table_length
+			attr['local_variable_table_length'] = local_variable_table_length
 			local_variable_table = []
-			self.info['local_variable_table'] = local_variable_table
+			attr['local_variable_table'] = local_variable_table
 			for i in xrange(local_variable_table_length):
 				_table = {
 					'start_pc':getDecimal(self.__cursor(2)),
@@ -324,7 +335,7 @@ class AttributeInfo(object):
 			# print ['start_pc:%s,length:%s,name:%s,descriptor:%s,index:%s' % (getDecimal(self.__cursor(2))\
 			# 	,getDecimal(self.__cursor(2)),self.__getConstant(getDecimal(self.__cursor(2))),self.__getConstant(getDecimal(self.__cursor(2))),getDecimal(self.__cursor(2))) \
 			# 	for i in xrange(local_variable_table_length)] 
-		elif self.attribute_name == 'LocalVariableTypeTable':#类 ，使用特征签名代替描述符，是为了引入泛型语法之后能描述泛型参数化类型而添加 
+		elif attribute_name == 'LocalVariableTypeTable':#类 ，使用特征签名代替描述符，是为了引入泛型语法之后能描述泛型参数化类型而添加 
 			# u2 local_variable_type_table_length;
 			# {
 			# 	u2 start_pc;
@@ -335,9 +346,9 @@ class AttributeInfo(object):
 			# 	}local_variable_type_table[local_variable_type_table_length
 			# }
 			local_variable_type_table_length = getDecimal(self.__cursor(2))
-			self.info['local_variable_type_table_length'] = local_variable_type_table_length
+			attr['local_variable_type_table_length'] = local_variable_type_table_length
 			local_variable_type_table = []
-			self.info['local_variable_type_table'] = local_variable_type_table
+			attr['local_variable_type_table'] = local_variable_type_table
 			for i in xrange(local_variable_type_table_length):
 				_table = {
 					'start_pc':getDecimal(self.__cursor(2)),
@@ -350,42 +361,42 @@ class AttributeInfo(object):
 			# print ['start_pc:%s,length:%s,name:%s,signature:%s,index:%s' % (getDecimal(self.__cursor(2))\
 			# 	,getDecimal(self.__cursor(2)),self.__getConstant(getDecimal(self.__cursor(2))),self.__getConstant(getDecimal(self.__cursor(2))),getDecimal(self.__cursor(2))) \
 			# 	for i in xrange(local_variable_type_table_length)] 
-		elif self.attribute_name == 'Deprecated':#类，方法，字段表，被声明为deprecated的方法和字段
-			# self.attribute_length === 0
-			self.info['Deprecated'] = 1
+		elif attribute_name == 'Deprecated':#类，方法，字段表，被声明为deprecated的方法和字段
+			# attribute_length === 0
+			attr['Deprecated'] = 1
 		# #类，方法表，字段表 ，为动态注解提供支持 ,RuntimeInvisibleAnnotations用于指明哪些注解是运行时不可见的 
-		elif self.attribute_name in ['RuntimeVisibleAnnotations','RuntimeInvisibleAnnotations']:#类，方法表，字段表 ，为动态注解提供支持 
+		elif attribute_name in ['RuntimeVisibleAnnotations','RuntimeInvisibleAnnotations']:#类，方法表，字段表 ，为动态注解提供支持 
 			# u2 num_annotations;
 			# annotation annotations[num_annotations];
 			num_annotations = getDecimal(self.__cursor(2))
-			self.info['num_annotations'] = num_annotations
+			attr['num_annotations'] = num_annotations
 			annotations = []
-			self.info['annotations'] = annotations
+			attr['annotations'] = annotations
 			for i in xrange(num_annotations):
 				annotations.append(self.__handlerAnnotation())
 			# print [self.__handlerAnnotation() for x in xrange(num_annotations)]
 		# 数组中每个成员的值表示一个的参数的所有的运行时可见注解。它们的顺序和方法描述符表示的参数的顺序一致
-		elif self.attribute_name in ['RuntimeVisibleParameterAnnotation','RuntimeInvisibleParameterAnnotation']:#方法表 ，作用与RuntimeVisibleAnnotations属性类似，只不过作用对象为方法
+		elif attribute_name in ['RuntimeVisibleParameterAnnotation','RuntimeInvisibleParameterAnnotation']:#方法表 ，作用与RuntimeVisibleAnnotations属性类似，只不过作用对象为方法
 			# u1 num_parameters;
 			# {
 			# 	u2 num_annotations;
 			# 	annotation annotations[num_annotations];
 			# } parameter_annotations[num_parameters];
 			num_parameters = getDecimal(self.__cursor(1))
-			self.info['num_parameters'] = num_parameters
+			attr['num_parameters'] = num_parameters
 			parameter_annotations = []
-			self.info['parameter_annotations'] = parameter_annotations
+			attr['parameter_annotations'] = parameter_annotations
 			for x in xrange(num_parameters):
 				num_annotations = getDecimal(self.__cursor(2))
 				annotations = []
-				self.info['annotations'] = annotations
+				attr['annotations'] = annotations
 				for i in xrange(num_annotations):
 					annotations.append(self.__handlerAnnotation())
 				# print [self.__handlerAnnotation() for x in xrange(num_annotations)]
-		elif self.attribute_name == 'AnnotationDefault':#方法表，用于记录注解类元素的默认值 
+		elif attribute_name == 'AnnotationDefault':#方法表，用于记录注解类元素的默认值 
 			# element_value default_value;
-			self.info = self.__hadlerAnnotation_element()
-		elif self.attribute_name == 'BootstrapMethods':#类文件 ，用于保存invokeddynamic指令引用的引导方式限定符  
+			attr = self.__hadlerAnnotation_element()
+		elif attribute_name == 'BootstrapMethods':#类文件 ，用于保存invokeddynamic指令引用的引导方式限定符  
 			# u2 num_bootstrap_methods;
 			# {
 			# 	u2 bootstrap_method_ref;
@@ -393,9 +404,9 @@ class AttributeInfo(object):
 			# 	u2 bootstrap_arguments[num_bootstrap_arguments];
 			# } bootstrap_methods[num_bootstrap_methods];
 			num_bootstrap_methods = getDecimal(self.__cursor(2))
-			self.info['num_bootstrap_methods'] = num_bootstrap_methods
+			attr['num_bootstrap_methods'] = num_bootstrap_methods
 			bootstrap_methods = []
-			self.info['bootstrap_methods'] = bootstrap_methods
+			attr['bootstrap_methods'] = bootstrap_methods
 
 			for x in xrange(num_bootstrap_methods):
 				'''
@@ -410,13 +421,14 @@ class AttributeInfo(object):
 				}
 				bootstrap_methods.append(_method)
 		else:
-			self.info = {
-				'error':'ERROR:cannot parse this attribute %s' % self.attribute_name,
-				'attribute_info':self.__cursor(self.attribute_length)
+			attr = {
+				'error':'ERROR:cannot parse this attribute %s' % attribute_name,
+				'attribute_info':self.__cursor(attribute_length)
 			}
-			# print 'ERROR:cannot parse this attribute %s' % self.attribute_name ,\
-			#  '\t attribute_info:',self.__cursor(self.attribute_length)
-			
+			# print 'ERROR:cannot parse this attribute %s' % attribute_name ,\
+			#  '\t attribute_info:',self.__cursor(attribute_length)
+		return attribute_name,attribute_length,attr
+
 	# 结构的第一个字节 tag 作为类型标记,之后跟随 0 至多个字节表示由 tag 类型所决定的信息
 	def __verification_type_info(self):
 		type_info = {}
