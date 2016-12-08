@@ -30,8 +30,8 @@ def cursor(step):
 
 # 解析class文件
 def javap(_data):
-	global data,methods,fields,constant_pool
-	data = _data
+	# 内容替换
+	data[:] = _data
 	_cls_args = {}
 	# u4 magic;
 	magic = ''.join(cursor(4)).replace('0x','')
@@ -190,7 +190,7 @@ def getConstant(num):
 		print '==========================',num,len(constant_pool)
 	
 def methodAndFieldHandler(_type,count):
-	global methods,fields
+	# global methods,fields
 	if count <= 0:
 		print 'count can not lower than zero.[methodAndFieldHandler]'
 		return None
@@ -216,6 +216,7 @@ def methodAndFieldHandler(_type,count):
 			})
 		temp.append(args)
 	if _type == 'field':
+		# list[-1:]=[] 效果等同于 list.extend(..)
 		fields[-1:] =  [FieldInfo(x) for x in temp]
 	else:
 		methods[-1:] =  [MethodInfo(x) for x in temp]
@@ -243,7 +244,7 @@ if __name__=="__main__":
 	print '============================='
 	method_info = _class.method_info
 	for x in method_info:
-		print x.__dict__
+		print x.code.__dict__
 	# print _MAGIC
 	# print range(40,46)
 	# print ''.join([chr(int(data[i],16)) for i in xrange(40,46)])

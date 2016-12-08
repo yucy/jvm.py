@@ -26,13 +26,7 @@ class CClassFile(object):
 		self.method_info = arg.get('method_info',[])
 		self.attributes_count = arg.get('attributes_count',0)# u2 
 		self.attribute_info = arg.get('attribute_info',[])
-	def setFieldInfo(self,fields):
-		self.field_info = fields
-		self.aaa = 1
-		self.toString()
-
-	def toString(self):
-		print self.magic,self.minor_version,self.major_version,self.constant_pool_count
+	
 
 # =================================================================
 class FieldInfo(object):
