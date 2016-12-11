@@ -244,7 +244,7 @@ if __name__=="__main__":
 	print '============================='
 	method_info = _class.method_info
 	for x in method_info:
-		print x.code.__dict__
+		print x.__dict__
 	# print _MAGIC
 	# print range(40,46)
 	# print ''.join([chr(int(data[i],16)) for i in xrange(40,46)])
