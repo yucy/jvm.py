@@ -89,7 +89,7 @@ class AttributeInfo(object):
 			if source.__contains__('#'):
 				temp = source.replace('#','')
 				pointers = temp.split(',')
-				target = [self.__constant_pool[int(i)-1] for i in pointers]
+				target = [self.__constant_pool[int(i)] for i in pointers]
 				return target
 			return source
 		except Exception, e:
@@ -144,6 +144,7 @@ class AttributeInfo(object):
 			# 结构：u2 constantvalue_index , attribute_length === 2
 			attr['ConstantValue'] = self.__getConstant(getDecimal(self.__cursor(attribute_length)))
 		# 一个方法的 Code 属性最多只能有一个 StackMapTable 属性,否则将抛出 ClassFormatError 异常
+		# 每个栈映射帧都显式或隐式地指定了一个字节码偏移量,用于表示局部变量表和操作数栈的验证类型
 		elif attribute_name == 'StackMapTable':#Code属性 ，JDK1.6中新增的属性，供新的类型检验器检查和处理目标方法的局部变量和操作数有所需要的类是否匹配 
 			# u2 number_of_entries; 
 			# stack_map_frame entries[number_of_entries];
@@ -168,15 +169,13 @@ class AttributeInfo(object):
 			for x in xrange(number_of_entries):
 				entry = {}
 				frame_type = getDecimal(self.__cursor(1))
-				entry['frame_type'] = frame_type
 				# same_frame {
 				# u1 frame_type = SAME; /* 0-63 */
 				# }
 				# 当前帧拥有和前一个栈映射帧完全相同的 locals[]数组,并且对应的 stack 项的成员个数为 0。
 				# 当前帧的 offset_delta 值就使用 frame_type 项的值来表示
 				if 0<=frame_type<64:
-					# print 'SAME,offset_delta:%d' % frame_type
-					pass
+					frame_name = 'SAME'
 				# same_locals_1_stack_item_frame {
 				# u1 frame_type = SAME_LOCALS_1_STACK_ITEM;/* 64-127 */
 				# self.__verification_type_info stack[1];
@@ -184,7 +183,7 @@ class AttributeInfo(object):
 				# 前帧拥有和前一个栈映射帧完全相同的 locals[]数组,同时对应的 stack[]数组的成员个数为 1。当前帧的 offset_delta 值为 frame_type-64。
 				# 并且有一个 self.__verification_type_info 项跟随在此帧类型之后,用于表示那一个 stack 项的成员。
 				elif 64<=frame_type<128:
-					# print 'SAME_LOCALS_1_STACK_ITEM,offset_delta:%d' % frame_type-64
+					frame_name = 'SAME_LOCALS_1_STACK_ITEM'
 					entry['type_info'] = self.__verification_type_info()
 				# same_locals_1_stack_item_frame_extended {
 				# 	u1 frame_type = SAME_LOCALS_1_STACK_ITEM_EXTENDED;/* 247 */
@@ -194,9 +193,9 @@ class AttributeInfo(object):
 				# 当前帧拥有和前一个栈映射帧完全相同的 locals[]数组,同时对应的 stack[]数组的成员个数为 1。
 				# 当前帧的 offset_delta 的值需要由 offset_delta 项明确指定。有一个 stack[]数组的成员跟随在 offset_delta 项之后。
 				elif frame_type == 247:
+					frame_name = 'SAME_LOCALS_1_STACK_ITEM_EXTENDED'
 					entry['offset_delta'] = getDecimal(self.__cursor(2))
 					entry['type_info'] = self.__verification_type_info()
-					# print 'SAME_LOCALS_1_STACK_ITEM_EXTENDED,offset_delta:%d' % offset_delta
 				# chop_frame {
 				# u1 frame_type = CHOP; /* 248-250 */
 				# u2 offset_delta;
@@ -204,18 +203,17 @@ class AttributeInfo(object):
 				# 对应的操作数栈为空,并且拥有和前一个栈映射帧相同的 locals[]数组,不过其中的第 k 个之后的 locals 项是不存在的。
 				# k 的值由 251-frame_type 确定
 				elif 248<=frame_type<251:
+					frame_name = 'CHOP'
 					entry['offset_delta'] = getDecimal(self.__cursor(2))
 					entry['k'] = 251-frame_type
-					# print 'chop_frame,k:%d,offset_delta:%d' % (k,offset_delta)
 				# same_frame_extended {
 				# 	u1 frame_type = SAME_FRAME_EXTENDED; /* 251 */
 				# 	u2 offset_delta;
 				# }
 				# 当前帧有拥有和前一个栈映射帧的完全相同的locals[]数组,同时对应的 stack[]数组的成员数量为 0。
 				elif frame_type == 251:
+					frame_name = 'SAME_FRAME_EXTENDED'
 					entry['offset_delta'] = getDecimal(self.__cursor(2))
-					# print 'same_frame_extended,offset_delta:%d' % offset_delta
-				
 				# append_frame {
 				# 	u1 frame_type = APPEND; /* 252-254 */
 				# 	u2 offset_delta;
@@ -223,12 +221,15 @@ class AttributeInfo(object):
 				# }
 				# 对应操作数栈为空,并且包含和前一个栈映射帧相同的 locals[]数组,不过还额外附加 k 个的 locals 项。k 值为 frame_type-251。
 				elif 252<=frame_type<255:
+					frame_name = 'APPEND'
 					entry['offset_delta'] = getDecimal(self.__cursor(2))
-					entry['k'] = frame_type-251
-					entry['type_info'] = self.__verification_type_info()
-					# print 'append_frame,k:%d,offset_delta:%d' % (k,offset_delta)
-				entries.append(entry)
+					k = frame_type-251
+					# entry['k'] = k
+					# 如果有多个附加局部变量，则需要遍历取出其类型定义
+					entry['locals'] = [self.__verification_type_info() for x in xrange(k)]
 
+				entry['frame_type'] = '%d /* %s */' % (frame_type,frame_name)
+				entries.append(entry)
 		elif attribute_name == 'Exceptions':#方法表 ，方法抛出的异常
 			# u2 number_of_exceptions;
 			# u2 exception_index_table[number_of_exceptions];
@@ -285,7 +286,7 @@ class AttributeInfo(object):
 		elif attribute_name == 'SourceDebugExtension':#类文件 ，用于存储额外的调试信息 
 			# u1 debug_extension[attribute_length];
 			attr['debug_extension'] = ''.join([chr(getDecimal(self.__cursor(1))) for i in xrange(attribute_length)])
-		elif attribute_name == 'LineNumberTable':#Code属性 ，Java源码的行号与字节码指令的对应关系 
+		elif attribute_name == 'LineNumberTable':#Code属性 ，用于确定源文件中行号表示的内容在 Java 虚拟机的 code[]数组中对应的部分
 			# u2 line_number_table_length;
 			# {
 			# 	u2 start_pc;
@@ -296,11 +297,13 @@ class AttributeInfo(object):
 			line_number_table = []
 			attr['line_number_table'] = line_number_table
 			for i in xrange(line_number_table_length):
-				_table = {
-					'start_pc':getDecimal(self.__cursor(2)),
-					'line_number':getDecimal(self.__cursor(2))
-				}
-				line_number_table.append(_table)
+				# _table = {
+				# 	# code[]中的一个索引
+				# 	'start_pc':getDecimal(self.__cursor(2)),
+				# 	# 上面索引对应java源文件中的行号
+				# 	'line_number':getDecimal(self.__cursor(2))
+				# }
+				line_number_table.append('index_%d->line_%d' % (getDecimal(self.__cursor(2)),getDecimal(self.__cursor(2))))
 			# print ['start_pc:%d,line_number:%d' % (getDecimal(self.__cursor(2)),getDecimal(self.__cursor(2))) \
 			# 	for i in xrange(line_number_table_length)] 
 		# Code 属性中的每个局部变量最多只能有一个 LocalVariableTable 属性
@@ -427,28 +430,29 @@ class AttributeInfo(object):
 	def __verification_type_info(self):
 		type_info = {}
 		tag = getDecimal(self.__cursor(1))
-		type_info['tag'] = tag
+		# type_info['tag'] = tag
+		_type = None
 		# Top_variable_info 类型说明这个局部变量拥有验证类型 top(ᴛ)。
 		# Top_variable_info {
 		# u1 tag = ITEM_Top; /* 0 */
 		# }
 		if tag == 0:
 			# print 'ITEM_Top'
-			pass
+			_type = 'Top'
 		# Integer_variable_info 类型说明这个局部变量包含验证类型 int
 		# Integer_variable_info {
 		# u1 tag = ITEM_Integer; /* 1 */
 		# }
 		elif tag == 1:
 			# print 'ITEM_Integer'
-			pass
+			_type = 'Integer'
 		# Float_variable_info 类型说明局部变量包含验证类型 float
 		# Float_variable_info {
 		# u1 tag = ITEM_Float; /* 2 */
 		# }
 		elif tag == 2:
 			# print 'ITEM_Float'
-			pass
+			_type = 'Float'
 		# Long_variable_info 类型说明存储单元包含验证类型 long,如果存储单元是局部变量,
 		# 则要求:
 		# 1. 不能是最大索引值的局部变量。
@@ -462,7 +466,7 @@ class AttributeInfo(object):
 		# }
 		elif tag == 4:
 			# print 'ITEM_Long'
-			pass
+			_type = 'Long'
 		# Double_variable_info 类型说明存储单元包含验证类型 double。如果存储单元是局部
 		# 变量,则要求:
 		#  1.不能是最大索引值的局部变量。
@@ -476,14 +480,14 @@ class AttributeInfo(object):
 		# }
 		elif tag == 3:
 			# print 'ITEM_Double'
-			pass
+			_type = 'Double'
 		# Null_variable_info 类型说明存储单元包含验证类型 null。
 		# Null_variable_info {
 		# u1 tag = ITEM_Null; /* 5 */
 		# }
 		elif tag == 5:
 			# print 'ITEM_Null'
-			pass
+			_type = 'Null'
 		# UninitializedThis_variable_info 类型说明存储单元包含验证类型
 		# uninitializedThis。
 		# UninitializedThis_variable_info {
@@ -491,7 +495,7 @@ class AttributeInfo(object):
 		# }
 		elif tag == 6:
 			# print 'ITEM_UninitializedThis'
-			pass
+			_type = 'UninitializedThis'
 		# Object_variable_info 类型说明存储单元包含某个 Class 的实例。由常量池在
 		# cpool_index 给出的索引处的 CONSTANT_CLASS_Info(§4.4.1)结构表示。
 		# Object_variable_info {
@@ -501,6 +505,7 @@ class AttributeInfo(object):
 		elif tag == 7:
 			cpool = self.__getConstant(getDecimal(self.__cursor(2)))
 			type_info['cpool'] = cpool
+			_type = 'Object'
 		# Uninitialized_variable_info 说明存储单元包含验证类型
 		# uninitialized(offset)。offset 项给出了一个偏移量,表示在包含此 StackMapTable 属
 		# 性的 Code 属性中,new 指令创建的对象所存储的位置。
@@ -511,7 +516,9 @@ class AttributeInfo(object):
 		elif tag == 8:
 			offset = getDecimal(self.__cursor(2))
 			type_info['offset'] = offset
+			_type = 'Uninitialized'
 			# print 'Uninitialized_variable_info,_offset:',_offset
+		type_info['type'] = _type
 		return type_info
 		
 	def __handlerAnnotation(self):

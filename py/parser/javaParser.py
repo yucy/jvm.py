@@ -127,9 +127,9 @@ def javap(_data):
 	# u2 access_flags;
 	access_flags = accessFlags.getAccessFlag('class',getDecimal(cursor(2)))
 	# u2 this_class;
-	this_class = getConstant(getDecimal(cursor(2)))
+	this_class = getConstant(getDecimal(cursor(2)))[0]
 	# u2 super_class;
-	super_class = getConstant(getDecimal(cursor(2)))
+	super_class = getConstant(getDecimal(cursor(2)))[0]
 	# u2 interfaces_count;
 	interfaces_count = getDecimal(cursor(2))
 	interfaces = []
@@ -183,7 +183,7 @@ def getConstant(num):
 		if source.__contains__('#'):
 			temp = source.replace('#','')
 			pointers = temp.split(',')
-			target = [constant_pool[int(i)-1] for i in pointers]
+			target = [constant_pool[int(i)] for i in pointers]
 			return target
 		return source
 	except Exception, e:
