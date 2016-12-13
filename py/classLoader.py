@@ -113,7 +113,7 @@ if __name__=="__main__":
 	# path = argv[1]
 	# path = '/home/yucy/git/jvm.py/cls/demo.class'
 	# path = 'e:/git/github/jvm.py/cls/demo.class'
-	path = '../cls/demo.class'
+	path = '../cls/cms.class'
 	print "The class path is [%s]." % path
 	# 如果path不为空
 	if path:

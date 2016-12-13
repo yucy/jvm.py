@@ -169,6 +169,7 @@ class AttributeInfo(object):
 			for x in xrange(number_of_entries):
 				entry = {}
 				frame_type = getDecimal(self.__cursor(1))
+				frame_name = None
 				# same_frame {
 				# u1 frame_type = SAME; /* 0-63 */
 				# }
@@ -227,7 +228,21 @@ class AttributeInfo(object):
 					# entry['k'] = k
 					# 如果有多个附加局部变量，则需要遍历取出其类型定义
 					entry['locals'] = [self.__verification_type_info() for x in xrange(k)]
-
+				# u1 frame_type = FULL_FRAME; /* 255 */
+				# u2 offset_delta;
+				# u2 number_of_locals;
+				# verification_type_info locals[number_of_locals];
+				# u2 number_of_stack_items;
+				# verification_type_info stack[number_of_stack_items];
+				# tag值255。offset_delta = offset_delta。full_frame则定义了所有的信息，包括offset_delta的值，以及当前帧和前
+				# 一帧不同的所有局部变量和操作数。locals[0]表示0号局部变量；stack[0]表示栈底操作数。
+				elif frame_type == 255:
+					frame_name = 'FULL_FRAME'
+					entry['offset_delta'] = getDecimal(self.__cursor(2))
+					number_off_locals = getDecimal(self.__cursor(2))
+					entry['locals'] = [self.__verification_type_info() for x in xrange(number_off_locals)]
+					number_of_stack_items = getDecimal(self.__cursor(2))
+					entry['stacks'] = [self.__verification_type_info() for x in xrange(number_of_stack_items)]
 				entry['frame_type'] = '%d /* %s */' % (frame_type,frame_name)
 				entries.append(entry)
 		elif attribute_name == 'Exceptions':#方法表 ，方法抛出的异常
