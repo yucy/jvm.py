@@ -18,6 +18,7 @@ constant_type={
 	18:'CONSTANT_InvokeDynamic_info',
 }
 
+
 # JVM指令集和
 cmd = {
 	0x00:'nop',#什么都不做。
@@ -36,7 +37,7 @@ cmd = {
 	0x0d:'fconst_2',#将float型2推送至栈顶。
 	0x0e:'dconst_0',#将double型0推送至栈顶。
 	0x0f:'dconst_1',#将double型1推送至栈顶。
-	0x10:'bipush',#将单字节的常量值（-128~127）推送至栈顶。
+	0x10:'bipush',#将单字节的常量值（-128~127）推送至栈顶。-- value
 	0x11:'sipush',#将一个短整型常量值（-32768~32767）推送至栈顶。
 	0x12:'ldc',#将int，float或String型常量值从常量池中推送至栈顶。
 	0x13:'ldc_w',#将int，float或String型常量值从常量池中推送至栈顶（宽索引）。
@@ -45,7 +46,7 @@ cmd = {
 	0x16:'lload',#将指定的long型局部变量推送至栈顶。
 	0x17:'fload',#将指定的float型局部变量推送至栈顶。
 	0x18:'dload',#将指定的double型局部变量推送至栈顶。
-	0x19:'aload',#将指定的引用类型局部变量推送至栈顶。
+	0x19:'aload',#将指定的引用类型局部变量推送至栈顶。-- index
 	0x1a:'iload_0',#将第一个int型局部变量推送至栈顶。
 	0x1b:'iload_1',#将第二个int型局部变量推送至栈顶。
 	0x1c:'iload_2',#将第三个int型局部变量推送至栈顶。
@@ -78,7 +79,7 @@ cmd = {
 	0x37:'lstore',#将栈顶long型数值存入指定局部变量。
 	0x38:'fstore',#将栈顶float型数值存入指定局部变量。
 	0x39:'dstore',#将栈顶double型数值存入指定局部变量。
-	0x3a:'astore',#将栈顶引用型数值存入指定局部变量。
+	0x3a:'astore',#将栈顶引用型数值存入指定局部变量。-- index
 	0x3b:'istore_0',#将栈顶int型数值存入第一个局部变量。
 	0x3c:'istore_1',#将栈顶int型数值存入第二个局部变量。
 	0x3d:'istore_2',#将栈顶int型数值存入第三个局部变量。
@@ -209,7 +210,7 @@ cmd = {
 	0xba:'invokedynamic',#调用动态链接方法，注：操作码为186（0xba）的invokedynamic指令是Java SE 7中新加入的。
 	0xbb:'new',#创建一个对象，并将其引用值压入栈顶。
 	0xbc:'newarray',#创建一个指定原始类型（如int、float、char„„）的数组，并将其引用值压入栈顶。
-	0xbd:'anewarray',#创建一个引用型（如类，接口，数组）的数组，并将其引用值压入栈顶。
+	0xbd:'anewarray',#创建一个引用型（如类，接口，数组）的数组，并将其引用值压入栈顶。-- indexbyte1,indexbyte2
 	0xbe:'arraylength',#获得数组的长度值并压入栈顶。
 	0xbf:'athrow',#将栈顶的异常抛出。
 	0xc0:'checkcast',#检验类型转换，检验未通过将抛出ClassCastException。

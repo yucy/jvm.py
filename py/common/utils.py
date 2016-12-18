@@ -12,3 +12,8 @@ if __name__ == '__main__':
 	attr = {'test':2}
 	attr['test'] = 123
 	print attr
+	a = None
+	print a if a is not None else '222'
+	[DOUBLE,FLOAT] = ['double','float']
+	print DOUBLE
+	print FLOAT
