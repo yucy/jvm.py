@@ -777,8 +777,269 @@ class Opcode(object):
 	def getstatic(self,indexbyte1,indexbyte2):
 		# „, →
 		# „,value
-		# continue
+		cpinfo_index = (indexbyte1 << 8)|indexbyte2
+		# TODO 在字段被成功解析之后，如果字段所在的类或者接口没有被初始化过（§5.5），那指令执行时将会触发其初始化过程
+		# TODO 如何获取字段的值，1.需要正常初始化；2.需要从常量池中取出其正确的值
+		value = self.cpinfo[cpinfo_index] # XXX 这里是错误的引用，后续做到了上面两点，再修正
+		# TODO 如果已解析的字段是一个非静态（not static）字段，getstatic指令将会抛出一个IncompatibleClassChangeError异常
+		self.__push(value)
 
+	# 分支跳转
+	def goto(self,branchbyte1,branchbyte2):
+		# 操作数栈没有改变
+		# 用于构建一个16位有符号的分支偏移量，此偏移量为code[]的下标
+		code_index = (branchbyte1 << 8)|branchbyte2
+		# 指令执行后，程序将会转到这个goto指令之后的，由上述偏移量确定的目标地址上继续执行
+		return code_index
+
+	# 分支跳转（宽范围）
+	# 尽管goto_w指令拥有4字节宽度的分支偏移量，但是还受到方法最大字节码长度为65535字节（§4.11）的限制，这个限制值可能会在未来的Java虚拟机版本中增大
+	def goto_w(self,branchbyte1,branchbyte2,branchbyte3,branchbyte4):
+		# 操作数栈没有改变
+		# 用于构建一个16位有符号的分支偏移量，此偏移量为code[]的下标
+		code_index = (branchbyte1 << 24) | (branchbyte2 << 16) | (branchbyte3 << 8) | branchbyte4
+		# 指令执行后，程序将会转到这个goto指令之后的，由上述偏移量确定的目标地址上继续执行
+		return code_index
+
+	# 将int类型数据转换为byte类型
+	def i2b(self):
+		# „，value →
+		# „，result
+		value = self.__pop()
+		# TODO 后续可能会自定义byte，short,char和double类型，来弥补python版jvm的缺憾
+		self.__push(int(value))
+
+	# 将int类型数据转换为char类型
+	def i2c():
+		# „，value →
+		# „，result
+		value = self.__pop()
+		# 指令执行时，它将从操作数栈中出栈，转换成byte类型数据，然后零位扩展（Zero-Extended）回一个int的结果压入到操作数栈之中。
+		# TODO 这里其实是转成了string类型
+		self.__push(chr(value))
+
+	# 将int类型数据转换为double类型
+	def i2d(self):
+		# „，value →
+		# „，result
+		value = self.__pop()
+		self.__push(float(value))
+
+	# 将int类型数据转换为double类型
+	def i2f(self):
+		# „，value →
+		# „，result
+		value = self.__pop()
+		self.__push(float(value))
+	
+	# 将int类型数据转换为 long 类型
+	def i2l(self):
+		# „，value →
+		# „，result
+		value = self.__pop()
+		self.__push(long(value))
+
+	# 将int类型数据转换为short类型
+	def i2s(self):
+		# „，value →
+		# „，result
+		value = self.__pop()
+		self.__push(int(value))
+
+	# int 类型数据相加
+	# 运算的结果使用低位在高地址（Low-Order Bites）的顺序、按照二进制补码形式存储在32位空间中
+	def iadd(self):
+		# „,value1,value2 →
+		# „,result
+		self.xadd(INT)
+
+	# 从数组中加载一个 int 类型数据到操作数栈
+	def iaload(self):
+		# „,arrayref,index →
+		# „,value
+		self.xaload(INT)
+
+	# 对int类型数据进行按位与运算
+	def iand(self):
+		# „,value1,value2 →
+		# „,result
+		value2 = self.__pop()
+		value1 = self.__pop()
+		result = 0
+		result = value1&value2
+		self.__push(result)
+
+	# 从操作数栈读取一个 int 类型数据存入到数组中
+	def iastore(self):
+		# „,arrayref,index,value →
+		# „
+		self.xastore(INT)
+
+	# def fcmpl(self):
+	# 	# „,value1,value2 →
+	# 	# „,result
+	# 	self.xcmp(INT,'l')
+
+	# def fcmpg(self):
+	# 	# „,value1,value2 →
+	# 	# „,result
+	# 	self.xcmp(INT,'g')
+
+	# 将int类型数据压入到操作数栈中
+	def iconst_m1(self):
+		# „ →
+		# „,<i>
+		self.__push(-1)
+
+	# 将 float 类型数据压入到操作数栈中
+	def fconst_0(self):
+		# „ →
+		# „,<i>
+		self.__push(0)
+
+	def fconst_1(self):
+		# „ →
+		# „,<i>
+		self.__push(1)
+
+	def fconst_2(self):
+		# „ →
+		# „,<i>
+		self.__push(2)
+
+	def fconst_3(self):
+		# „ →
+		# „,<i>
+		self.__push(3)
+
+	def fconst_4(self):
+		# „ →
+		# „,<i>
+		self.__push(4)
+
+	def fconst_5(self):
+		# „ →
+		# „,<i>
+		self.__push(5)
+
+	# int 类型数据除法
+	def idiv(self):
+		# „,value1,value2 →
+		# „,result
+		self.xdiv(INT)
+
+	# 数据的条件分支判断,【x】:a,i 【y】:ne,eq,lt,gt,le,ge
+	def if_xcmpy(self,branchbyte1,branchbyte2,_arg,_type):
+		# „，value1，value2 →
+		# „
+		value2 = self.__pop()
+		value1 = self.__pop()
+		result = -1
+		# eq 当且仅当value1=value2比较的结果为真。
+		# ne 当且仅当value1≠value2比较的结果为真。
+		# 异异或，相同为 True ，不同为 False
+		if  'eq' == _arg and bool(value1 == value2)  ==  bool('eq' == _arg) \
+			or 'lt' == _arg and bool(value1 == value2)  ==  bool('lt' == _arg) \
+			or 'le' == _arg and bool(value1 == value2)  ==  bool('le' == _arg):
+			# 如果为真，则跳转
+			# 用于构建一个16位有符号的分支偏移量，此偏移量为code[]的下标
+			result = (branchbyte1 << 8)|branchbyte2
+		# 如果比较结果为假，那程序将继续执行if_acmp<cond>指令后面的其他直接码指令
+		return result
+
+	# reference数据的条件分支判断
+	def if_acmpeq(self,branchbyte1,branchbyte2):
+		self.if_xcmpy(branchbyte1,branchbyte2,'eq',OBJECTREF)
+
+	def if_acmpne(self,branchbyte1,branchbyte2):
+		self.if_xcmpy(branchbyte1,branchbyte2,'ne',OBJECTREF)
+
+	# int 数值的条件分支判断
+	def if_icmpeq(self,branchbyte1,branchbyte2):
+		self.if_xcmpy(branchbyte1,branchbyte2,'eq',INT)
+
+	def if_icmpne(self,branchbyte1,branchbyte2):
+		self.if_xcmpy(branchbyte1,branchbyte2,'ne',INT)
+
+	def if_icmplt(self,branchbyte1,branchbyte2):
+		self.if_xcmpy(branchbyte1,branchbyte2,'lt',INT)
+
+	def if_icmpgt(self,branchbyte1,branchbyte2):
+		self.if_xcmpy(branchbyte1,branchbyte2,'gt',INT)
+
+	def if_icmple(self,branchbyte1,branchbyte2):
+		self.if_xcmpy(branchbyte1,branchbyte2,'le',INT)
+
+	def if_icmpge(self,branchbyte1,branchbyte2):
+		self.if_xcmpy(branchbyte1,branchbyte2,'ge',INT)
+
+	
+
+	# 从局部变量表加载一个 float 类型值到操作数栈中
+	def fload(self,index):
+		# „ →
+		# „,value
+		self.xload(index,INT)
+
+	def fload_0(self):
+		self.fload(0)
+
+	def fload_1(self):
+		self.fload(1)
+
+	def fload_2(self):
+		self.fload(2)
+
+	def fload_3(self):
+		self.fload(3)
+
+	# float 类型数据乘法
+	def fmul(self):
+		# „,value1,value2 →
+		# „,result
+		self.xmul(INT)
+
+	# float 类型数据取负运算
+	def fneg(self):
+		# „,value →
+		# „,result
+		self.xneg(FLOAT)
+
+	# float 类型数据求余
+	def frem(self):
+		# „,value1,value2 →
+		# „,result
+		self.xrem(INT)
+
+	# 结束方法,并返回一个 float 类型数据
+	def freturn(self):
+		# „,value →
+		# [empty]
+		return xreturn(INT)
+
+	# 将一个 float 类型数据保存到局部变量表中
+	def fstore(self,index):
+		# „,value →
+		# „
+		self.xstore(index,INT)
+
+	def fstore_0(self):
+		self.fstore(0)
+
+	def fstore_1(self):
+		self.fstore(1)
+
+	def fstore_2(self):
+		self.fstore(2)
+
+	def fstore_3(self):
+		self.fstore(3)
+
+	# float 类型数据相减
+	def fsub(self):
+		# „,value1,value2 →
+		# „,result
+		self.xsub(INT)
 
 if __name__ == '__main__':
 	q = Stack(3)

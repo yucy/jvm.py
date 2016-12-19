@@ -13,6 +13,8 @@ class Stack(object):
 		if maxsize > 65535:
 			self.throw('StackOverflowError')
 		self.queue = LifoQueue(maxsize)
+
+	# 栈顶元素出栈，并将其返回
 	def pop(self):
 		isEmpty = self.queue.empty()
 		if isEmpty:
@@ -20,6 +22,7 @@ class Stack(object):
 		else:
 			return self.queue.get()
 
+	# 推送一个元素至栈顶
 	def push(self,value):
 		isFull = self.queue.full()
 		if isFull:
@@ -30,9 +33,11 @@ class Stack(object):
 	def throw(self,msg):
 		raise BaseException(msg)
 
+	# 获取queue的队列内容
 	def list(self):
 		return self.queue.queue
 
+	# 清空队列
 	def clear(self):
 		isEmpty = self.queue.empty()
 		if not isEmpty:
@@ -44,12 +49,12 @@ class Stack(object):
 # 'mutex', 'not_empty', 'not_full', 'put', 'put_nowait', 'qsize', 'queue', 
 # 'task_done', 'unfinished_tasks']
 
-
+# 类似于java里面的数组，限定元素类型和长度
 class Array(object):
 	def __init__(self, _size,_type=object):
 		self.size = _size
 		# if size <0, throw exception
-		self.__size()
+		self.__verify_size()
 		self.type = _type
 		self._element = [None]*_size
 
@@ -57,25 +62,28 @@ class Array(object):
 		return self.size
 
 	def __getitem__(self,index):
-		self.__index(index)
+		self.__verify_index(index)
 		return self._element[index]
 
 	def __setitem__(self,index,value):
-		self.__index(index)
-		self.__value(value)
+		self.__verify_index(index)
+		self.__verify_value(value)
 		self._element[index] = value
 
-	def __size(self):
+	# 验证size，前面两个下划线说明是private方法
+	def __verify_size(self):
 		if self.size < 0:
 			raise NegativeArraySizeException(self.size)
 
-	def __index(self,index):
+	# 验证index是否有效
+	def __verify_index(self,index):
 		if index is None:
 			raise NullPointException()
 		if index >= len(self) or index < 0:
 			raise ArrayIndexOutOfBoundsException(index)
 
-	def __value(self,value):
+	# 验证value是否有效
+	def __verify_value(self,value):
 		# TODO 后续还需要判断接口实现和类继承的判断
 		if value is not None and not isinstance(value,self.type):
 			raise ArrayStoreException(value)

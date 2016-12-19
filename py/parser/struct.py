@@ -6,7 +6,7 @@ import accessFlags
 from common.content import cmd
 from common.utils import getDecimal
 
-
+# class 构造
 class CClassFile(object):
 	"""docstring for ClassName"""
 	def __init__(self, arg):
@@ -27,8 +27,21 @@ class CClassFile(object):
 		self.attributes_count = arg.get('attributes_count',0)# u2 
 		self.attribute_info = arg.get('attribute_info',[])
 	
+	# 从常量池中获取值
+	def getConstant(self,num):
+		try:
+			source = self.cp_info[num]
+			if source.__contains__('#'):
+				temp = source.replace('#','')
+				pointers = temp.split(',')
+				target = [self.cp_info[int(i)] for i in pointers]
+				return target
+			return source
+		except Exception, e:
+			print '==========================',num,len(self.cp_info)
 
 # =================================================================
+# FieldInfo 构造
 class FieldInfo(object):
 	"""docstring for FieldInfo"""
 	def __init__(self, arg):
@@ -39,6 +52,7 @@ class FieldInfo(object):
 		self.attributes = arg.get('attributes',[])
 
 # =================================================================
+# MethodInfo 构造
 class MethodInfo(object):
 	"""docstring for MethodInfo"""
 	def __init__(self, arg):
@@ -57,6 +71,7 @@ class MethodInfo(object):
 		
 
 # =================================================================
+# AttributeInfo 构造
 class AttributeInfo(object):
 	"""docstring for AttributeInfo"""
 	def __init__(self, arg,pool=[]):

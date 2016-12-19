@@ -45,13 +45,21 @@ class IllegalMonitorStateException(Exception):
 	def __str__(self):
 		return repr(self.arg)
 		
-# checkcast
+# 转化类型异常
 class ClassCastException(Exception):
 	def __init__(self, source,target):
 		self.source = source
 		self.target = target
 	def __str__(self):
 		return '%s can not case to %s' % (self.source,self.target)
+
+# getstatic时，如果已解析的字段是一个非静态（not static）字段，getstatic指令将会抛出一个IncompatibleClassChangeError异常
+class IncompatibleClassChangeError(Exception):
+	def __init__(self, arg):
+		self.arg = arg
+	def __str__(self):
+		return repr(self.arg)
+		
 
 if __name__ == '__main__':
 	print '-------------'
