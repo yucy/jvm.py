@@ -11,7 +11,8 @@ dup_type1 = (boolean,byte,char,short,int,float,reference,returnAddress)
 dup_type2 = (long,double)
 
 # 数据类型定义常量
-[FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF] = ['float','double','byte','char','short','int','long','objectref']
+# [FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF] = ['float','double','byte','char','short','int','long','objectref']
+[FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF] = [float,float,int,str,int,int,long,object]
 
 # sys.getrefcount(obj) # 引用计数
 
@@ -28,6 +29,10 @@ class Opcode(object):
 
 	def __push(self,value):
 		self.stack.push(value)
+
+	def __type_check(self,value,_type):
+		if value is not None and not isinstance(value,_type):
+			raise ClassCastException(type(value),_type)
 
 	def isNull(self,obj,msg='Null'):
 		if obj is None:
@@ -73,6 +78,8 @@ class Opcode(object):
 		# ... →
 		# ...,value #说明: value 是x 类型
 		value = self.local[index]
+		# value 是x 类型
+		self.__type_check(value,_type)
 		self.__push(value)
 
 	# 将一个 x 类型数据保存到局部变量表中。
@@ -80,6 +87,8 @@ class Opcode(object):
 		# ...,value → #说明: value 是x 类型
 		# ...
 		value = self.__pop()
+		# value 是x 类型
+		self.__type_check(value,_type)
 		self.local[index] = value
 
 	# 数值计算---------------------------
@@ -90,6 +99,9 @@ class Opcode(object):
 		# ...,result
 		value2 = self.__pop()
 		value1 = self.__pop()
+		# value1,value2 是x 类型
+		self.__type_check(value2,_type)
+		self.__type_check(value1,_type)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -105,6 +117,9 @@ class Opcode(object):
 		# ...,result
 		value2 = self.__pop()
 		value1 = self.__pop()
+		# value1,value2 是x 类型
+		self.__type_check(value2,_type)
+		self.__type_check(value1,_type)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -120,6 +135,9 @@ class Opcode(object):
 		# ...,result
 		value2 = self.__pop()
 		value1 = self.__pop()
+		# value1,value2 是x 类型
+		self.__type_check(value2,_type)
+		self.__type_check(value1,_type)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -135,6 +153,9 @@ class Opcode(object):
 		# ...,result
 		value2 = self.__pop()
 		value1 = self.__pop()
+		# value1,value2 是x 类型
+		self.__type_check(value2,_type)
+		self.__type_check(value1,_type)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -149,6 +170,8 @@ class Opcode(object):
 		# ...,value →
 		# ...,result
 		value = self.__pop()
+		# value 是x 类型
+		self.__type_check(value,_type)
 		if math.isnan(value):
 			result = float(nan)
 		else:
@@ -161,6 +184,9 @@ class Opcode(object):
 		# ...,result
 		value2 = self.__pop()
 		value1 = self.__pop()
+		# value1,value2 是x 类型
+		self.__type_check(value2,_type)
+		self.__type_check(value1,_type)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -174,13 +200,16 @@ class Opcode(object):
 		self.__push(result)
 	# -----------------------------------------
 
-	# 'dcmpl',#比较栈顶两double型数值大小，并将结果（1，0，-1）压入栈顶；当其中一个数值为“NaN”时，将-1压入栈顶。
-	# 'dcmpg',#比较栈顶两double型数值大小，并将结果（1，0，-1）压入栈顶；当其中一个数值为“NaN”时，将1压入栈顶。
+	# 'dcmpl',#比较栈顶两 x 型数值大小，并将结果（1，0，-1）压入栈顶；当其中一个数值为“NaN”时，将-1压入栈顶。
+	# 'dcmpg',#比较栈顶两 x 型数值大小，并将结果（1，0，-1）压入栈顶；当其中一个数值为“NaN”时，将1压入栈顶。
 	def xcmp(self,_type,_arg):
 		# ...,value1,value2 →
 		# ...,result
 		value2 = self.__pop()
 		value1 = self.__pop()
+		# value1,value2 是x 类型
+		self.__type_check(value2,_type)
+		self.__type_check(value1,_type)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -935,12 +964,18 @@ class Opcode(object):
 		value2 = self.__pop()
 		value1 = self.__pop()
 		result = -1
+		# 下面三组的后半部分为异异或，相同为 True ，不同为 False
+		# lt 当且仅当 value1<value2 比较的结果为真。
+		# gt 当且仅当 value1>value2 比较的结果为真。
+		lt_flag = _arg in ['lt','gt'] and bool(value1 <  value2)  ==  bool('lt' == _arg)
+		# le 当且仅当 value1≤value2 比较的结果为真。
+		# ge 当且仅当 value1≥value2 比较的结果为真。
+		le_flag = _arg in ['le','ge'] and bool(value1 <= value2)  ==  bool('le' == _arg)
 		# eq 当且仅当value1=value2比较的结果为真。
 		# ne 当且仅当value1≠value2比较的结果为真。
-		# 异异或，相同为 True ，不同为 False
-		if  'eq' == _arg and bool(value1 == value2)  ==  bool('eq' == _arg) \
-			or 'lt' == _arg and bool(value1 == value2)  ==  bool('lt' == _arg) \
-			or 'le' == _arg and bool(value1 == value2)  ==  bool('le' == _arg):
+		eq_flag = _arg in ['eq','ne'] and bool(value1 == value2)  ==  bool('eq' == _arg)
+		
+		if lt_flag or le_flag or eq_flag:
 			# 如果为真，则跳转
 			# 用于构建一个16位有符号的分支偏移量，此偏移量为code[]的下标
 			result = (branchbyte1 << 8)|branchbyte2
@@ -973,70 +1008,174 @@ class Opcode(object):
 	def if_icmpge(self,branchbyte1,branchbyte2):
 		self.if_xcmpy(branchbyte1,branchbyte2,'ge',INT)
 
-	
+	# int 整数与零比较的条件分支判断,【x】:ne,eq,lt,gt,le,ge
+	def ifx(self,branchbyte1,branchbyte2,_arg):
+		# „，value →
+		# „
+		value = self.__pop()
+		result = -1
+		# 下面三组的后半部分为异异或，相同为 True ，不同为 False
+		# lt 当且仅当 value1<0 比较的结果为真。
+		# gt 当且仅当 value1>0 比较的结果为真。
+		lt_flag = _arg in ['lt','gt'] and bool(value1 <  0)  ==  bool('lt' == _arg)
+		# le 当且仅当 value1≤0 比较的结果为真。
+		# ge 当且仅当 value1≥0 比较的结果为真。
+		le_flag = _arg in ['le','ge'] and bool(value1 <= 0)  ==  bool('le' == _arg)
+		# eq 当且仅当value1=0比较的结果为真。
+		# ne 当且仅当value1≠0比较的结果为真。
+		eq_flag = _arg in ['eq','ne'] and bool(value1 == 0)  ==  bool('eq' == _arg)
+		
+		if lt_flag or le_flag or eq_flag:
+			# 如果为真，则跳转
+			# 用于构建一个16位有符号的分支偏移量，此偏移量为code[]的下标
+			result = (branchbyte1 << 8)|branchbyte2
+		# 如果比较结果为假，那程序将继续执行if_acmp<cond>指令后面的其他直接码指令
+		return result
 
-	# 从局部变量表加载一个 float 类型值到操作数栈中
-	def fload(self,index):
+	def ifne(self,branchbyte1,branchbyte2):
+		self.ifx(branchbyte1,branchbyte2,'ne')
+
+	def ifeq(self,branchbyte1,branchbyte2):
+		self.ifx(branchbyte1,branchbyte2,'eq')
+
+	def ifle(self,branchbyte1,branchbyte2):
+		self.ifx(branchbyte1,branchbyte2,'le')
+
+	def ifge(self,branchbyte1,branchbyte2):
+		self.ifx(branchbyte1,branchbyte2,'ge')
+
+	def iflt(self,branchbyte1,branchbyte2):
+		self.ifx(branchbyte1,branchbyte2,'lt')
+
+	def ifgt(self,branchbyte1,branchbyte2):
+		self.ifx(branchbyte1,branchbyte2,'gt')
+
+	# 引用不为空的条件分支判断
+	def ifnonnull(self,branchbyte1,branchbyte2):
+		# „，value →
+		# „
+		# value 必须为 reference 类型数据
+		value = self.__pop()
+		result = -1
+		if value is not None:
+			# 如果为真，则跳转
+			# 用于构建一个16位有符号的分支偏移量，此偏移量为code[]的下标
+			result = (branchbyte1 << 8)|branchbyte2
+		# 如果比较结果为假，那程序将继续执行if_acmp<cond>指令后面的其他直接码指令
+		return result
+
+	# 引用为空的条件分支判断
+	def ifnonnull(self,branchbyte1,branchbyte2):
+		# „，value →
+		# „
+		# value 必须为 reference 类型数据
+		value = self.__pop()
+		result = -1
+		if value is None:
+			# 如果为真，则跳转
+			# 用于构建一个16位有符号的分支偏移量，此偏移量为code[]的下标
+			result = (branchbyte1 << 8)|branchbyte2
+		# 如果比较结果为假，那程序将继续执行if_acmp<cond>指令后面的其他直接码指令
+		return result
+
+	# 局部变量自增
+	def iinc(self,index,const):
+		# 操作数栈 无改变
+		current_value = self.local[index]
+		# 由 index 定位到的局部变量必须是 int 类型
+		self.__type_check(current_value,INT)
+		# const 首先带符号扩展成一个 int 类型数值,然后加到由 index 定位到的局部变量中
+		value = current_value+int(const)
+		self.local[index] = value
+
+	# 从局部变量表加载一个 int 类型值到操作数栈中
+	def iload(self,index):
 		# „ →
 		# „,value
 		self.xload(index,INT)
 
-	def fload_0(self):
-		self.fload(0)
+	def iload_0(self):
+		self.iload(0)
 
-	def fload_1(self):
-		self.fload(1)
+	def iload_1(self):
+		self.iload(1)
 
-	def fload_2(self):
-		self.fload(2)
+	def iload_2(self):
+		self.iload(2)
 
-	def fload_3(self):
-		self.fload(3)
+	def iload_3(self):
+		self.iload(3)
 
-	# float 类型数据乘法
-	def fmul(self):
+	# iloat 类型数据乘法
+	def imul(self):
 		# „,value1,value2 →
 		# „,result
 		self.xmul(INT)
 
-	# float 类型数据取负运算
-	def fneg(self):
+	# int 类型数据取负运算
+	def ineg(self):
 		# „,value →
 		# „,result
-		self.xneg(FLOAT)
+		self.xneg(INT)
 
-	# float 类型数据求余
-	def frem(self):
+	# 判断对象是否指定的类型
+	def instanceof(self,indexbyte1,indexbyte2):
+		# „,value →
+		# „,result
+		# objectref 必须是一个 reference 类型的数据
+		value = self.__pop()
+		# 如果 objectref 为 null 的话,那 instanceof 指令将会把 int 值 0 推入到操作数栈栈顶
+		if value is None:
+			self.__push(0)
+		else:
+			self.__type_check(value,OBJECTREF)
+			# 下面的位移和按位或操作，是为了组合出一个双字节数字，参考class文件定义中的【xxx_index】
+			# 该索引所指向的运行时常量池项应当是一个类、接口或者数组类型的符号引用
+			cpinfo_index = (indexbyte1 << 8)|indexbyte2
+			# TODO _type 转换为可用类型，从常量表取出来的可能是一个类型描述符
+			_type = self.cpinfo[cpinfo_index]
+			result = 0
+			if isinstance(value,_type):
+				result = 1
+			self.__push(result)
+	# 调用动态方法
+	def inovkedynamic(self,indexbyte1,indexbyte2,0,0):
+		# „,[arg1, [arg2 ...]]→
+		# „
+		# continue
+
+	# int 类型数据求余
+	def irem(self):
 		# „,value1,value2 →
 		# „,result
 		self.xrem(INT)
 
-	# 结束方法,并返回一个 float 类型数据
-	def freturn(self):
+	# 结束方法,并返回一个 int 类型数据
+	def ireturn(self):
 		# „,value →
 		# [empty]
 		return xreturn(INT)
 
-	# 将一个 float 类型数据保存到局部变量表中
-	def fstore(self,index):
+	# 将一个 int 类型数据保存到局部变量表中
+	def istore(self,index):
 		# „,value →
 		# „
 		self.xstore(index,INT)
 
-	def fstore_0(self):
+	def istore_0(self):
 		self.fstore(0)
 
-	def fstore_1(self):
+	def istore_1(self):
 		self.fstore(1)
 
-	def fstore_2(self):
+	def istore_2(self):
 		self.fstore(2)
 
-	def fstore_3(self):
+	def istore_3(self):
 		self.fstore(3)
 
-	# float 类型数据相减
-	def fsub(self):
+	# int 类型数据相减
+	def isub(self):
 		# „,value1,value2 →
 		# „,result
 		self.xsub(INT)

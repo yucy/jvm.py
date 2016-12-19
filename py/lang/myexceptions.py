@@ -61,9 +61,14 @@ class IncompatibleClassChangeError(Exception):
 		return repr(self.arg)
 		
 
+def __type_check(value,_type):
+	if value is not None and not isinstance(value,_type):
+		raise ClassCastException(type(value),_type)
+
 if __name__ == '__main__':
 	print '-------------'
 	e = NullPointException()
 	print dir(e)
-	raise NegativeArraySizeException(-2)
+	# raise NegativeArraySizeException(-2)
+	__type_check('a',object)
 
