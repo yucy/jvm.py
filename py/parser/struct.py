@@ -1,17 +1,21 @@
 # -*- coding:utf-8 -*-
 
-import sys
+import sys,threading
 sys.path.append('..')
 import accessFlags
 from common.content import cmd
 from common.utils import getDecimal
 from lang.myexceptions import *
+from Queue import Queue
+
 
 # 配合实现monitorenter指令
 class Monitor(object):
-	def __init__(self, count,owner):
+	def __init__(self, count=0,owner=None):
 		self.count = 0 if count else count
 		self.owner = owner
+		self.queue = Queue()
+		self.flag = True
 
 	def reduce(self,_owner):
 		if self.count == 0:
@@ -28,19 +32,51 @@ class Monitor(object):
 	def isOwner(self,_owner):
 		return self.owner is _owner
 
-	def isLock():
-		return self.count > 0
+	def isLock(self):
+		return self.count > 0 or self.owner is not None
 
 	def unLock(self,_owner):
 		if self.owner is not _owner:
 			raise IllegalMonitorStateException(_owner)
 		self.owner=None
 		self.count =0
+		if not self.queue.empty():
+			self.__lock()
 
 	def lock(self,_owner):
-		# TODO 用队列来实现wait
-		self.owner=_owner
-		self.incr()
+		# 用队列来实现wait
+		self.queue.put(_owner)
+		self.__lock()
+
+	def __lock(self):
+		# with语句会在进入语句块之前自动的获取到该锁对象，然后在语句块执行完成后自动释放掉锁
+		with threading.Lock() :
+			print 'Lock:', self.isLock()
+			if not self.isLock():
+				_owner = self.queue.get()
+				print _owner
+				self.owner=_owner
+				self.incr()
+
+	# __enter__和__exit__配合起来用于实现with,类似java中的AOP
+	# 这样的过程其实等价于：
+	# try:
+	# 执行 __enter__的内容
+	# 执行 with_block.
+	# finally:
+	# 执行 __exit__内容
+
+	# 这个方法的返回值将被赋值给as后面的变量,example:with open("/tmp /foo.txt") as file
+	def __enter__(self):
+		print '__enter__'
+		cannotLock = self.isLock()
+		print 'cannotLock',cannotLock
+
+	def __exit__(self,_type,value,traceback):
+		print '__exit__'
+		print "type:", _type
+        # print "value:", value
+        # print "trace:", traceback
 		
 # class 构造
 class CClassFile(object):
@@ -672,7 +708,9 @@ class AttributeInfo(object):
 # =================================================================
 
 if __name__ == '__main__':
-	pass
+	mo = Monitor()
+	mo.lock('a')
+	mo.lock('b')
 
 
 

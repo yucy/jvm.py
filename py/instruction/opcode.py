@@ -1701,7 +1701,7 @@ class Opcode(object):
 		monitor = objectref.monitor
 		# monitor计数器等于零或在拥有者为当前线程 TODO->当前线程
 		if not monitor.isLock() : 
-			# TODO 在 monitor 里用队列来实现wait
+			# 在 monitor 里用队列来实现wait
 			monitor.lock(self)
 		elif monitor.isLock() and monitor.isOwner(self):
 			monitor.incr()

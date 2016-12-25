@@ -1,4 +1,8 @@
 # -*- coding:utf-8 -*-
+import sys,threading,time
+sys.path.append('..')
+from Queue import Queue
+from parser.struct import *
 
 def test_dict():
 	attr = {'test':2}
@@ -81,6 +85,18 @@ class test_invoke(object):
 	def m2(self,_arg):
 		print _arg
 		
+def test_queue():
+	q = Queue()
+	print dir(q)
+	q.put('a')
+	q.put('b')
+	print q.queue
+	print q.get()
+	print q.queue
+	print q.empty()
+	print q.full()
+	lock = threading.Lock()
+
 
 
 if __name__ == '__main__':
@@ -94,6 +110,10 @@ if __name__ == '__main__':
 	# test_kwargs(2,a=1,b=2)
 	# test_each4()
 	# test_range()
-	t = test_invoke()
-	t.m1()
-	
+	# t = test_invoke()
+	# t.m1()
+	# test_queue()
+	mo = Monitor(2,'a')
+	time.sleep(5)
+	mo.lock('aa')
+	mo.lock('ba')
