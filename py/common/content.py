@@ -18,7 +18,6 @@ constant_type={
 	18:'CONSTANT_InvokeDynamic_info',
 }
 
-
 # JVM指令集和
 cmd = {
 	0x00:'nop',#什么都不做。
@@ -228,3 +227,8 @@ cmd = {
 	0xff:'impdep1',#用于在特定硬件中使用的语言后门。
 }
 
+if __name__ == '__main__':
+	print [cmd.get(i) for i in [16, 10, 60, 177]]
+	i = 1
+	i += 1
+	print i

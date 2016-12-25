@@ -5,7 +5,43 @@ sys.path.append('..')
 import accessFlags
 from common.content import cmd
 from common.utils import getDecimal
+from lang.myexceptions import *
 
+# 配合实现monitorenter指令
+class Monitor(object):
+	def __init__(self, count,owner):
+		self.count = 0 if count else count
+		self.owner = owner
+
+	def reduce(self,_owner):
+		if self.count == 0:
+			raise IllegalMonitorStateException(-1)
+		self.count -= 1
+		# 如果减 1 后计数器值为 0,那线程退出 monitor,不再是这个 monitor 的拥有者
+		if self.count == 0:
+				self.unlock(_owner)
+
+	def incr(self):
+		self.count += 1
+
+	# owner是线程
+	def isOwner(self,_owner):
+		return self.owner is _owner
+
+	def isLock():
+		return self.count > 0
+
+	def unLock(self,_owner):
+		if self.owner is not _owner:
+			raise IllegalMonitorStateException(_owner)
+		self.owner=None
+		self.count =0
+
+	def lock(self,_owner):
+		# TODO 用队列来实现wait
+		self.owner=_owner
+		self.incr()
+		
 # class 构造
 class CClassFile(object):
 	"""docstring for ClassName"""
@@ -137,7 +173,7 @@ class AttributeInfo(object):
 			attr['max_locals']= getDecimal(self.__cursor(2))
 			code_length = getDecimal(self.__cursor(4))
 			attr['code_length']= code_length
-			attr['codes']= [cmd.get(self.__toInt(self.__cursor(1))) for x in xrange(code_length)]
+			attr['codes']= [self.__toInt(self.__cursor(1)) for x in xrange(code_length)]
 			exception_table_length = getDecimal(self.__cursor(2))
 			attr['exception_table_length']= exception_table_length
 			if exception_table_length > 0:

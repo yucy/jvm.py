@@ -12,8 +12,33 @@ dup_type2 = (long,double)
 
 # 数据类型定义常量
 # [FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF] = ['float','double','byte','char','short','int','long','objectref']
-[FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF] = [float,float,int,str,int,int,long,object]
+[FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF] = [float,float,int,chr,int,int,long,object]
 
+# atype 为要创建数组的元素类型,它将为以下值之一
+atypes = {
+	4:BOOLEAN,
+	5:CHAR,
+	6:FLOAT,
+	7:DOUBLE,
+	8:BYTE,
+	9:SHORT,
+	10:INT,
+	11:LONG,
+}
+
+# 方法调用
+def execMethod(codes,_locals,_cpinfo):
+	# TODO 方法调用的时候,一个新的栈帧将在 Java 虚拟机栈中被创建出来
+	# 是否有返回值
+	has_return = False
+	# 返回值
+	return_value = None
+	o = Opcode([],locals,cpinfo)
+	# TODO 解析并分割code里方法指令集
+	
+	# 
+	return has_return,return_value
+		
 # sys.getrefcount(obj) # 引用计数
 
 class Opcode(object):
@@ -30,9 +55,14 @@ class Opcode(object):
 	def __push(self,value):
 		self.stack.push(value)
 
-	def __type_check(self,value,_type):
-		if value is not None and not isinstance(value,_type):
-			raise ClassCastException(type(value),_type)
+	def __type_check(self,_type,*values):
+		for value in values:
+			if isinstance(value,list):
+				for temp in value:
+					self.__type_check(_type,temp)
+			else:
+				if value is not None and not isinstance(value,_type):
+					raise ClassCastException(type(value),_type)
 
 	def isNull(self,obj,msg='Null'):
 		if obj is None:
@@ -49,6 +79,8 @@ class Opcode(object):
 		# ...,value →
 		# [empty] # 个人理解：方法操作结束的时候，操作数栈里最后一个元素就是objectref，它出栈以后，stack就empty了。
 		value = self.__pop()
+		# value 必须为 _type 类型
+		self.__type_check(_type,value)
 		return value
 
 	# 从数组中加载一个 x 类型数据到操作数栈
@@ -56,10 +88,14 @@ class Opcode(object):
 		# ...,arrayref,index →
 		# ...,value
 		index = self.__pop()
+		# index 必须为 int 类型
+		self.__type_check(INT,index)
 		arrayref = self.__pop()
 		# judge this obj is null
 		self.isNull(arrayref)
 		value = arrayref[index]
+		# value 必须为 _type 类型
+		self.__type_check(_type,value)
 		self.__push(value)
 
 	# 从操作数栈读取一个 x 类型数据存入到数组中
@@ -67,7 +103,11 @@ class Opcode(object):
 		# ...,arrayref,index,value →
 		# ...,
 		value = self.__pop()
+		# value 必须为 _type 类型
+		self.__type_check(_type,value)
+		# index 必须为 int 类型
 		index = self.__pop()
+		self.__type_check(INT,index)
 		arrayref = self.__pop()
 		# judge this obj is null
 		self.isNull(arrayref)
@@ -79,7 +119,7 @@ class Opcode(object):
 		# ...,value #说明: value 是x 类型
 		value = self.local[index]
 		# value 是x 类型
-		self.__type_check(value,_type)
+		self.__type_check(_type,value)
 		self.__push(value)
 
 	# 将一个 x 类型数据保存到局部变量表中。
@@ -88,7 +128,7 @@ class Opcode(object):
 		# ...
 		value = self.__pop()
 		# value 是x 类型
-		self.__type_check(value,_type)
+		self.__type_check(_type,value)
 		self.local[index] = value
 
 	# 数值计算---------------------------
@@ -100,8 +140,7 @@ class Opcode(object):
 		value2 = self.__pop()
 		value1 = self.__pop()
 		# value1,value2 是x 类型
-		self.__type_check(value2,_type)
-		self.__type_check(value1,_type)
+		self.__type_check(_type,value2,value1)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -118,8 +157,7 @@ class Opcode(object):
 		value2 = self.__pop()
 		value1 = self.__pop()
 		# value1,value2 是x 类型
-		self.__type_check(value2,_type)
-		self.__type_check(value1,_type)
+		self.__type_check(_type,value2,value1)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -136,8 +174,7 @@ class Opcode(object):
 		value2 = self.__pop()
 		value1 = self.__pop()
 		# value1,value2 是x 类型
-		self.__type_check(value2,_type)
-		self.__type_check(value1,_type)
+		self.__type_check(_type,value2,value1)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -154,8 +191,7 @@ class Opcode(object):
 		value2 = self.__pop()
 		value1 = self.__pop()
 		# value1,value2 是x 类型
-		self.__type_check(value2,_type)
-		self.__type_check(value1,_type)
+		self.__type_check(_type,value2,value1)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -171,11 +207,11 @@ class Opcode(object):
 		# ...,result
 		value = self.__pop()
 		# value 是x 类型
-		self.__type_check(value,_type)
+		self.__type_check(_type,value)
 		if math.isnan(value):
 			result = float(nan)
 		else:
-			result = value*-1
+			result = 0-value
 		self.__push(result)
 
 	# x 类型数据求余
@@ -185,8 +221,7 @@ class Opcode(object):
 		value2 = self.__pop()
 		value1 = self.__pop()
 		# value1,value2 是x 类型
-		self.__type_check(value2,_type)
-		self.__type_check(value1,_type)
+		self.__type_check(_type,value2,value1)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -208,8 +243,7 @@ class Opcode(object):
 		value2 = self.__pop()
 		value1 = self.__pop()
 		# value1,value2 是x 类型
-		self.__type_check(value2,_type)
-		self.__type_check(value1,_type)
+		self.__type_check(_type,value2,value1)
 		result = 0
 		# value1 = value1 if value1 is not None else 0
 		# value2 = value2 if value2 is not None else 0
@@ -219,6 +253,95 @@ class Opcode(object):
 			result = 0
 		else:
 			result = 1 if value1>value2 else -1
+		self.__push(result)
+
+	# -----------------------------------------
+	# 类型转换
+	# 将类型为x的数值转化成类型为y的数值
+	def x2y(self,_x_type,_y_type):
+		# ...,value →
+		# ...,result
+		value = self.__pop()
+		self.__type_check(_x_type,value)
+		self.__push(_y_type(value))
+
+	# -----------------------------------------
+	# 位运算
+	# int 或者 long 类型数据进行按位与运算
+	def xand(self,_type):
+		# „,value1,value2 →
+		# „,result
+		value2 = self.__pop()
+		value1 = self.__pop()
+		# value1、value2 必须为 x 类型数据
+		self.__type_check(_type,value1,value2)
+		result = value1 & value2
+		self.__push(result)
+
+	# int 或者 long 类型数值的布尔或运算
+	def xor(self,_type):
+		# „,value1,value2 →
+		# „,result
+		# 指令执行时,它们从操作数栈中出栈
+		value2 = self.__pop()
+		value1 = self.__pop()
+		# value1、value2 必须为 x 类型数据
+		self.__type_check(_type,value1,value2)
+		# 对这 2 个数进行按位或(Bitwise Inclusive OR)运算
+		result = value2 | value1
+		self.__push(result)
+
+	# int 或者 long 数值左移运算
+	def xshl(self,_type):
+		# „,value1,value2 →
+		# „,result
+		# 指令执行时,它们从操作数栈中出栈
+		value2 = self.__pop()
+		value1 = self.__pop()
+		# value1、value2 必须为 x 类型数据
+		self.__type_check(_type,value1,value2)
+		# 将 value1 左移 s 位,result = value1*2^s
+		temp_bit = '11111' # int 类型数据,s 是 value2 低 5 位所表示的值
+		if _type is LONG:
+			# long 类型数据,s 是 value2 低 6 位所表示的值
+			temp_bit = '111111'
+		result = value1 << (value2 & int(temp_bit,2))
+		self.__push(result)
+
+	# int 或者 long 数值右移运算
+	def xshr(self,_type):
+		# „,value1,value2 →
+		# „,result
+		# 指令执行时,它们从操作数栈中出栈
+		value2 = self.__pop()
+		value1 = self.__pop()
+		# value1、value2 必须为 x 类型数据
+		self.__type_check(_type,value1,value2)
+		# 将 value1 左移 s 位,result = value1÷2^s
+		temp_bit = '11111' # int 类型数据,s 是 value2 低 5 位所表示的值
+		if _type is LONG:
+			# long 类型数据,s 是 value2 低 6 位所表示的值
+			temp_bit = '111111'
+		result = value1 >> (value2 & int(temp_bit,2))
+		self.__push(result)
+
+	# int 或者 long 数值逻辑右移运算
+	def xushr(self,_type):
+		# „,value1,value2 →
+		# „,result
+		# 指令执行时,它们从操作数栈中出栈
+		self.xshr(_type)
+
+	# int 或者 long 数值异或运算
+	def xxor(self,_type):
+		# „,value1,value2 →
+		# „,result
+		# 指令执行时,它们从操作数栈中出栈
+		value2 = self.__pop()
+		value1 = self.__pop()
+		# value1、value2 必须为 x 类型数据
+		self.__type_check(_type,value1,value2)
+		result = value1 ^ value2
 		self.__push(result)
 
 	# =============================================================
@@ -353,24 +476,21 @@ class Opcode(object):
 	def d2f(self):
 		# ...,value →
 		# ...,result
-		value = self.__pop()
 		# TODO python里没有单精度的概念，java里的float和double都对应python里的float
-		self.__push(float(value))
+		self.x2y(DOUBLE,FLOAT)
 
 	# 将 double 类型数据转换为 int 类型
 	def d2i(self):
 		# ...,value →
 		# ...,result
-		value = self.__pop()
 		# python里超过int范围的整数就自动当长整数(long)处理
-		self.__push(int(value))
+		self.x2y(DOUBLE,INT)
 
 	# 将 double 类型数据转换为 long 类型
 	def d2l(self):
 		# ...,value →
 		# ...,result
-		value = self.__pop()
-		self.__push(long(value))
+		self.x2y(DOUBLE,LONG)
 
 	# double 类型数据相加
 	def dadd(self):
@@ -392,23 +512,17 @@ class Opcode(object):
 	def dcmpg(self):
 		self.xcmp(DOUBLE,'g')
 
-	# 将 double 类型数据压入到操作数栈中
-	def dconst_x(self,value):
-		# ... →
-		# ...,<d>
-		self.__push(value)
-
 	# 将 double 类型数据 0 压入到操作数栈中
 	def dconst_0(self):
 		# ... →
 		# ...,<d>
-		self.dconst_x(float(0.0))
+		self.__push(DOUBLE(0.0))
 
 	# 将 double 类型数据 1 压入到操作数栈中
 	def dconst_1(self):
 		# ... →
 		# ...,<d>
-		self.dconst_x(float(1.0))
+		self.__push(DOUBLE(1.0))
 
 	# double 类型数据除法
 	def ddiv(self):
@@ -641,9 +755,8 @@ class Opcode(object):
 	def f2d(self):
 		# „,value →
 		# „,result
-		value = self.__pop()
 		# TODO T_T,python has no type [double].
-		self.__push(float(value))
+		self.x2y(FLOAT,DOUBLE)
 
 	# 将 float 类型数据转换为 int 类型
 	def f2i(self):
@@ -703,17 +816,17 @@ class Opcode(object):
 	def fconst_0(self):
 		# „ →
 		# „,<f>
-		self.__push(float(0))
+		self.__push(FLOAT(0))
 
 	def fconst_1(self):
 		# „ →
 		# „,<f>
-		self.__push(float(1))
+		self.__push(FLOAT(1))
 
 	def fconst_2(self):
 		# „ →
 		# „,<f>
-		self.__push(float(2))
+		self.__push(FLOAT(2))
 
 	# float 类型数据除法
 	def fdiv(self):
@@ -834,46 +947,40 @@ class Opcode(object):
 	def i2b(self):
 		# „，value →
 		# „，result
-		value = self.__pop()
 		# TODO 后续可能会自定义byte，short,char和double类型，来弥补python版jvm的缺憾
-		self.__push(int(value))
+		self.x2y(INT,BYTE)
 
 	# 将int类型数据转换为char类型
 	def i2c():
 		# „，value →
 		# „，result
-		value = self.__pop()
 		# 指令执行时，它将从操作数栈中出栈，转换成byte类型数据，然后零位扩展（Zero-Extended）回一个int的结果压入到操作数栈之中。
 		# TODO 这里其实是转成了string类型
-		self.__push(chr(value))
+		self.x2y(INT,CHAR)
 
 	# 将int类型数据转换为double类型
 	def i2d(self):
 		# „，value →
 		# „，result
-		value = self.__pop()
-		self.__push(float(value))
+		self.x2y(INT,DOUBLE)
 
 	# 将int类型数据转换为double类型
 	def i2f(self):
 		# „，value →
 		# „，result
-		value = self.__pop()
-		self.__push(float(value))
+		self.x2y(INT,FLOAT)
 	
 	# 将int类型数据转换为 long 类型
 	def i2l(self):
 		# „，value →
 		# „，result
-		value = self.__pop()
-		self.__push(long(value))
+		self.x2y(INT,LONG)
 
 	# 将int类型数据转换为short类型
 	def i2s(self):
 		# „，value →
 		# „，result
-		value = self.__pop()
-		self.__push(int(value))
+		self.x2y(INT,SHORT)
 
 	# int 类型数据相加
 	# 运算的结果使用低位在高地址（Low-Order Bites）的顺序、按照二进制补码形式存储在32位空间中
@@ -892,11 +999,7 @@ class Opcode(object):
 	def iand(self):
 		# „,value1,value2 →
 		# „,result
-		value2 = self.__pop()
-		value1 = self.__pop()
-		result = 0
-		result = value1&value2
-		self.__push(result)
+		self.xand(INT)
 
 	# 从操作数栈读取一个 int 类型数据存入到数组中
 	def iastore(self):
@@ -1083,7 +1186,7 @@ class Opcode(object):
 		# 操作数栈 无改变
 		current_value = self.local[index]
 		# 由 index 定位到的局部变量必须是 int 类型
-		self.__type_check(current_value,INT)
+		self.__type_check(INT,current_value)
 		# const 首先带符号扩展成一个 int 类型数值,然后加到由 index 定位到的局部变量中
 		value = current_value+int(const)
 		self.local[index] = value
@@ -1128,7 +1231,7 @@ class Opcode(object):
 		if value is None:
 			self.__push(0)
 		else:
-			self.__type_check(value,OBJECTREF)
+			self.__type_check(OBJECTREF,value)
 			# 下面的位移和按位或操作，是为了组合出一个双字节数字，参考class文件定义中的【xxx_index】
 			# 该索引所指向的运行时常量池项应当是一个类、接口或者数组类型的符号引用
 			cpinfo_index = (indexbyte1 << 8)|indexbyte2
@@ -1138,12 +1241,114 @@ class Opcode(object):
 			if isinstance(value,_type):
 				result = 1
 			self.__push(result)
+
 	# 调用动态方法
 	def inovkedynamic(self,indexbyte1,indexbyte2,0,0):
 		# „,[arg1, [arg2 ...]]→
 		# „
 		# continue
 
+	# 调用接口方法
+	def invokeinterface(self,indexbyte1,indexbyte2,0,0):
+		# „,objectref,[arg1,[arg2 ...]] →
+		# „
+		# continue
+
+	# 调用超类方法、私有方法和实例初始化方法
+	def invokespecial(self,indexbyte1,indexbyte2):
+		# „,objectref,[arg1,[arg2 ...]] →
+		# „
+		# 该索引所指向的运行时常量池项应当是一个方法(§5.1)的符号引用
+		cpinfo_index = (indexbyte1 << 8)|indexbyte2
+		# TODO _type 转换为可用类型，从常量表取出来的可能是一个类型描述符
+		_method = self.cpinfo[cpinfo_index]
+		args_count = _method.descriptor# TODO nedd to parse this
+		args = [self.__pop() for i in xrange(args_count)].reverse()
+		# objectref 所指向的对象的类型必须为当前类或者当前类的子类
+		objectref = self.__pop()
+		self.isNull(objectref)
+		# 只有在下面所有的条件都成立的前提下,才会进行调用方法的搜索:
+		# 1.当前类的 ACC_SUPER 标志为真(参见表 4-1,“类访问和属性修改”)。
+		# 2.调用方法所在的类是当前类的超类。 TODO
+		# 3.调用方法不是实例初始化方法(§2.9)。
+		current_class = objectref.classref# TODO
+		if 'ACC_STATIC' in _method.access_flags :
+			raise IncompatibleClassChangeError(_method)
+		elif 'ACC_SUPER' in current_class.accessFlag and _method.name != 'init':
+			final_class,_method = self.__findSuperMethod(current_class,_method)
+			# 方法调用的时候,一个新的栈帧将在 Java 虚拟机栈中被创建出来,
+			# objectref 和连续的 n 个参数将存放到新栈帧的局部变量表中, objectref存为局部变量 0
+			_local = [objectref].extend(args)
+			has_return,return_value = execMethod(_method.code,_local,self.cpinfo)
+			# 如果这个本地方法有返回值,那平台相关的代码返回的数据必须通过某种
+			# 实现相关的方式转换成本地方法所定义的 Java 类型,并压入到操作数栈中
+			if has_return:
+				self.__push(return_value)
+			
+	# 第归查找父类方法
+	def __findSuperMethod(self,current_class,_method):
+		# 也可以在常量池中找
+		if _method in current_class.method_info:
+			return current_class,_method
+		else:
+			super_class = current_class.super_class
+			self.__findSuperMethod(super_class,_method)
+
+	# 调用静态方法
+	def invokestatic(self,indexbyte1,indexbyte2):
+		# „,[arg1,[arg2 ...]] →
+		# „
+		# 该索引所指向的运行时常量池项应当是一个方法(§5.1)的符号引用
+		cpinfo_index = (indexbyte1 << 8)|indexbyte2
+		# TODO _type 转换为可用类型，从常量表取出来的可能是一个类型描述符
+		_method = self.cpinfo[cpinfo_index]
+		args_count = _method.descriptor# TODO nedd to parse this
+		args = [self.__pop() for i in xrange(args_count)].reverse()
+		if 'ACC_STATIC' in _method.access_flags:
+			has_return,return_value = execMethod(_method.code,_local,self.cpinfo)
+			# 如果这个本地方法有返回值,那平台相关的代码返回的数据必须通过某种
+			# 实现相关的方式转换成本地方法所定义的 Java 类型,并压入到操作数栈中
+			if has_return:
+				self.__push(return_value)
+
+	# 调用实例方法,依据实例的类型进行分派
+	def invokevirtual(self,indexbyte1,indexbyte2):
+		# „,objectref,[arg1,[arg2 ...]] →
+		# „
+		# 该索引所指向的运行时常量池项应当是一个方法(§5.1)的符号引用
+		cpinfo_index = (indexbyte1 << 8)|indexbyte2
+		# TODO _type 转换为可用类型，从常量表取出来的可能是一个类型描述符
+		_method = self.cpinfo[cpinfo_index]
+		args_count = _method.descriptor# TODO nedd to parse this
+		args = [self.__pop() for i in xrange(args_count)].reverse()
+		# objectref 所指向的对象的类型必须为当前类或者当前类的子类
+		objectref = self.__pop()
+		self.isNull(objectref)
+		# 只有在下面所有的条件都成立的前提下,才会进行调用方法的搜索:
+		# 1.当前类的 ACC_SUPER 标志为真(参见表 4-1,“类访问和属性修改”)。
+		# 2.调用方法所在的类是当前类的超类。 TODO
+		# 3.调用方法不是实例初始化方法(§2.9)。
+		current_class = objectref.classref# TODO
+		# 如果被调用的方法是一个 static 方法,那 invokevirtual 指令将会抛出一个 IncompatibleClassChangeError 异常
+		if 'ACC_STATIC' in _method.access_flags :
+			raise IncompatibleClassChangeError(_method)
+		elif 'ACC_SUPER' in current_class.accessFlag and _method.name != 'init':
+			final_class,_method = self.__findSuperMethod(current_class,_method)
+			# 方法调用的时候,一个新的栈帧将在 Java 虚拟机栈中被创建出来,
+			# objectref 和连续的 n 个参数将存放到新栈帧的局部变量表中, objectref存为局部变量 0
+			_local = [objectref].extend(args)
+			has_return,return_value = execMethod(_method.code,_local,self.cpinfo)
+			# 如果这个本地方法有返回值,那平台相关的代码返回的数据必须通过某种
+			# 实现相关的方式转换成本地方法所定义的 Java 类型,并压入到操作数栈中
+			if has_return:
+				self.__push(return_value)
+
+	# int 类型数值的布尔或运算
+	def ior(self):
+		# „,value1,value2 →
+		# „,result
+		self.xor(INT)
+		
 	# int 类型数据求余
 	def irem(self):
 		# „,value1,value2 →
@@ -1155,6 +1360,18 @@ class Opcode(object):
 		# „,value →
 		# [empty]
 		return xreturn(INT)
+
+	# int 数值左移运算
+	def ishl(self):
+		# „,value1,value2 →
+		# „,result
+		self.xshl(INT)
+
+	# int 数值右移运算
+	def ishr(self):
+		# „,value1,value2 →
+		# „,result
+		self.xshr(INT)
 
 	# 将一个 int 类型数据保存到局部变量表中
 	def istore(self,index):
@@ -1179,6 +1396,567 @@ class Opcode(object):
 		# „,value1,value2 →
 		# „,result
 		self.xsub(INT)
+
+	# int 数值逻辑右移运算,只有当value1 是负数时，才与ishr指令不一样-> (value1 >> s)+(2 << ~s)
+	# 然而我们用的不是c语言，大python已经考虑到这层了，no care 正负数
+	def iushr(self):
+		# „,value1,value2 →
+		# „,result
+		self.ishr()
+
+	# int 数值异或运算
+	def ixor(self):
+		# „,value1,value2 →
+		# „,result
+		self.xxor(INT)
+
+	# 程序段落跳转
+	def jsr(self,branchbyte1,branchbyte2):
+		# „,→
+		# „,address
+		# 构建一个 16位有符号的分支偏移量,并压入到操作数栈中
+		address = (branchbyte1 << 8) | branchbyte2
+		# ret 指令从局部变量表中把它取出,这种不对称的操作是故意设计的
+		self.__push(address)
+
+	# 程序段落跳转
+	def jsr_w(self,branchbyte1,branchbyte2,branchbyte3,branchbyte4):
+		# „,→
+		# „,address
+		# 构建一个 32位有符号的分支偏移量,并压入到操作数栈中
+		address = (branchbyte1 << 24) | (branchbyte2 << 16) | (branchbyte3 << 8) | branchbyte4
+		return address
+
+	# 将 long 类型数据转换为 double 类型
+	def l2d(self):
+		# „,value →
+		# „,result
+		self.x2y(LONG,DOUBLE)
+
+	# 将 long 类型数据转换为 float 类型
+	def l2f(self):
+		# „,value →
+		# „,result
+		self.x2y(LONG,FLOAT)
+
+	# 将 long 类型数据转换为 int 类型
+	def l2i(self):
+		# „,value →
+		# „,result
+		self.x2y(LONG,INT)
+
+	# long 类型数据相加
+	def ladd(self):
+		# ...,value1,value2 →
+		# ...,result
+		self.xadd(LONG)
+
+	# 从数组中加载一个 long 类型数据到操作数栈
+	def laload(self):
+		self.xaload(LONG)
+
+	def land(self):
+		# „,value1,value2 →
+		# „,result
+		self.xand(LONG)
+
+	# 从操作数栈读取一个 long 类型数据存入到数组中
+	def lastore(self):
+		self.xastore(LONG)
+
+	# 比较 2 个 long 类型数据的大小
+	def lcmp(self):
+		# ...,value1,value2 →
+		# ...,result
+		value2 = self.__pop()
+		value1 = self.__pop()
+		# value1,value2 是long 类型
+		self.__type_check(LONG,value2,value1)
+		result = 1 if value1 > value2 else -1
+		if value1 == value2:
+			result = 0
+		self.__push(result)
+
+	# 将 long 类型数据 0 压入到操作数栈中
+	def lconst_0(self):
+		# ... →
+		# ...,<d>
+		self.__push(LONG(0))
+
+	# 将 long 类型数据 1 压入到操作数栈中
+	def lconst_1(self):
+		# ... →
+		# ...,<d>
+		self.__push(LONG(1))
+
+	# 从运行时常量池中提取数据推入操作数栈
+	# 常量池中对应的值不是long和double
+	def ldc(self,index):
+		# „ →
+		# „,value
+		value = self.cpinfo[index]
+		self.__push(value)
+
+	# 从运行时常量池中提取数据推入操作数栈(宽索引)
+	# 常量池中对应的值不是long和double
+	def ldc_w(self,indexbyte1,indexbyte2):
+		# „ →
+		# „,value
+		index = (indexbyte1 << 8) | indexbyte2
+		value = self.cpinfo[index]
+		self.__push(value)
+
+	# 从运行时常量池中提取 long 或 double 数据推入操作数栈(宽索引)
+	# long和double数据类型在常量池中占两个坑
+	def ldc2_w(self,indexbyte1,indexbyte2):
+		# „ →
+		# „,value
+		index = (indexbyte1 << 8) | indexbyte2
+		up = self.cpinfo[index]
+		down = self.cpinfo[index+1]
+		value = (up << 8) | value
+		self.__push(value)
+
+	# long 类型数据除法
+	def ldiv(self):
+		# ...,value1,value2 →
+		# ...,result
+		self.xdiv(LONG)
+
+	# 从局部变量表加载一个 long 类型值到操作数栈中
+	def lload(self,index):
+		# ..., →
+		# ...,value
+		# TODO index 作为索引定位的局部变量必须为 long 类型(占用 index和 index+1 两个位置)
+		# ,记为 value。指令执行后,value 将会压入到操作数栈栈顶
+		# 注意:lload 操作码可以与 wide 指令联合一起实现使用 2 个字节长度的无符号byte 型数值作为索引来访问局部变量表。
+		self.xload(index,LONG)
+
+	def lload_0(self):
+		self.lload(0)
+
+	def lload_1(self):
+		self.lload(1)
+
+	def lload_2(self):
+		self.lload(2)
+
+	def lload_3(self):
+		self.lload(3)
+
+	# long 类型数据乘法
+	def lmul(self):
+		# „,value1,value2 →
+		# „,result
+		self.xmul(LONG)
+	
+	# long 类型数据取负运算
+	def lneg(self):
+		# „,value →
+		# „,result
+		self.xneg(LONG)
+
+	# 根据键值在跳转表中寻找配对的分支并进行跳转,如果case中的值是连续的，则用指令【tableswitch】
+	# tableswitch和lookupswitch 是以 4 字节为界划分开的，所以这两条指令需要预留出相应的空位来实现对齐
+	def lookupswitch(self,*args):
+		# „,key →
+		# „
+		key = self.__pop()
+		# <0-3 byte pad>：空白填充
+		# defaultbyte1,defaultbyte2,defaultbyte3,defaultbyte4：默认跳转地址
+		# npairs1,npairs2,npairs3,npairs4：分支数量，包含default
+		# match-offset pairs：健值对,byte1,byte2,byte3,byte4:byte1,byte2,byte3,byte4，其中int是健，后面四位是offset值
+		# 举例:
+		# public void inc(int i){  
+        # 	switch(i){
+        #     case 13:i = 1;break;
+        #     case 21:i = 2;break;
+        #     default:i = 0;
+        # 	}
+        # }
+		# 'codes': [27, 171, 0, 0, 0, 0, 0, 37, 0, 0, 0, 2, 0, 0, 0, 13, 0, 0, 0, 27, 0, 0, 0, 21, 0, 0, 0, 32, 4, 60, 167, 0, 10, 5, 60, 167, 0, 5, 3, 60, 177]
+		# 27, iload_1
+		# 171, lookupswitch
+		# 0, 0, <0-3 byte pad>
+		# 0, 0, 0, 37, defaultbyte1,defaultbyte2,defaultbyte3,defaultbyte4
+		# 0, 0, 0, 2, npairs1,npairs2,npairs3,npairs4
+		# 0, 0, 0, 13, 0, 0, 0, 27, match-offset
+		# 0, 0, 0, 21, 0, 0, 0, 32, match-offset
+		# 4, iconst_1
+		# 60, istore_1
+		# 167, 0, 10 , goto(branchbyte1,branchbyte2)
+		# 5, iconst_2
+		# 60, istore_1
+		# 167, 0, 5, goto(branchbyte1,branchbyte2)
+		# 3, iconst_0
+		# 60, istore_1
+		# 177 return
+
+		count = len(args)
+		# 空白填充
+		pad = count%4
+		# data_valid -> [4, 5, 6, 7, 8, 9, 10, 11]
+		data_valid = [args[i] for i in xrange(pad,count)]
+		# indexes -> [0,4]
+		indexes = [i for i in xrange(len(data_valid)) if i%4 == 0]
+		# data_4 -> [[4, 5, 6, 7], [8, 9, 10, 11]]
+		data_4 = [data_valid[i:i+4] for i in indexes]
+		default_offset = self.__byte4(data_4[0])
+		pairs = self.__byte4(data_4[1])
+		return_offset = None
+		for x in xrange(2,2+pairs*2):
+			if x%2 == 0: # 匹配健
+				case_key = self.__byte4(data_4[x])
+				if key == case_key: # 键值在跳转表中寻找配对的分支并进行跳转
+					offset = self.__byte4(data_4[x+1])
+					return offset
+		# 若匹配不到，则返回默认offset
+		if return_offset is None:
+			return default_offset
+			
+	# 合成4位byte
+	def __byte4(self,ls):
+		return (ls[0]<< 24)|(ls[1] << 16)|(ls[2] << 8)| ls[3]
+	
+	# long 类型数值的布尔或运算
+	def lor(self):
+		# „,value1,value2 →
+		# „,result
+		return xor(LONG)
+		
+	# long 类型数据求余
+	def lrem(self):
+		# „,value1,value2 →
+		# „,result
+		self.xrem(LONG)
+
+	# 结束方法,并返回一个 long 类型数据
+	def lreturn(self):
+		# „,value →
+		# [empty]
+		return self.xreturn(LONG)
+
+	# long 数值左移运算
+	def lshl(self):
+		# „,value1,value2 →
+		# „,result
+		self.xshl(LONG)
+
+	# long 数值右移运算
+	def lshr(self):
+		# „,value1,value2 →
+		# „,result
+		self.xshr(LONG)
+
+	# 将一个 long 类型数据保存到局部变量表中
+	def lstore(self,index):
+		# „,value →
+		# „
+		# TODO 保存到 index 和 index+1 所指向的局部变量表位置中
+		# TODO 后面可能将局部变量表设计成操作数栈一样的存储结构，即：一个节点存放一个值，不管其占几个字节
+		# TODO dstore 指令可以与 wide 指令联合使用,以实现使用 2 字节宽度的无符号整数作为索引来访问局部变量表
+		self.xstore(index,LONG)
+
+	def lstore_0(self):
+		self.dstore(0)
+
+	def lstore_1(self):
+		self.dstore(1)
+
+	def lstore_2(self):
+		self.dstore(2)
+
+	def lstore_3(self):
+		self.dstore(3)
+
+	# long 类型数据相减
+	def lsub(self):
+		# „,value1,value2 →
+		# „,result
+		self.xsub(LONG)
+
+	# long 数值逻辑右移运算
+	def lushr(self):
+		# „,value1,value2 →
+		# „,result
+		self.lshr()
+
+	# long 数值异或运算
+	def lxor(self):
+		# „,value1,value2 →
+		# „,result
+		self.xxor(LONG)
+
+
+	# 进入一个对象的 monitor
+	def monitorenter(self):
+		# „,objectref →
+		# „
+		# objectref 必须为 reference 类型数据
+		objectref = self.__pop()
+		self.isNull(objectref)
+		self.__type_check(OBJECTREF,objectref)
+		# 任何对象都有一个 monitor 与之关联
+		# monitorenter并不用来实现synchronized语义；在此我把每个objectref对象都加上一个monitor属性，用来实现此条指令
+		monitor = objectref.monitor
+		# monitor计数器等于零或在拥有者为当前线程 TODO->当前线程
+		if not monitor.isLock() : 
+			# TODO 在 monitor 里用队列来实现wait
+			monitor.lock(self)
+		elif monitor.isLock() and monitor.isOwner(self):
+			monitor.incr()
+
+	# 退出一个对象的 monitor
+	def monitorexit(self):
+		# „,objectref →
+		# „
+		# objectref 必须为 reference 类型数据
+		objectref = self.__pop()
+		self.isNull(objectref)
+		self.__type_check(OBJECTREF,objectref)
+		# 任何对象都有一个 monitor 与之关联
+		# monitorenter并不用来实现synchronized语义；在此我把每个objectref对象都加上一个monitor属性，用来实现此条指令
+		monitor = objectref.monitor
+		# 执行 monitorexit 指令的线程必须是 objectref 对应的 monitor 的所有者
+		if monitor.isOwner(self):
+			monitor.reduce(self)
+		else:
+			# 执行 monitorexit 的线程原本并没有这个 monitor 的所有权
+			raise IllegalMonitorStateException(_owner) 
+
+	# 创建一个新的多维数组
+	# dimensions 操作数是一个无符号 byte 类型数据,它必须大于或等于 1,代表创建数组的维度值
+	def multianewarray(self,indexbyte1,indexbyte2,dimensions):
+		# „,count1,[count2,...] →
+		# „,arrayref
+		# count1 描述第一个维度的长度,count2 描述第二个维度的长度,依此类推
+		sizes = [self.__pop() for i in xrange(dimensions)].reverse()
+		self.__type_check(sizes,INT)
+		# 索引所指向的运行时常量池项应当是一个类、接口或者数组类型的符号引用
+		cpinfo_index = (indexbyte1 << 8)| indexbyte2
+		_type = self.cpinfo[cpinfo_index]
+		arr = MultiArray(dimensions,_type,sizes)
+		self.__push(arr)
+
+	# 创建一个对象
+	def new(self,indexbyte1,indexbyte2):
+		# „ →
+		# „,objectref
+		# 索引所指向的运行时常量池项应当是一个类或接口的符号引用
+		cpinfo_index = (indexbyte1 << 8)| indexbyte2
+		_class = self.cpinfo[cpinfo_index]
+		# 如果在类、接口或者数组的符号引用最终被解析为一个接口或抽象类,new 指令将抛出 InstantiationError 异常
+		if 'ACC_ABSTRACT' in _class.access_flags or 'ACC_INTERFACE' in _class.access_flags:
+			raise InstantiationError(_class.access_flags)
+		# TODO 初始化一个类，并不是执行类的init方法
+		# NOTE:new 指令执行后并没有完成一个对象实例创建的全部过程,只有实例初始化方法被执行并完成后,实例才算完全创建。
+		objectref = None
+		self.__push(objectref)
+
+	# 创建一个数组
+	def newarray(self,atype):
+		# „,count →
+		# „,arrayref
+		count = self.__pop()
+		self.__type_check(INT,count)
+		if count < 0:
+			raise NegativeArraySizeException(count)
+		_type = atypes.get(atype)
+		arrayref = Array(count,_type)
+		self.__push(arrayref)
+
+	# 什么事情都不做
+	def nop(self):
+		# 无变化
+		pass
+
+
+	# 将操作数栈的栈顶元素出栈
+	def pop(self):
+		# „,value →
+		# „
+		self.__pop()
+
+
+	# 将操作数栈的栈顶一个或两个元素出栈
+	def pop2(self):
+		# value2,value1 →
+		# „
+		value1 = self.__pop()
+		value2 = self.__pop()
+		return value2,value1
+
+
+	# 设置对象字段
+	def putfield(self,indexbyte1,indexbyte2):
+		# „,objectref,value →
+		# „
+		# 索引所指向的运行时常量池项应当是一个字段(§5.1)的符号引用
+		cpinfo_index = (indexbyte1 << 8)| indexbyte2
+		_field = self.cpinfo[cpinfo_index]
+		value = self.__pop()
+		objectref = self.__pop()
+		self.isNull(objectref)
+		self.__type_check(OBJECTREF,objectref)
+		# TODO _field 需要转化为真实的field字段名称
+		setattr(objectref,_field,value)
+
+	# 设置对象的静态字段值
+	def putstatic(self,indexbyte1,indexbyte2):
+		# „,objectref,value →
+		# „
+		# 索引所指向的运行时常量池项应当是一个字段(§5.1)的符号引用
+		cpinfo_index = (indexbyte1 << 8)| indexbyte2
+		_field = self.cpinfo[cpinfo_index]
+		# not-static
+		if 'ACC_STATIC' not in _field.access_flags:
+			raise IncompatibleClassChangeError(_field.access_flags)
+		# final
+		elif 'ACC_FINAL' in _field.access_flags:
+			raise IllegalAccessError(_field)
+		value = self.__pop()
+		objectref = self.__pop()
+		self.isNull(objectref)
+		self.__type_check(OBJECTREF,objectref)
+		# TODO _field 需要转化为真实的field字段名称
+		setattr(objectref,_field,value)
+
+	# 代码片段中返回
+	def ret(self,index):
+		# 无变化
+		# index 是一个 0 至 255 之间的无符号数
+		# ret 指令不应与 return 指令混为一谈,return 是在没有返回值的方法返回时使用
+		value = self.locals[index]
+		# 指令执行后,将该局部变量的值更新到 Java 虚拟机的 PC 寄存器中,令程序从修改后的位置继续执行
+		# TODO pc_cache = value
+
+
+	# 无返回值的方法返回
+	def Return(self):
+		# „ →
+		# [empty]
+		# 指令执行后,解释器会恢复调用者的栈帧,并且把程序控制权交回到调用者
+		# TODO synchronized
+		return
+
+	# 从数组中加载一个 short 类型数据到操作数栈
+	def saload(self):
+		# „,arrayref,index →
+		# „,value
+		self.xaload(SHORT)
+
+	# 从操作数栈读取一个 short 类型数据存入到数组中
+	def sastore(self):
+		# „,arrayref,index,value →
+		# „
+		self.xastore(SHORT)
+
+	# 将一个 short 类型数据入栈
+	def sipush(self,byte1,byte2):
+		# „ →
+		# „,value
+		value = (byte1 << 8)| byte2
+		self.__push(value)
+
+	# 交换操作数栈顶的两个值
+	def swap(self):
+		# „,value2,value1 →
+		# „,value1,value2
+		value2,value1 = self.pop2()
+		self.__push(value1)
+		self.__push(value2)
+
+	# 根据索引值在跳转表中寻找配对的分支并进行跳转
+	def tableswitch(self,*xargs):
+		# „,index →
+		# „
+		# args 
+		# <0-3 byte pad>
+		# defaultbyte1
+		# defaultbyte2
+		# defaultbyte3
+		# defaultbyte4
+		# lowbyte1
+		# lowbyte2
+		# lowbyte3
+		# lowbyte4
+		# highbyte1
+		# highbyte2
+		# highbyte3
+		# highbyte4
+		# jump offsets...
+		index = self.__pop()
+		# <0-3 byte pad>：空白填充
+		# defaultbyte1,defaultbyte2,defaultbyte3,defaultbyte4：默认跳转地址
+		# lowbyte1,lowbyte2,lowbyte3,lowbyte4 ：
+		# highbyte1,highbyte2,highbyte3,highbyte4 ：
+		# jump offsets ：跳转地址,byte1,byte2,byte3,byte4
+		# 举例:
+		# public void inc(int i){  
+        # 	switch(i){
+        #     case 2:i = 1;break;
+        #     case 3:i = 2;break;
+        #     case 4:i = 2;break;
+        #     default:i = 0;
+        # 	}
+        # }
+		# 'codes': [27, 170, 0, 0, 0, 0, 0, 42, 0, 0, 0, 2, 0, 0, 0, 4, 0, 0, 0, 27, 0, 0, 0, 32, 0, 0, 0, 37, 4, 60, 167, 0, 15, 5, 60, 167, 0, 10, 5, 60, 167, 0, 5, 3, 60, 177]
+		# 27, iload_1
+		# 171, lookupswitch
+		# 0, 0, <0-3 byte pad>
+		# 0, 0, 0, 37, defaultbyte1,defaultbyte2,defaultbyte3,defaultbyte4
+		# 0, 0, 0, 2, lowbyte1,lowbyte2,lowbyte3,lowbyte4
+		# 0, 0, 0, 4, highbyte1,highbyte2,highbyte3,highbyte4
+		# 0, 0, 0, 27, jump offset
+		# 0, 0, 0, 32, jump offset
+		# 0, 0, 0, 37, jump offset
+		# 4, iconst_1
+		# 60, istore_1
+		# 167, 0, 15 , goto(branchbyte1,branchbyte2)
+		# 5, iconst_2
+		# 60, istore_1
+		# 167, 0, 10, goto(branchbyte1,branchbyte2)
+		# 5, iconst_2
+		# 60, istore_1
+		# 167, 0, 5, goto(branchbyte1,branchbyte2)
+		# 3, iconst_0
+		# 60, istore_1
+		# 177 return
+		count = len(args)
+		# 空白填充
+		pad = count%4
+		# data_valid -> [4, 5, 6, 7, 8, 9, 10, 11]
+		data_valid = [args[i] for i in xrange(pad,count)]
+		# indexes -> [0,4]
+		indexes = [i for i in xrange(len(data_valid)) if i%4 == 0]
+		# data_4 -> [[4, 5, 6, 7], [8, 9, 10, 11]]
+		data_4 = [data_valid[i:i+4] for i in indexes]
+		default_offset = self.__byte4(data_4[0])
+		low = self.__byte4(data_4[1])
+		high = self.__byte4(data_4[2])
+		
+		if index in xrange(low,high+1):
+			return self.__byte4(data_4[2+index-low+1])
+		else:
+			return default_offset
+
+	# 扩展局部变量表索引
+	# _opcode in [iload, fload, aload, lload, dload, istore, fstore,astore,lstore,dstore,ret]
+	def wide(self,_opcode,indexbyte1,indexbyte2):
+		# 操作数栈 与被扩展的指令一致
+		index = (indexbyte1 << 8) | indexbyte2
+		fun = getattr(self,_opcode)
+		# 反射执行
+		fun(index)
+
+	# iinc 扩展局部变量表索引
+	def wide(self,iinc,indexbyte1,indexbyte2,constbyte1,constbyte2):
+		# 操作数栈 与被扩展的指令一致
+		index = (indexbyte1 << 8) | indexbyte2
+		const = (constbyte1 << 8) | constbyte2
+		# 反射执行
+		self.iinc(index,const)
+
 
 if __name__ == '__main__':
 	q = Stack(3)

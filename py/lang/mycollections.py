@@ -88,6 +88,53 @@ class Array(object):
 		if value is not None and not isinstance(value,self.type):
 			raise ArrayStoreException(value)
 
+# TODO 类似于java里面的多维数组，限定元素类型,维数和长度
+# 参考http://blog.csdn.net/linzhiqiang0316/article/details/51602433
+# 在运行时常量池中确定的数组类型维度可能比操作数栈中 dimensions 所代表的维度更高,在这种情况下,multianewarray 指令只会创建数组的第一个维度。
+class MultiArray(object):
+	def __init__(self, _dimension,_type=object,*_size):
+		# 一个新的多维数组将会被分配在 GC 堆中,如果任何一个 count 值为 0,那就
+		# 不会分配维度。数组第一维的元素被初始化为第二维的子数组,后面每一维都
+		# 依此类推。数组的最后一个维度的元素将会被分配为数组元素类型的初始值
+		self.size = _size
+		# if size <0, throw exception
+		self.__verify_size()
+		if _dimension <= 0:
+			raise NegativeArraySizeException(_dimension)
+		self.type = _type
+		self.dimension = _dimension
+		self._element = [None]*_size
+
+	def __len__(self):
+		return self.size
+
+	def __getitem__(self,index):
+		self.__verify_index(index)
+		return self._element[index]
+
+	def __setitem__(self,index,value):
+		self.__verify_index(index)
+		self.__verify_value(value)
+		self._element[index] = value
+
+	# 验证size，前面两个下划线说明是private方法
+	def __verify_size(self):
+		if self.size < 0:
+			raise NegativeArraySizeException(self.size)
+
+	# 验证index是否有效
+	def __verify_index(self,index):
+		if index is None:
+			raise NullPointException()
+		if index >= len(self) or index < 0:
+			raise ArrayIndexOutOfBoundsException(index)
+
+	# 验证value是否有效
+	def __verify_value(self,value):
+		# TODO 后续还需要判断接口实现和类继承的判断
+		if value is not None and not isinstance(value,self.type):
+			raise ArrayStoreException(value)
+
 		
 def test(msg='aaaa'):
 	print msg
