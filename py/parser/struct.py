@@ -14,8 +14,7 @@ class Monitor(object):
 	def __init__(self, count=0,owner=None):
 		self.count = 0 if count else count
 		self.owner = owner
-		self.queue = Queue()
-		self.flag = True
+		self.queue = Queue() # Queue(3) 这样可以指定queue的最大长度为3,不写参数表示最大长度为INT_MAX
 
 	def reduce(self,_owner):
 		if self.count == 0:
@@ -23,7 +22,7 @@ class Monitor(object):
 		self.count -= 1
 		# 如果减 1 后计数器值为 0,那线程退出 monitor,不再是这个 monitor 的拥有者
 		if self.count == 0:
-				self.unlock(_owner)
+				self.unLock(_owner)
 
 	def incr(self):
 		self.count += 1
@@ -52,9 +51,9 @@ class Monitor(object):
 		# with语句会在进入语句块之前自动的获取到该锁对象，然后在语句块执行完成后自动释放掉锁
 		with threading.Lock() :
 			print 'Lock:', self.isLock()
-			if not self.isLock():
+			if not self.isLock() or :
 				_owner = self.queue.get()
-				print _owner
+				print '%s get lock' % _owner
 				self.owner=_owner
 				self.incr()
 
@@ -711,6 +710,10 @@ if __name__ == '__main__':
 	mo = Monitor()
 	mo.lock('a')
 	mo.lock('b')
+	mo.lock('b')
+	mo.lock('b')
+	mo.unLock('a')
+	mo.unLock('b')
 
 
 
