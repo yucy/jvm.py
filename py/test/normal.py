@@ -2,7 +2,7 @@
 import sys,threading,time
 sys.path.append('..')
 from Queue import Queue
-from parser.struct import *
+# from parser.struct import *
 
 def test_dict():
 	attr = {'test':2}
@@ -97,6 +97,23 @@ def test_queue():
 	print q.full()
 	lock = threading.Lock()
 
+class test_with(object):
+	def __init__(self):
+		self.f = 0
+
+	def __enter__(self):
+		self.f = 'a'
+
+	def __exit__(self,type,value,traceback):
+		self.f = 'b'
+
+	def test(self):
+		# with self:字面意思呢就是通过自己返回一个上下文管理器对象,上下文管理器里面要有__enter__()和__exit__()方法
+		# 如果后面跟个as，那么__enter__()方法就需要有返回值了，否则t为None
+		# 
+		with self as t:
+			print 123,t
+		
 
 
 if __name__ == '__main__':
@@ -113,7 +130,10 @@ if __name__ == '__main__':
 	# t = test_invoke()
 	# t.m1()
 	# test_queue()
-	mo = Monitor(2,'a')
-	time.sleep(5)
-	mo.lock('aa')
-	mo.lock('ba')
+	# mo = Monitor(2,'a')
+	# time.sleep(5)
+	# mo.lock('aa')
+	# mo.lock('ba')
+	t = test_with()
+	t.test()
+	print t.f
