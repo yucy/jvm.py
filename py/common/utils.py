@@ -6,6 +6,7 @@ def getDecimal(arr):
 		return None
 	else:
 		return int('0x%s' % ''.join(arr).replace('0x',''),16)
+		
 # double类型分两段保存，主要是配合jvm
 def d2i(value):
 	up = value >> 32

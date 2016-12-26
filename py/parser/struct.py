@@ -51,6 +51,7 @@ class Monitor(object):
 		# with语句会在进入语句块之前自动的获取到该锁对象，然后在语句块执行完成后自动释放掉锁
 		with threading.Lock() :
 			print 'Lock:', self.isLock()
+			# 需要可重入，同一个owner是可以进入lock的
 			if not self.isLock() or :
 				_owner = self.queue.get()
 				print '%s get lock' % _owner
