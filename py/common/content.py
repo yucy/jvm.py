@@ -227,8 +227,39 @@ cmd = {
 	0xff:'impdep1',#用于在特定硬件中使用的语言后门。
 }
 
+
+
 if __name__ == '__main__':
-	print [cmd.get(i) for i in [16, 10, 60, 177]]
-	i = 1
-	i += 1
-	print i
+	print [cmd.get(i) for i in [178, 0, 2, 18, 3, 182, 0, 4, 16, 10, 60, 18, 5, 77, 177]]
+	# print [ hex(i) for i in [185, 186, 200, 201] ]
+	# l = ['goto_w','invokedynmic','invokeinterface','jsr_w']
+	# for x in l:
+	# 	for k,v in cmd.items():
+	# 		if x == v:
+	# 			print k
+	# 			break
+	# 	# 打印没有匹配上的x项
+	# 	else:
+	# 		print x
+	ll = [200 ,186, 185 ,201]
+	ll.sort()
+	print ll
+
+	'''
+1
+[25,24,23,21,22,58,57,56,54,55,18,16,188,169]
+['aload', 'dload', 'fload', 'iload', 'lload', 'astore', 'dstore', 'fstore', 'istore', 'lstore', 'ldc', 'bipush', 'newarray', 'ret']
+2
+['sipush', 'ldc_w', 'ldc2_w', 'iinc', 'ifeq', 'ifne', 'iflt', 'ifge', 'ifgt', 'ifle', 'if_icmpeq', 'if_icmpne', 'if_icmplt', 'if_icmpge', 'if_icmpgt', 'if_icmple', 'if_acmpeq', 'if_acmpne', 'goto', 'jsr', 'getstatic', 'putstatic', 'getfield', 'putfield', 'invokevirtual', 'invokespecial', 'invokestatic', 'new', 'anewarray', 'checkcast', 'instanceof', 'ifnonnull', 'ifnonnull']
+[17, 19, 20, 132, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 178, 179, 180, 181, 182, 183, 184, 187, 189, 192, 193, 199, 199]
+3
+[196,197]
+'wide','multianewarray',
+4
+['invokeinterface', 'invokedynamic', 'goto_w', 'jsr_w']
+[185, 186, 200, 201]
+5
+196
+wide->若后面第一个参数是iinc指令，则总参数数量为5
+
+	'''

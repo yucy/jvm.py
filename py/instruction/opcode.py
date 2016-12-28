@@ -4,15 +4,30 @@ sys.path.append('..')
 
 from lang.myexceptions import *
 from lang.mycollections import *
-
-# §2.11.1 的表 2.3 中列出的分类一
-dup_type1 = (boolean,byte,char,short,int,float,reference,returnAddress)
-# §2.11.1 的表 2.3 中列出的分类二
-dup_type2 = (long,double)
+from common.content import cmd
 
 # 数据类型定义常量
 # [FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF] = ['float','double','byte','char','short','int','long','objectref']
-[FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF] = [float,float,int,chr,int,int,long,object]
+[BOOLEAN,FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF] = [bool,float,float,int,chr,int,int,long,object]
+
+# §2.11.1 的表 2.3 中列出的分类一
+dup_type1 = (BOOLEAN,BYTE,CHAR,SHORT,INT,FLOAT,OBJECTREF)# ,REFERENCE,RETURNADDRESS)
+# §2.11.1 的表 2.3 中列出的分类二
+dup_type2 = (LONG,DOUBLE)
+
+# 指令的参数数量，默认0,[0xaa,0xab]->n个参数
+param_d = {
+	0x19:1, 0x18:1, 0x17:1, 0x15:1, 0x16:1, 0x3a:1, 0x39:1, 0x38:1, 0x36:1, 0x37:1, 0x12:1, 0x10:1, 0xbc:1, 0xa9:1,
+	0x11:2, 0x13:2, 0x14:2, 0x84:2, 0x99:2, 0x9a:2, 0x9b:2, 0x9c:2, 0x9d:2, 0x9e:2, 0x9f:2, 0xa0:2, 0xa1:2, 0xa2:2, 0xa3:2, 0xa4:2, 0xa5:2, 0xa6:2, 0xa7:2, 0xa8:2, 0xb2:2, 0xb3:2, 0xb4:2, 0xb5:2, 0xb6:2, 0xb7:2, 0xb8:2, 0xbb:2, 0xbd:2, 0xc0:2, 0xc1:2, 0xc7:2, 0xc7:2,
+	0xc4:3, 0xc5:3,
+	0xb9:4, 0xba:4, 0xc8:4, 0xc9:4,
+}
+# 1 ['aload', 'dload', 'fload', 'iload', 'lload', 'astore', 'dstore', 'fstore', 'istore', 'lstore', 'ldc', 'bipush', 'newarray', 'ret']
+# 2 ['sipush', 'ldc_w', 'ldc2_w', 'iinc', 'ifeq', 'ifne', 'iflt', 'ifge', 'ifgt', 'ifle', 'if_icmpeq', 'if_icmpne', 'if_icmplt', 'if_icmpge', 'if_icmpgt', 'if_icmple', 'if_acmpeq', 'if_acmpne', 'goto', 'jsr', 'getstatic', 'putstatic', 'getfield', 'putfield', 'invokevirtual', 'invokespecial', 'invokestatic', 'new', 'anewarray', 'checkcast', 'instanceof', 'ifnonnull', 'ifnonnull']
+# 3 'wide','multianewarray',
+# 4 ['invokeinterface', 'invokedynamic', 'goto_w', 'jsr_w']
+# 5 0xc4 wide->若后面第一个参数是iinc指令，则总参数数量为5
+# n 0xaa,0xab -> tableswitch,lookupswitch 指令后面第2-3个参数来确认参数数量
 
 # atype 为要创建数组的元素类型,它将为以下值之一
 atypes = {
@@ -26,21 +41,62 @@ atypes = {
 	11:LONG,
 }
 
-# 方法调用
-def execMethod(codes,_locals,_cpinfo):
-	# TODO 方法调用的时候,一个新的栈帧将在 Java 虚拟机栈中被创建出来
-	# 是否有返回值
-	has_return = False
-	# 返回值
-	return_value = None
-	o = Opcode([],locals,cpinfo)
-	# TODO 解析并分割code里方法指令集
-	
-	# 
-	return has_return,return_value
+# 根据codes数组来执行方法
+class ExecMethod(object):
+	def __init__(self,_codes, _locals,_cpinfo):
+		self.locals = _locals
+		self.cpinfo = _cpinfo
+		self.codes = _codes
+		self.o = Opcode(Stack(3),_locals,_cpinfo)
+		# codes 游标位置
+		self.__offset = 0
+
+	# self.codes 全局游标
+	def __cursor(self,step):
+		# print '------data',data
+		result = self.codes[offset:offset+step]
+		self.__offset += step
+		return result
+
+	# 方法调用
+	def execute(self):
+		# TODO 方法调用的时候,一个新的栈帧将在 Java 虚拟机栈中被创建出来
+		# 是否有返回值
+		has_return = False
+		# 返回值
+		return_value = None
+		# 解析并分割code里方法指令集
+		_proxy = getattr(self.o,'_proxy')
+		offset ,size= 0,len(self.codes)
+		print 'offset ,size',offset ,size
+		while offset < size:
+			temp_code = self.codes[offset]
+			offset += 1
+			# 指令方法
+			_instruction = _proxy(temp_code)
+			num_params = param_d.get(temp_code,0)
+			print cmd.get(temp_code),'num_params',num_params
+			if num_params is 0:
+				_instruction()
+			elif num_params is 1:
+				_instruction(self.codes[offset])
+			elif num_params is 2:
+				_instruction(self.codes[offset],self.codes[offset+1])
+			elif num_params is 3:
+				_instruction(self.codes[offset],self.codes[offset+1],self.codes[offset+2])
+			elif num_params is 4:
+				_instruction(self.codes[offset],self.codes[offset+1],self.codes[offset+2],self.codes[offset+3])
+			elif num_params is 5:
+				_instruction(self.codes[offset],self.codes[offset+1],self.codes[offset+2],self.codes[offset+3],self.codes[offset+4])
+			elif num_params > 5:
+				_instruction(self.codes[offset,offset+num_params])
+			offset += num_params
+		# 
+		# return has_return,return_value
 		
 # sys.getrefcount(obj) # 引用计数
 
+# 指令集定义
 class Opcode(object):
 	"""docstring for Opcode"""
 	# stack：操作数栈，local：局部变量表，cpinfo：常量池
@@ -48,6 +104,11 @@ class Opcode(object):
 		self.stack = _stack
 		self.local = _local
 		self.cpinfo = _cpinfo
+		self.__cmd = cmd
+
+	# 根据code（hex数字）返回方法引用
+	def _proxy(self,_code):
+		return getattr(self,cmd.get(_code))
 
 	def __pop(self):
 		return self.stack.pop()
@@ -55,6 +116,7 @@ class Opcode(object):
 	def __push(self,value):
 		self.stack.push(value)
 
+	# 类型检查
 	def __type_check(self,_type,*values):
 		for value in values:
 			if isinstance(value,list):
@@ -64,14 +126,16 @@ class Opcode(object):
 				if value is not None and not isinstance(value,_type):
 					raise ClassCastException(type(value),_type)
 
+	# 判空
 	def isNull(self,obj,msg='Null'):
 		if obj is None:
 			raise NullPointException(msg)
-		
-	def do(self,code,*args):
-		func = getattr(self,code)
-		# execute operate code
-		func()
+
+	# 废弃此方法的原因是参数不好设定进去，毕竟不是所有的方法都支持*args类型的元组参数,use ExecMethod.execute()
+	# def do(self,code,*args):
+	# 	func = getattr(self,code)
+	# 	# execute operate code
+	# 	func()
 	# =============================================================
 	# 结束方法,并返回一个 x 类型数据
 	# TODO 后续需要考虑synchronized方法的IllegalMonitorStateException异常
@@ -1017,11 +1081,42 @@ class Opcode(object):
 	# 	# „,result
 	# 	self.xcmp(INT,'g')
 
-	# 将int类型数据压入到操作数栈中
+	# 将int类型数据 -1 压入到操作数栈中
 	def iconst_m1(self):
 		# „ →
 		# „,<i>
 		self.__push(-1)
+
+	# 将int类型数据 0 压入到操作数栈中
+	def iconst_0(self):
+		# „ →
+		# „,<i>
+		self.__push(0)
+	# 将int类型数据 1 压入到操作数栈中
+	def iconst_1(self):
+		# „ →
+		# „,<i>
+		self.__push(1)
+	# 将int类型数据 2 压入到操作数栈中
+	def iconst_2(self):
+		# „ →
+		# „,<i>
+		self.__push(2)
+	# 将int类型数据 3 压入到操作数栈中
+	def iconst_3(self):
+		# „ →
+		# „,<i>
+		self.__push(3)
+	# 将int类型数据 4 压入到操作数栈中
+	def iconst_4(self):
+		# „ →
+		# „,<i>
+		self.__push(4)
+	# 将int类型数据 5 压入到操作数栈中
+	def iconst_5(self):
+		# „ →
+		# „,<i>
+		self.__push(5)
 
 	# 将 float 类型数据压入到操作数栈中
 	def fconst_0(self):
@@ -1243,13 +1338,15 @@ class Opcode(object):
 			self.__push(result)
 
 	# 调用动态方法
-	def inovkedynamic(self,indexbyte1,indexbyte2,0,0):
+	def invokedynamic(self,indexbyte1,indexbyte2):# ,0,0
+		pass
 		# „,[arg1, [arg2 ...]]→
 		# „
 		# continue
 
 	# 调用接口方法
-	def invokeinterface(self,indexbyte1,indexbyte2,0,0):
+	def invokeinterface(self,indexbyte1,indexbyte2):# ,0,0
+		pass
 		# „,objectref,[arg1,[arg2 ...]] →
 		# „
 		# continue
@@ -1865,6 +1962,7 @@ class Opcode(object):
 		value2,value1 = self.pop2()
 		self.__push(value1)
 		self.__push(value2)
+		print '0x5f'
 
 	# 根据索引值在跳转表中寻找配对的分支并进行跳转
 	def tableswitch(self,*xargs):
@@ -1960,13 +2058,26 @@ class Opcode(object):
 
 if __name__ == '__main__':
 	q = Stack(3)
-	arr = [11,22,33]
-	q.push(arr)
-	q.push(1)
-	print q.list()
-	o = Opcode(q,[],[])
-	o.do('aaload')
-	print q.list()
-	_arg = 'l'
-	print 1 if _arg is 'l' else -1
+	# arr = [11,22,33]
+	# q.push(arr)
+	# q.push(1)
+	# print q.list()
+	# o = Opcode(q,[],[])
+	# o.do('aaload')
+	# print q.list()
+	# _arg = 'l'
+	# print 1 if _arg is 'l' else -1
+	# o = Opcode(q,[],[])
+	# _proxy = getattr(o,'_proxy')
+
+	# _method1 = _proxy(1)
+	# _method1()
+	# print _method1
+	# _method1 = _proxy(2)
+	# print _method1
+	# _method1()
+	cpinfo = [None, '#7,#27', '#28,#29', '#30', '#31,#32', '#33', '#34', '#35', 'm', 'I', 'n', 'J', 'ConstantValue', ['0x00', '0x00', '0x00', '0x00'], ['0x00', '0x00', '0x00', '0x01'], '<init>', '()V', 'Code', 'LineNumberTable', 'inc', '(I)V', 'StackMapTable', 'tcc', 'main', '([Ljava/lang/String;)V', 'SourceFile', 'test.java', '#15,#16', '#36', '#37,#38', '11111111111111', '#39', '#40,#41', '', 'cls/test', 'java/lang/Object', 'java/lang/System', 'out', 'Ljava/io/PrintStream;', 'java/io/PrintStream', 'println', '(Ljava/lang/String;)V']
+	main_code = [178, 0, 2, 18, 3, 182, 0, 4, 16, 10, 60, 18, 5, 77, 177]
+	e = ExecMethod(main_code,[],cpinfo)
+	e.execute()
 

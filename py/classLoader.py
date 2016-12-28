@@ -123,6 +123,7 @@ if __name__=="__main__":
 		print _self_class.this_class
 		print _self_class.__dict__
 		print isInterface()
+		print _self_class.cp_info
 		method_info = _self_class.method_info
 		for x in method_info:
 			print x.name
