@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import sys,math
 sys.path.append('..')
+# sys.getrefcount(obj) # 引用计数
 
 from lang.myexceptions import *
 from lang.mycollections import *
@@ -51,13 +52,6 @@ class ExecMethod(object):
 		# codes 游标位置
 		self.__offset = 0
 
-	# self.codes 全局游标
-	def __cursor(self,step):
-		# print '------data',data
-		result = self.codes[offset:offset+step]
-		self.__offset += step
-		return result
-
 	# 方法调用
 	def execute(self):
 		# TODO 方法调用的时候,一个新的栈帧将在 Java 虚拟机栈中被创建出来
@@ -94,8 +88,6 @@ class ExecMethod(object):
 		# 
 		# return has_return,return_value
 		
-# sys.getrefcount(obj) # 引用计数
-
 # 指令集定义
 class Opcode(object):
 	"""docstring for Opcode"""
