@@ -197,7 +197,7 @@ cmd = {
 	0xae:'freturn',#从当前方法返回float。
 	0xaf:'dreturn',#从当前方法返回double。
 	0xb0:'areturn',#从当前方法返回对象引用。
-	0xb1:'return',#从当前方法返回void。
+	0xb1:'Return',#从当前方法返回void。
 	0xb2:'getstatic',#获取指定类的静态域，并将其值压入栈顶。
 	0xb3:'putstatic',#为指定的类的静态域赋值。
 	0xb4:'getfield',#获取指定类的实例域，并将其值压入栈顶。
