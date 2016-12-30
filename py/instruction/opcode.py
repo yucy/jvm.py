@@ -1363,14 +1363,14 @@ class Opcode(object):
 			self.__push(result)
 
 	# 调用动态方法
-	def invokedynamic(self,indexbyte1,indexbyte2):# ,0,0
+	def invokedynamic(self,indexbyte1,indexbyte2,zero1,zero2):#  zero1,zero2 固定为0
 		pass
 		# „,[arg1, [arg2 ...]]→
 		# „
 		# continue
 
 	# 调用接口方法
-	def invokeinterface(self,indexbyte1,indexbyte2):# ,0,0
+	def invokeinterface(self,indexbyte1,indexbyte2,count,zero):# zero固定为0
 		pass
 		# „,objectref,[arg1,[arg2 ...]] →
 		# „
