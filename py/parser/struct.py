@@ -169,7 +169,7 @@ class AttributeInfo(object):
 	def __getConstant(self,num):
 		try:
 			source = self.__constant_pool[num]
-			if isinstance(source,list) and source.__contains__('#'):
+			if isinstance(source,str) and source.__contains__('#'):
 				temp = source.replace('#','')
 				pointers = temp.split(',')
 				target = [self.__constant_pool[int(i)] for i in pointers]
@@ -226,7 +226,7 @@ class AttributeInfo(object):
 		elif attribute_name == 'ConstantValue':#字段表，field定义的常量池
 			# 结构：u2 constantvalue_index , attribute_length === 2
 			value_temp = getDecimal(self.__cursor(attribute_length))
-			print 'xxxxxxxxxxxxxx',value_temp,self.__getConstant(value_temp)
+			# print 'xxxxxxxxxxxxxx',value_temp,self.__getConstant(value_temp)
 			attr['ConstantValue'] = self.__getConstant(value_temp)
 		# 一个方法的 Code 属性最多只能有一个 StackMapTable 属性,否则将抛出 ClassFormatError 异常
 		# 每个栈映射帧都显式或隐式地指定了一个字节码偏移量,用于表示局部变量表和操作数栈的验证类型
