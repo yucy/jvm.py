@@ -1,0 +1,3251 @@
+public final class java.lang.Class<T extends java.lang.Object> extends java.lang.Object implements java.io.Serializable, java.lang.reflect.GenericDeclaration, java.lang.reflect.Type, java.lang.reflect.AnnotatedElement
+  SourceFile: "Class.java"
+  Signature: #487                         // <T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/io/Serializable;Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Type;Ljava/lang/reflect/AnnotatedElement;
+  InnerClasses:
+       #395; //class java/lang/Class$1
+       #396; //class java/lang/Class$2
+       static #397; //class java/lang/Class$3
+       #398; //class java/lang/Class$4
+       static #1045= #400 of #394; //MethodArray=class java/lang/Class$MethodArray of class java/lang/Class
+       public static #65= #449 of #448; //Entry=class java/util/Map$Entry of class java/util/Map
+       public static final #1044= #454 of #453; //GetReflectionFactoryAction=class sun/reflect/ReflectionFactory$GetReflectionFactoryAction of class sun/reflect/ReflectionFactory
+       static #1042= #406 of #405; //ClassValueMap=class java/lang/ClassValue$ClassValueMap of class java/lang/ClassValue
+  minor version: 0
+  major version: 51
+  flags: ACC_PUBLIC, ACC_FINAL, ACC_SUPER
+Constant pool:
+     #1 = String             #18          //  
+     #2 = String             #21          //  (
+     #3 = String             #48          //  )
+     #4 = String             #49          //  , 
+     #5 = String             #50          //  .
+     #6 = String             #51          //  .<init>
+     #7 = String             #52          //  /
+     #8 = String             #58          //  Can not call newInstance() on the Class for java.lang.Class
+     #9 = String             #63          //  Enclosing constructor not found
+    #10 = String             #64          //  Enclosing method not found
+    #11 = String             #76          //  Malformed class name
+    #12 = String             #77          //  Malformed enclosing method information
+    #13 = String             #93          //  []
+    #14 = String             #119         //  class 
+    #15 = String             #234         //  interface 
+    #16 = String             #327         //  null
+    #17 = String             #376         //  values
+    #18 = Utf8               
+    #19 = Utf8                is not an enum type
+    #20 = Utf8                to 
+    #21 = Utf8               (
+    #22 = Utf8               ()I
+    #23 = Utf8               ()Ljava/lang/String;
+    #24 = Utf8               ()TT;
+    #25 = Utf8               ()V
+    #26 = Utf8               ()Z
+    #27 = Utf8               ()[B
+    #28 = Utf8               ()[TT;
+    #29 = Utf8               (C)Z
+    #30 = Utf8               (I)C
+    #31 = Utf8               (I)I
+    #32 = Utf8               (I)Ljava/lang/String;
+    #33 = Utf8               (I)V
+    #34 = Utf8               (I)Z
+    #35 = Utf8               (II)Ljava/lang/String;
+    #36 = Utf8               (Ljava/lang/Object;)Ljava/lang/Object;
+    #37 = Utf8               (Ljava/lang/Object;)Z
+    #38 = Utf8               (Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
+    #39 = Utf8               (Ljava/lang/String;)I
+    #40 = Utf8               (Ljava/lang/String;)Ljava/lang/Class;
+    #41 = Utf8               (Ljava/lang/String;)Ljava/lang/String;
+    #42 = Utf8               (Ljava/lang/String;)V
+    #43 = Utf8               (Ljava/lang/String;)Z
+    #44 = Utf8               (Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+    #45 = Utf8               (Ljava/lang/Throwable;)V
+    #46 = Utf8               (Z)Z
+    #47 = Utf8               ([Ljava/lang/Object;)Ljava/lang/Object;
+    #48 = Utf8               )
+    #49 = Utf8               , 
+    #50 = Utf8               .
+    #51 = Utf8               .<init>
+    #52 = Utf8               /
+    #53 = Utf8               <clinit>
+    #54 = Utf8               <init>
+    #55 = Utf8               ALL_PERMISSION
+    #56 = Utf8               ANNOTATION
+    #57 = Utf8               CHECK_MEMBER_ACCESS_PERMISSION
+    #58 = Utf8               Can not call newInstance() on the Class for java.lang.Class
+    #59 = Utf8               Cannot cast 
+    #60 = Utf8               Code
+    #61 = Utf8               ConstantValue
+    #62 = Utf8               ENUM
+    #63 = Utf8               Enclosing constructor not found
+    #64 = Utf8               Enclosing method not found
+    #65 = Utf8               Entry
+    #66 = Utf8               Exceptions
+    #67 = Utf8               GET_CLASSLOADER_PERMISSION
+    #68 = Utf8               GET_PD_PERMISSION
+    #69 = Utf8               I
+    #70 = Utf8               InnerClasses
+    #71 = Utf8               J
+    #72 = Utf8               LineNumberTable
+    #73 = Utf8               Ljava/lang/Class;
+    #74 = Utf8               Ljava/lang/Object;
+    #75 = Utf8               Ljava/lang/String;
+    #76 = Utf8               Malformed class name
+    #77 = Utf8               Malformed enclosing method information
+    #78 = Utf8               RuntimeVisibleAnnotations
+    #79 = Utf8               SYNTHETIC
+    #80 = Utf8               Signature
+    #81 = Utf8               SourceFile
+    #82 = Utf8               StackMapTable
+    #83 = Utf8               Z
+    #84 = Utf8               [Ljava/io/ObjectStreamField;
+    #85 = Utf8               [Ljava/lang/Class;
+    #86 = Utf8               [Ljava/lang/Object;
+    #87 = Utf8               [Ljava/lang/reflect/Constructor;
+    #88 = Utf8               [Ljava/lang/reflect/Field;
+    #89 = Utf8               [Ljava/lang/reflect/Method;
+    #90 = Utf8               [Ljava/lang/reflect/Type;
+    #91 = Utf8               [Ljava/lang/reflect/TypeVariable;
+    #92 = Utf8               [TT;
+    #93 = Utf8               []
+    #94 = Utf8               access$100
+    #95 = Utf8               access$200
+    #96 = Utf8               access$302
+    #97 = Utf8               access$402
+    #98 = Utf8               add
+    #99 = Utf8               addAll
+   #100 = Utf8               addAllIfNotPresent
+   #101 = Utf8               allPermDomain
+   #102 = Utf8               annotationType
+   #103 = Utf8               annotations
+   #104 = Utf8               append
+   #105 = Utf8               argumentTypesToString
+   #106 = Utf8               arrayContentsEq
+   #107 = Utf8               asSubclass
+   #108 = Utf8               assertionLock
+   #109 = Utf8               cachedConstructor
+   #110 = Utf8               cannotCastMsg
+   #111 = Utf8               cast
+   #112 = Utf8               charAt
+   #113 = Utf8               checkClassLoaderPermission
+   #114 = Utf8               checkInitted
+   #115 = Utf8               checkMemberAccess
+   #116 = Utf8               checkPackageAccess
+   #117 = Utf8               checkPermission
+   #118 = Utf8               checkProxyPackageAccess
+   #119 = Utf8               class 
+   #120 = Utf8               classAssertionStatus
+   #121 = Utf8               classRedefinedCount
+   #122 = Utf8               classValueMap
+   #123 = Utf8               clearCachesOnClassRedefinition
+   #124 = Utf8               clone
+   #125 = Utf8               compactAndTrim
+   #126 = Utf8               contains
+   #127 = Utf8               copyConstructor
+   #128 = Utf8               copyConstructors
+   #129 = Utf8               copyField
+   #130 = Utf8               copyFields
+   #131 = Utf8               copyMethod
+   #132 = Utf8               copyMethods
+   #133 = Utf8               declaredAnnotations
+   #134 = Utf8               declaredConstructors
+   #135 = Utf8               declaredFields
+   #136 = Utf8               declaredMethods
+   #137 = Utf8               declaredPublicFields
+   #138 = Utf8               declaredPublicMethods
+   #139 = Utf8               desiredAssertionStatus
+   #140 = Utf8               desiredAssertionStatus0
+   #141 = Utf8               doPrivileged
+   #142 = Utf8               ensureMemberAccess
+   #143 = Utf8               entrySet
+   #144 = Utf8               enumConstantDirectory
+   #145 = Utf8               enumConstants
+   #146 = Utf8               equals
+   #147 = Utf8               filterFields
+   #148 = Utf8               filterMethods
+   #149 = Utf8               forName
+   #150 = Utf8               forName0
+   #151 = Utf8               genericInfo
+   #152 = Utf8               get
+   #153 = Utf8               getAnnotation
+   #154 = Utf8               getAnnotationType
+   #155 = Utf8               getAnnotations
+   #156 = Utf8               getArray
+   #157 = Utf8               getCallerClass
+   #158 = Utf8               getCanonicalName
+   #159 = Utf8               getCheckMemberAccessMethod
+   #160 = Utf8               getClass
+   #161 = Utf8               getClassLoader
+   #162 = Utf8               getClassLoader0
+   #163 = Utf8               getClasses
+   #164 = Utf8               getComponentType
+   #165 = Utf8               getConstantPool
+   #166 = Utf8               getConstructor
+   #167 = Utf8               getConstructor0
+   #168 = Utf8               getConstructors
+   #169 = Utf8               getDeclaredAnnotations
+   #170 = Utf8               getDeclaredClasses
+   #171 = Utf8               getDeclaredClasses0
+   #172 = Utf8               getDeclaredConstructor
+   #173 = Utf8               getDeclaredConstructors
+   #174 = Utf8               getDeclaredConstructors0
+   #175 = Utf8               getDeclaredField
+   #176 = Utf8               getDeclaredFields
+   #177 = Utf8               getDeclaredFields0
+   #178 = Utf8               getDeclaredMethod
+   #179 = Utf8               getDeclaredMethods
+   #180 = Utf8               getDeclaredMethods0
+   #181 = Utf8               getDeclaringClass
+   #182 = Utf8               getDeclaringClass0
+   #183 = Utf8               getDescriptor
+   #184 = Utf8               getEnclosingClass
+   #185 = Utf8               getEnclosingConstructor
+   #186 = Utf8               getEnclosingMethod
+   #187 = Utf8               getEnclosingMethod0
+   #188 = Utf8               getEnclosingMethodInfo
+   #189 = Utf8               getEnumConstants
+   #190 = Utf8               getEnumConstantsShared
+   #191 = Utf8               getFactory
+   #192 = Utf8               getField
+   #193 = Utf8               getField0
+   #194 = Utf8               getFields
+   #195 = Utf8               getGenericComponentType
+   #196 = Utf8               getGenericInfo
+   #197 = Utf8               getGenericInterfaces
+   #198 = Utf8               getGenericSignature
+   #199 = Utf8               getGenericSuperclass
+   #200 = Utf8               getInstance
+   #201 = Utf8               getInterfaces
+   #202 = Utf8               getKey
+   #203 = Utf8               getMethod
+   #204 = Utf8               getMethod0
+   #205 = Utf8               getMethods
+   #206 = Utf8               getModifiers
+   #207 = Utf8               getName
+   #208 = Utf8               getName0
+   #209 = Utf8               getPackage
+   #210 = Utf8               getParameterTypes
+   #211 = Utf8               getPrimitiveClass
+   #212 = Utf8               getProtectionDomain
+   #213 = Utf8               getProtectionDomain0
+   #214 = Utf8               getRawAnnotations
+   #215 = Utf8               getReflectionFactory
+   #216 = Utf8               getResource
+   #217 = Utf8               getResourceAsStream
+   #218 = Utf8               getReturnType
+   #219 = Utf8               getSecurityManager
+   #220 = Utf8               getSigners
+   #221 = Utf8               getSimpleBinaryName
+   #222 = Utf8               getSimpleName
+   #223 = Utf8               getSuperInterfaces
+   #224 = Utf8               getSuperclass
+   #225 = Utf8               getSystemResource
+   #226 = Utf8               getSystemResourceAsStream
+   #227 = Utf8               getTargetException
+   #228 = Utf8               getTypeParameters
+   #229 = Utf8               getUnsafe
+   #230 = Utf8               getValue
+   #231 = Utf8               hasNext
+   #232 = Utf8               initAnnotationsIfNecessary
+   #233 = Utf8               initted
+   #234 = Utf8               interface 
+   #235 = Utf8               intern
+   #236 = Utf8               invoke
+   #237 = Utf8               isAbstract
+   #238 = Utf8               isAnnotation
+   #239 = Utf8               isAnnotationPresent
+   #240 = Utf8               isAnonymousClass
+   #241 = Utf8               isArray
+   #242 = Utf8               isAsciiDigit
+   #243 = Utf8               isAssignableFrom
+   #244 = Utf8               isCheckMemberAccessOverridden
+   #245 = Utf8               isConstructor
+   #246 = Utf8               isEnum
+   #247 = Utf8               isInherited
+   #248 = Utf8               isInstance
+   #249 = Utf8               isInterface
+   #250 = Utf8               isLocalClass
+   #251 = Utf8               isLocalOrAnonymousClass
+   #252 = Utf8               isMemberClass
+   #253 = Utf8               isMethod
+   #254 = Utf8               isNonPublicProxyClass
+   #255 = Utf8               isPrimitive
+   #256 = Utf8               isProxyClass
+   #257 = Utf8               isSynthetic
+   #258 = Utf8               iterator
+   #259 = Utf8               java/io/ObjectStreamField
+   #260 = Utf8               java/io/Serializable
+   #261 = Utf8               java/lang/Class
+   #262 = Utf8               java/lang/Class$1
+   #263 = Utf8               java/lang/Class$2
+   #264 = Utf8               java/lang/Class$3
+   #265 = Utf8               java/lang/Class$4
+   #266 = Utf8               java/lang/Class$EnclosingMethodInfo
+   #267 = Utf8               java/lang/Class$MethodArray
+   #268 = Utf8               java/lang/Class$SecurityManagerHelper
+   #269 = Utf8               java/lang/ClassCastException
+   #270 = Utf8               java/lang/ClassLoader
+   #271 = Utf8               java/lang/ClassNotFoundException
+   #272 = Utf8               java/lang/ClassValue
+   #273 = Utf8               java/lang/ClassValue$ClassValueMap
+   #274 = Utf8               java/lang/Enum
+   #275 = Utf8               java/lang/IllegalAccessException
+   #276 = Utf8               java/lang/IllegalArgumentException
+   #277 = Utf8               java/lang/IndexOutOfBoundsException
+   #278 = Utf8               java/lang/InstantiationException
+   #279 = Utf8               java/lang/InternalError
+   #280 = Utf8               java/lang/NoSuchFieldException
+   #281 = Utf8               java/lang/NoSuchMethodError
+   #282 = Utf8               java/lang/NoSuchMethodException
+   #283 = Utf8               java/lang/NullPointerException
+   #284 = Utf8               java/lang/Object
+   #285 = Utf8               java/lang/Package
+   #286 = Utf8               java/lang/SecurityException
+   #287 = Utf8               java/lang/SecurityManager
+   #288 = Utf8               java/lang/String
+   #289 = Utf8               java/lang/StringBuilder
+   #290 = Utf8               java/lang/System
+   #291 = Utf8               java/lang/Throwable
+   #292 = Utf8               java/lang/annotation/Annotation
+   #293 = Utf8               java/lang/ref/SoftReference
+   #294 = Utf8               java/lang/reflect/AnnotatedElement
+   #295 = Utf8               java/lang/reflect/Array
+   #296 = Utf8               java/lang/reflect/Constructor
+   #297 = Utf8               java/lang/reflect/Field
+   #298 = Utf8               java/lang/reflect/GenericArrayType
+   #299 = Utf8               java/lang/reflect/GenericDeclaration
+   #300 = Utf8               java/lang/reflect/InvocationTargetException
+   #301 = Utf8               java/lang/reflect/Method
+   #302 = Utf8               java/lang/reflect/Modifier
+   #303 = Utf8               java/lang/reflect/Proxy
+   #304 = Utf8               java/lang/reflect/Type
+   #305 = Utf8               java/lang/reflect/TypeVariable
+   #306 = Utf8               java/security/AccessController
+   #307 = Utf8               java/security/Permissions
+   #308 = Utf8               java/security/ProtectionDomain
+   #309 = Utf8               java/util/ArrayList
+   #310 = Utf8               java/util/Collection
+   #311 = Utf8               java/util/HashMap
+   #312 = Utf8               java/util/HashSet
+   #313 = Utf8               java/util/Iterator
+   #314 = Utf8               java/util/List
+   #315 = Utf8               java/util/Map
+   #316 = Utf8               java/util/Map$Entry
+   #317 = Utf8               java/util/Set
+   #318 = Utf8               lastIndexOf
+   #319 = Utf8               lastRedefinedCount
+   #320 = Utf8               length
+   #321 = Utf8               make
+   #322 = Utf8               name
+   #323 = Utf8               needsPackageAccessCheck
+   #324 = Utf8               newInstance
+   #325 = Utf8               newInstanceCallerCache
+   #326 = Utf8               next
+   #327 = Utf8               null
+   #328 = Utf8               overrideCheckMemberAccess
+   #329 = Utf8               parseAnnotations
+   #330 = Utf8               privateGetDeclaredConstructors
+   #331 = Utf8               privateGetDeclaredFields
+   #332 = Utf8               privateGetDeclaredMethods
+   #333 = Utf8               privateGetPublicFields
+   #334 = Utf8               privateGetPublicMethods
+   #335 = Utf8               publicConstructors
+   #336 = Utf8               publicFields
+   #337 = Utf8               publicMethods
+   #338 = Utf8               put
+   #339 = Utf8               putAll
+   #340 = Utf8               quickCheckMemberAccess
+   #341 = Utf8               reflectionFactory
+   #342 = Utf8               registerNatives
+   #343 = Utf8               removeByNameAndSignature
+   #344 = Utf8               replace
+   #345 = Utf8               resolveName
+   #346 = Utf8               searchFields
+   #347 = Utf8               searchMethods
+   #348 = Utf8               serialPersistentFields
+   #349 = Utf8               serialVersionUID
+   #350 = Utf8               setAnnotationType
+   #351 = Utf8               setProtectionDomain0
+   #352 = Utf8               setSigners
+   #353 = Utf8               size
+   #354 = Utf8               sm
+   #355 = Utf8               smHelper
+   #356 = Utf8               startsWith
+   #357 = Utf8               substring
+   #358 = Utf8               sun/misc/Unsafe
+   #359 = Utf8               sun/reflect/Reflection
+   #360 = Utf8               sun/reflect/ReflectionFactory
+   #361 = Utf8               sun/reflect/ReflectionFactory$GetReflectionFactoryAction
+   #362 = Utf8               sun/reflect/annotation/AnnotationParser
+   #363 = Utf8               sun/reflect/annotation/AnnotationType
+   #364 = Utf8               sun/reflect/generics/factory/CoreReflectionFactory
+   #365 = Utf8               sun/reflect/generics/repository/ClassRepository
+   #366 = Utf8               sun/reflect/generics/repository/ConstructorRepository
+   #367 = Utf8               sun/reflect/generics/repository/MethodRepository
+   #368 = Utf8               sun/reflect/generics/scope/ClassScope
+   #369 = Utf8               sun/reflect/misc/ReflectUtil
+   #370 = Utf8               sun/security/util/SecurityConstants
+   #371 = Utf8               throwException
+   #372 = Utf8               toArray
+   #373 = Utf8               toClass
+   #374 = Utf8               toString
+   #375 = Utf8               useCaches
+   #376 = Utf8               values
+   #377 = Integer            4096
+   #378 = Integer            8192
+   #379 = Integer            16384
+   #380 = Long               3206093459760846163l
+   #382 = String             #19          //   is not an enum type
+   #383 = String             #20          //   to 
+   #384 = String             #59          //  Cannot cast 
+   #385 = Class              #85          //  "[Ljava/lang/Class;"
+   #386 = Class              #86          //  "[Ljava/lang/Object;"
+   #387 = Class              #87          //  "[Ljava/lang/reflect/Constructor;"
+   #388 = Class              #88          //  "[Ljava/lang/reflect/Field;"
+   #389 = Class              #89          //  "[Ljava/lang/reflect/Method;"
+   #390 = Class              #90          //  "[Ljava/lang/reflect/Type;"
+   #391 = Class              #91          //  "[Ljava/lang/reflect/TypeVariable;"
+   #392 = Class              #259         //  java/io/ObjectStreamField
+   #393 = Class              #260         //  java/io/Serializable
+   #394 = Class              #261         //  java/lang/Class
+   #395 = Class              #262         //  java/lang/Class$1
+   #396 = Class              #263         //  java/lang/Class$2
+   #397 = Class              #264         //  java/lang/Class$3
+   #398 = Class              #265         //  java/lang/Class$4
+   #399 = Class              #266         //  java/lang/Class$EnclosingMethodInfo
+   #400 = Class              #267         //  java/lang/Class$MethodArray
+   #401 = Class              #268         //  java/lang/Class$SecurityManagerHelper
+   #402 = Class              #269         //  java/lang/ClassCastException
+   #403 = Class              #270         //  java/lang/ClassLoader
+   #404 = Class              #271         //  java/lang/ClassNotFoundException
+   #405 = Class              #272         //  java/lang/ClassValue
+   #406 = Class              #273         //  java/lang/ClassValue$ClassValueMap
+   #407 = Class              #274         //  java/lang/Enum
+   #408 = Class              #275         //  java/lang/IllegalAccessException
+   #409 = Class              #276         //  java/lang/IllegalArgumentException
+   #410 = Class              #277         //  java/lang/IndexOutOfBoundsException
+   #411 = Class              #278         //  java/lang/InstantiationException
+   #412 = Class              #279         //  java/lang/InternalError
+   #413 = Class              #280         //  java/lang/NoSuchFieldException
+   #414 = Class              #281         //  java/lang/NoSuchMethodError
+   #415 = Class              #282         //  java/lang/NoSuchMethodException
+   #416 = Class              #283         //  java/lang/NullPointerException
+   #417 = Class              #284         //  java/lang/Object
+   #418 = Class              #285         //  java/lang/Package
+   #419 = Class              #286         //  java/lang/SecurityException
+   #420 = Class              #287         //  java/lang/SecurityManager
+   #421 = Class              #288         //  java/lang/String
+   #422 = Class              #289         //  java/lang/StringBuilder
+   #423 = Class              #290         //  java/lang/System
+   #424 = Class              #291         //  java/lang/Throwable
+   #425 = Class              #292         //  java/lang/annotation/Annotation
+   #426 = Class              #293         //  java/lang/ref/SoftReference
+   #427 = Class              #294         //  java/lang/reflect/AnnotatedElement
+   #428 = Class              #295         //  java/lang/reflect/Array
+   #429 = Class              #296         //  java/lang/reflect/Constructor
+   #430 = Class              #297         //  java/lang/reflect/Field
+   #431 = Class              #298         //  java/lang/reflect/GenericArrayType
+   #432 = Class              #299         //  java/lang/reflect/GenericDeclaration
+   #433 = Class              #300         //  java/lang/reflect/InvocationTargetException
+   #434 = Class              #301         //  java/lang/reflect/Method
+   #435 = Class              #302         //  java/lang/reflect/Modifier
+   #436 = Class              #303         //  java/lang/reflect/Proxy
+   #437 = Class              #304         //  java/lang/reflect/Type
+   #438 = Class              #305         //  java/lang/reflect/TypeVariable
+   #439 = Class              #306         //  java/security/AccessController
+   #440 = Class              #307         //  java/security/Permissions
+   #441 = Class              #308         //  java/security/ProtectionDomain
+   #442 = Class              #309         //  java/util/ArrayList
+   #443 = Class              #310         //  java/util/Collection
+   #444 = Class              #311         //  java/util/HashMap
+   #445 = Class              #312         //  java/util/HashSet
+   #446 = Class              #313         //  java/util/Iterator
+   #447 = Class              #314         //  java/util/List
+   #448 = Class              #315         //  java/util/Map
+   #449 = Class              #316         //  java/util/Map$Entry
+   #450 = Class              #317         //  java/util/Set
+   #451 = Class              #358         //  sun/misc/Unsafe
+   #452 = Class              #359         //  sun/reflect/Reflection
+   #453 = Class              #360         //  sun/reflect/ReflectionFactory
+   #454 = Class              #361         //  sun/reflect/ReflectionFactory$GetReflectionFactoryAction
+   #455 = Class              #362         //  sun/reflect/annotation/AnnotationParser
+   #456 = Class              #363         //  sun/reflect/annotation/AnnotationType
+   #457 = Class              #364         //  sun/reflect/generics/factory/CoreReflectionFactory
+   #458 = Class              #365         //  sun/reflect/generics/repository/ClassRepository
+   #459 = Class              #366         //  sun/reflect/generics/repository/ConstructorRepository
+   #460 = Class              #367         //  sun/reflect/generics/repository/MethodRepository
+   #461 = Class              #368         //  sun/reflect/generics/scope/ClassScope
+   #462 = Class              #369         //  sun/reflect/misc/ReflectUtil
+   #463 = Class              #370         //  sun/security/util/SecurityConstants
+   #464 = Utf8               Ljava/lang/Class<*>;
+   #465 = Utf8               Ljava/lang/Class$SecurityManagerHelper;
+   #466 = Utf8               Ljava/lang/ClassValue$ClassValueMap;
+   #467 = Utf8               Ljava/lang/RuntimePermission;
+   #468 = Utf8               Ljava/lang/SecurityManager;
+   #469 = Utf8               Ljava/lang/ref/SoftReference;
+   #470 = Utf8               Ljava/lang/reflect/Constructor;
+   #471 = Utf8               Ljava/lang/reflect/Constructor<TT;>;
+   #472 = Utf8               Ljava/security/AllPermission;
+   #473 = Utf8               Ljava/security/ProtectionDomain;
+   #474 = Utf8               Ljava/util/Map;
+   #475 = Utf8               Lsun/reflect/CallerSensitive;
+   #476 = Utf8               Lsun/reflect/ReflectionFactory;
+   #477 = Utf8               Lsun/reflect/annotation/AnnotationType;
+   #478 = Utf8               Lsun/reflect/generics/repository/ClassRepository;
+   #479 = Utf8               <A::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TA;>;)TA;
+   #480 = Utf8               Ljava/util/Map<Ljava/lang/String;TT;>;
+   #481 = Utf8               Ljava/lang/ref/SoftReference<[Ljava/lang/reflect/Constructor<TT;>;>;
+   #482 = Utf8               Ljava/lang/ref/SoftReference<[Ljava/lang/reflect/Field;>;
+   #483 = Utf8               Ljava/lang/ref/SoftReference<[Ljava/lang/reflect/Method;>;
+   #484 = Utf8               <U:Ljava/lang/Object;>(Ljava/lang/Class<TU;>;)Ljava/lang/Class<+TU;>;
+   #485 = Utf8               <U:Ljava/lang/Object;>([Ljava/lang/reflect/Constructor<TU;>;)[Ljava/lang/reflect/Constructor<TU;>;
+   #486 = Utf8               Ljava/util/Map<Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;Ljava/lang/annotation/Annotation;>;
+   #487 = Utf8               <T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/io/Serializable;Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Type;Ljava/lang/reflect/AnnotatedElement;
+   #488 = Utf8               ()Ljava/lang/Class;
+   #489 = Utf8               ()Ljava/lang/Class<*>;
+   #490 = Utf8               ()Ljava/lang/Class<-TT;>;
+   #491 = Utf8               ()[Ljava/lang/Class;
+   #492 = Utf8               ()[Ljava/lang/Class<*>;
+   #493 = Utf8               (ILjava/lang/Class;Z)V
+   #494 = Utf8               (ILjava/lang/Class<*>;Z)V
+   #495 = Utf8               (Ljava/lang/Class;)V
+   #496 = Utf8               (Ljava/lang/Class;)Z
+   #497 = Utf8               (Ljava/lang/Class;I)V
+   #498 = Utf8               (Ljava/lang/Class;I)Z
+   #499 = Utf8               (Ljava/lang/Class<*>;)Z
+   #500 = Utf8               ()Ljava/lang/Class$EnclosingMethodInfo;
+   #501 = Utf8               (Ljava/lang/Class$MethodArray;)V
+   #502 = Utf8               ()Ljava/lang/ClassLoader;
+   #503 = Utf8               (Ljava/lang/ClassLoader;Z)V
+   #504 = Utf8               ()Ljava/lang/Object;
+   #505 = Utf8               ()[Ljava/lang/Object;
+   #506 = Utf8               (Ljava/lang/Object;)TT;
+   #507 = Utf8               (Ljava/lang/Object;)V
+   #508 = Utf8               ([Ljava/lang/Object;)V
+   #509 = Utf8               ()Ljava/lang/Package;
+   #510 = Utf8               ()Ljava/lang/SecurityManager;
+   #511 = Utf8               (Ljava/lang/SecurityManager;)V
+   #512 = Utf8               (Ljava/lang/SecurityManager;)Z
+   #513 = Utf8               (CC)Ljava/lang/String;
+   #514 = Utf8               ()Ljava/lang/Throwable;
+   #515 = Utf8               ()[Ljava/lang/annotation/Annotation;
+   #516 = Utf8               ()Ljava/lang/reflect/Constructor;
+   #517 = Utf8               ()Ljava/lang/reflect/Constructor<*>;
+   #518 = Utf8               ()[Ljava/lang/reflect/Constructor;
+   #519 = Utf8               ()[Ljava/lang/reflect/Constructor<*>;
+   #520 = Utf8               (Z)[Ljava/lang/reflect/Constructor;
+   #521 = Utf8               (Z)[Ljava/lang/reflect/Constructor<TT;>;
+   #522 = Utf8               ()[Ljava/lang/reflect/Field;
+   #523 = Utf8               (Z)[Ljava/lang/reflect/Field;
+   #524 = Utf8               ()Ljava/lang/reflect/Method;
+   #525 = Utf8               ()[Ljava/lang/reflect/Method;
+   #526 = Utf8               (I)Ljava/lang/reflect/Method;
+   #527 = Utf8               (Ljava/lang/reflect/Method;)V
+   #528 = Utf8               (Z)[Ljava/lang/reflect/Method;
+   #529 = Utf8               ([Ljava/lang/reflect/Method;)V
+   #530 = Utf8               ()Ljava/lang/reflect/Type;
+   #531 = Utf8               ()[Ljava/lang/reflect/Type;
+   #532 = Utf8               ()[Ljava/lang/reflect/TypeVariable;
+   #533 = Utf8               (Ljava/security/Permission;)V
+   #534 = Utf8               ()Ljava/security/ProtectionDomain;
+   #535 = Utf8               (Ljava/security/ProtectionDomain;)V
+   #536 = Utf8               ()Ljava/util/Iterator;
+   #537 = Utf8               ()Ljava/util/Map;
+   #538 = Utf8               (Ljava/util/Map;)V
+   #539 = Utf8               ()Ljava/util/Set;
+   #540 = Utf8               ()Lsun/misc/Unsafe;
+   #541 = Utf8               ()Lsun/reflect/ConstantPool;
+   #542 = Utf8               ()Lsun/reflect/ReflectionFactory;
+   #543 = Utf8               ()Lsun/reflect/annotation/AnnotationType;
+   #544 = Utf8               (Lsun/reflect/annotation/AnnotationType;)V
+   #545 = Utf8               ()Lsun/reflect/generics/factory/GenericsFactory;
+   #546 = Utf8               ()Lsun/reflect/generics/repository/ClassRepository;
+   #547 = Utf8               (Ljava/lang/String;)Ljava/io/InputStream;
+   #548 = Utf8               (Ljava/lang/Class;)Ljava/lang/Class;
+   #549 = Utf8               (Ljava/lang/ClassLoader;Ljava/lang/Class;)V
+   #550 = Utf8               (Ljava/lang/ClassLoader;[Ljava/lang/Class;)V
+   #551 = Utf8               (Ljava/lang/String;)Ljava/lang/Class<*>;
+   #552 = Utf8               (Ljava/lang/reflect/Type;)Ljava/lang/Class;
+   #553 = Utf8               (Ljava/lang/reflect/Type;)Ljava/lang/Class<*>;
+   #554 = Utf8               ()[Ljava/lang/reflect/TypeVariable<Ljava/lang/Class<TT;>;>;
+   #555 = Utf8               ([Ljava/lang/Object;Ljava/lang/Class$1;)V
+   #556 = Utf8               (Ljava/lang/Class;)Ljava/lang/ClassLoader;
+   #557 = Utf8               (Ljava/lang/ClassLoader;Ljava/lang/ClassLoader;)Z
+   #558 = Utf8               (Ljava/lang/Class;I)Ljava/lang/Object;
+   #559 = Utf8               ([Ljava/lang/Object;)[Ljava/lang/Object;
+   #560 = Utf8               ([Ljava/lang/Object;[Ljava/lang/Object;)Z
+   #561 = Utf8               (Ljava/security/PrivilegedAction;)Ljava/lang/Object;
+   #562 = Utf8               (Ljava/lang/Class;)Ljava/lang/Package;
+   #563 = Utf8               ([Ljava/lang/Class;)Ljava/lang/String;
+   #564 = Utf8               ([Ljava/lang/Class<*>;)Ljava/lang/String;
+   #565 = Utf8               (Ljava/lang/Object;)Ljava/lang/String;
+   #566 = Utf8               ()Ljava/util/Map<Ljava/lang/String;TT;>;
+   #567 = Utf8               (Ljava/lang/String;)Ljava/lang/StringBuilder;
+   #568 = Utf8               (Ljava/lang/Class;)Ljava/lang/annotation/Annotation;
+   #569 = Utf8               (Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z
+   #570 = Utf8               (Ljava/util/Map;)[Ljava/lang/annotation/Annotation;
+   #571 = Utf8               (Ljava/lang/Class;Ljava/lang/reflect/Constructor;)V
+   #572 = Utf8               ([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;
+   #573 = Utf8               ([Ljava/lang/Class;I)Ljava/lang/reflect/Constructor;
+   #574 = Utf8               ([Ljava/lang/Class<*>;)Ljava/lang/reflect/Constructor<TT;>;
+   #575 = Utf8               ([Ljava/lang/Class<*>;I)Ljava/lang/reflect/Constructor<TT;>;
+   #576 = Utf8               (Ljava/lang/reflect/Constructor;)Ljava/lang/reflect/Constructor;
+   #577 = Utf8               ([Ljava/lang/reflect/Constructor;)[Ljava/lang/reflect/Constructor;
+   #578 = Utf8               (Ljava/lang/String;)Ljava/lang/reflect/Field;
+   #579 = Utf8               (Ljava/lang/reflect/Field;)Ljava/lang/reflect/Field;
+   #580 = Utf8               ([Ljava/lang/reflect/Field;)[Ljava/lang/reflect/Field;
+   #581 = Utf8               (Ljava/util/Collection;[Ljava/lang/reflect/Field;)V
+   #582 = Utf8               (Ljava/util/Set;)[Ljava/lang/reflect/Field;
+   #583 = Utf8               (Ljava/lang/Class;)Ljava/lang/reflect/Method;
+   #584 = Utf8               (Ljava/lang/Class;Ljava/lang/reflect/Method;)V
+   #585 = Utf8               (Ljava/lang/reflect/Method;)Ljava/lang/reflect/Method;
+   #586 = Utf8               ([Ljava/lang/reflect/Method;)[Ljava/lang/reflect/Method;
+   #587 = Utf8               (Ljava/lang/String;)Ljava/net/URL;
+   #588 = Utf8               (Ljava/security/CodeSource;Ljava/security/PermissionCollection;)V
+   #589 = Utf8               (Ljava/lang/Class;)Lsun/reflect/annotation/AnnotationType;
+   #590 = Utf8               (Ljava/lang/Class;)Lsun/reflect/generics/scope/ClassScope;
+   #591 = Utf8               (Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;
+   #592 = Utf8               (Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class<*>;
+   #593 = Utf8               (Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/Object;I)V
+   #594 = Utf8               (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+   #595 = Utf8               (Ljava/util/Set<Ljava/lang/Class<*>;>;)[Ljava/lang/reflect/Field;
+   #596 = Utf8               ([Ljava/lang/reflect/Field;Ljava/lang/String;)Ljava/lang/reflect/Field;
+   #597 = Utf8               (Ljava/lang/Class;[Ljava/lang/reflect/Field;)[Ljava/lang/reflect/Field;
+   #598 = Utf8               (Ljava/util/Collection<Ljava/lang/reflect/Field;>;[Ljava/lang/reflect/Field;)V
+   #599 = Utf8               (Ljava/lang/String;[Ljava/lang/Class<*>;)Ljava/lang/reflect/Method;
+   #600 = Utf8               (Ljava/lang/Class<+Ljava/lang/SecurityManager;>;)Ljava/lang/reflect/Method;
+   #601 = Utf8               (Ljava/lang/Class;[Ljava/lang/reflect/Method;)[Ljava/lang/reflect/Method;
+   #602 = Utf8               ([BLsun/reflect/ConstantPool;Ljava/lang/Class;)Ljava/util/Map;
+   #603 = Utf8               (Ljava/lang/reflect/GenericDeclaration;Lsun/reflect/generics/scope/Scope;)Lsun/reflect/generics/factory/CoreReflectionFactory;
+   #604 = Utf8               (Ljava/lang/String;Lsun/reflect/generics/factory/GenericsFactory;)Lsun/reflect/generics/repository/ClassRepository;
+   #605 = Utf8               (Ljava/lang/String;Lsun/reflect/generics/factory/GenericsFactory;)Lsun/reflect/generics/repository/ConstructorRepository;
+   #606 = Utf8               (Ljava/lang/String;Lsun/reflect/generics/factory/GenericsFactory;)Lsun/reflect/generics/repository/MethodRepository;
+   #607 = Utf8               ([Ljava/lang/reflect/Method;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+   #608 = Utf8               ([Ljava/lang/reflect/Method;Ljava/lang/String;[Ljava/lang/Class<*>;)Ljava/lang/reflect/Method;
+   #609 = NameAndType        #121:#69     //  classRedefinedCount:I
+   #610 = NameAndType        #319:#69     //  lastRedefinedCount:I
+   #611 = NameAndType        #233:#83     //  initted:Z
+   #612 = NameAndType        #328:#83     //  overrideCheckMemberAccess:Z
+   #613 = NameAndType        #375:#83     //  useCaches:Z
+   #614 = NameAndType        #348:#84     //  serialPersistentFields:[Ljava/io/ObjectStreamField;
+   #615 = NameAndType        #325:#73     //  newInstanceCallerCache:Ljava/lang/Class;
+   #616 = NameAndType        #355:#465    //  smHelper:Ljava/lang/Class$SecurityManagerHelper;
+   #617 = NameAndType        #108:#74     //  assertionLock:Ljava/lang/Object;
+   #618 = NameAndType        #145:#86     //  enumConstants:[Ljava/lang/Object;
+   #619 = NameAndType        #57:#467     //  CHECK_MEMBER_ACCESS_PERMISSION:Ljava/lang/RuntimePermission;
+   #620 = NameAndType        #67:#467     //  GET_CLASSLOADER_PERMISSION:Ljava/lang/RuntimePermission;
+   #621 = NameAndType        #68:#467     //  GET_PD_PERMISSION:Ljava/lang/RuntimePermission;
+   #622 = NameAndType        #354:#468    //  sm:Ljava/lang/SecurityManager;
+   #623 = NameAndType        #322:#75     //  name:Ljava/lang/String;
+   #624 = NameAndType        #134:#469    //  declaredConstructors:Ljava/lang/ref/SoftReference;
+   #625 = NameAndType        #135:#469    //  declaredFields:Ljava/lang/ref/SoftReference;
+   #626 = NameAndType        #136:#469    //  declaredMethods:Ljava/lang/ref/SoftReference;
+   #627 = NameAndType        #137:#469    //  declaredPublicFields:Ljava/lang/ref/SoftReference;
+   #628 = NameAndType        #138:#469    //  declaredPublicMethods:Ljava/lang/ref/SoftReference;
+   #629 = NameAndType        #335:#469    //  publicConstructors:Ljava/lang/ref/SoftReference;
+   #630 = NameAndType        #336:#469    //  publicFields:Ljava/lang/ref/SoftReference;
+   #631 = NameAndType        #337:#469    //  publicMethods:Ljava/lang/ref/SoftReference;
+   #632 = NameAndType        #109:#470    //  cachedConstructor:Ljava/lang/reflect/Constructor;
+   #633 = NameAndType        #55:#472     //  ALL_PERMISSION:Ljava/security/AllPermission;
+   #634 = NameAndType        #101:#473    //  allPermDomain:Ljava/security/ProtectionDomain;
+   #635 = NameAndType        #103:#474    //  annotations:Ljava/util/Map;
+   #636 = NameAndType        #120:#474    //  classAssertionStatus:Ljava/util/Map;
+   #637 = NameAndType        #133:#474    //  declaredAnnotations:Ljava/util/Map;
+   #638 = NameAndType        #144:#474    //  enumConstantDirectory:Ljava/util/Map;
+   #639 = NameAndType        #341:#476    //  reflectionFactory:Lsun/reflect/ReflectionFactory;
+   #640 = NameAndType        #102:#477    //  annotationType:Lsun/reflect/annotation/AnnotationType;
+   #641 = NameAndType        #151:#478    //  genericInfo:Lsun/reflect/generics/repository/ClassRepository;
+   #642 = NameAndType        #206:#22     //  getModifiers:()I
+   #643 = NameAndType        #320:#22     //  length:()I
+   #644 = NameAndType        #353:#22     //  size:()I
+   #645 = NameAndType        #54:#25      //  "<init>":()V
+   #646 = NameAndType        #114:#25     //  checkInitted:()V
+   #647 = NameAndType        #123:#25     //  clearCachesOnClassRedefinition:()V
+   #648 = NameAndType        #125:#25     //  compactAndTrim:()V
+   #649 = NameAndType        #232:#25     //  initAnnotationsIfNecessary:()V
+   #650 = NameAndType        #342:#25     //  registerNatives:()V
+   #651 = NameAndType        #231:#26     //  hasNext:()Z
+   #652 = NameAndType        #240:#26     //  isAnonymousClass:()Z
+   #653 = NameAndType        #241:#26     //  isArray:()Z
+   #654 = NameAndType        #245:#26     //  isConstructor:()Z
+   #655 = NameAndType        #246:#26     //  isEnum:()Z
+   #656 = NameAndType        #247:#26     //  isInherited:()Z
+   #657 = NameAndType        #249:#26     //  isInterface:()Z
+   #658 = NameAndType        #251:#26     //  isLocalOrAnonymousClass:()Z
+   #659 = NameAndType        #253:#26     //  isMethod:()Z
+   #660 = NameAndType        #255:#26     //  isPrimitive:()Z
+   #661 = NameAndType        #214:#27     //  getRawAnnotations:()[B
+   #662 = NameAndType        #242:#29     //  isAsciiDigit:(C)Z
+   #663 = NameAndType        #112:#30     //  charAt:(I)C
+   #664 = NameAndType        #318:#31     //  lastIndexOf:(I)I
+   #665 = NameAndType        #54:#33      //  "<init>":(I)V
+   #666 = NameAndType        #237:#34     //  isAbstract:(I)Z
+   #667 = NameAndType        #157:#488    //  getCallerClass:()Ljava/lang/Class;
+   #668 = NameAndType        #160:#488    //  getClass:()Ljava/lang/Class;
+   #669 = NameAndType        #164:#488    //  getComponentType:()Ljava/lang/Class;
+   #670 = NameAndType        #181:#488    //  getDeclaringClass:()Ljava/lang/Class;
+   #671 = NameAndType        #182:#488    //  getDeclaringClass0:()Ljava/lang/Class;
+   #672 = NameAndType        #184:#488    //  getEnclosingClass:()Ljava/lang/Class;
+   #673 = NameAndType        #218:#488    //  getReturnType:()Ljava/lang/Class;
+   #674 = NameAndType        #224:#488    //  getSuperclass:()Ljava/lang/Class;
+   #675 = NameAndType        #171:#491    //  getDeclaredClasses0:()[Ljava/lang/Class;
+   #676 = NameAndType        #201:#491    //  getInterfaces:()[Ljava/lang/Class;
+   #677 = NameAndType        #210:#491    //  getParameterTypes:()[Ljava/lang/Class;
+   #678 = NameAndType        #115:#493    //  checkMemberAccess:(ILjava/lang/Class;Z)V
+   #679 = NameAndType        #54:#495     //  "<init>":(Ljava/lang/Class;)V
+   #680 = NameAndType        #140:#496    //  desiredAssertionStatus0:(Ljava/lang/Class;)Z
+   #681 = NameAndType        #243:#496    //  isAssignableFrom:(Ljava/lang/Class;)Z
+   #682 = NameAndType        #254:#496    //  isNonPublicProxyClass:(Ljava/lang/Class;)Z
+   #683 = NameAndType        #256:#496    //  isProxyClass:(Ljava/lang/Class;)Z
+   #684 = NameAndType        #115:#497    //  checkMemberAccess:(Ljava/lang/Class;I)V
+   #685 = NameAndType        #340:#498    //  quickCheckMemberAccess:(Ljava/lang/Class;I)Z
+   #686 = NameAndType        #188:#500    //  getEnclosingMethodInfo:()Ljava/lang/Class$EnclosingMethodInfo;
+   #687 = NameAndType        #99:#501     //  addAll:(Ljava/lang/Class$MethodArray;)V
+   #688 = NameAndType        #100:#501    //  addAllIfNotPresent:(Ljava/lang/Class$MethodArray;)V
+   #689 = NameAndType        #161:#502    //  getClassLoader:()Ljava/lang/ClassLoader;
+   #690 = NameAndType        #162:#502    //  getClassLoader0:()Ljava/lang/ClassLoader;
+   #691 = NameAndType        #116:#503    //  checkPackageAccess:(Ljava/lang/ClassLoader;Z)V
+   #692 = NameAndType        #124:#504    //  clone:()Ljava/lang/Object;
+   #693 = NameAndType        #152:#504    //  get:()Ljava/lang/Object;
+   #694 = NameAndType        #202:#504    //  getKey:()Ljava/lang/Object;
+   #695 = NameAndType        #230:#504    //  getValue:()Ljava/lang/Object;
+   #696 = NameAndType        #326:#504    //  next:()Ljava/lang/Object;
+   #697 = NameAndType        #187:#505    //  getEnclosingMethod0:()[Ljava/lang/Object;
+   #698 = NameAndType        #190:#505    //  getEnumConstantsShared:()[Ljava/lang/Object;
+   #699 = NameAndType        #54:#507     //  "<init>":(Ljava/lang/Object;)V
+   #700 = NameAndType        #98:#37      //  add:(Ljava/lang/Object;)Z
+   #701 = NameAndType        #126:#37     //  contains:(Ljava/lang/Object;)Z
+   #702 = NameAndType        #146:#37     //  equals:(Ljava/lang/Object;)Z
+   #703 = NameAndType        #248:#37     //  isInstance:(Ljava/lang/Object;)Z
+   #704 = NameAndType        #219:#510    //  getSecurityManager:()Ljava/lang/SecurityManager;
+   #705 = NameAndType        #54:#511     //  "<init>":(Ljava/lang/SecurityManager;)V
+   #706 = NameAndType        #244:#512    //  isCheckMemberAccessOverridden:(Ljava/lang/SecurityManager;)Z
+   #707 = NameAndType        #158:#23     //  getCanonicalName:()Ljava/lang/String;
+   #708 = NameAndType        #183:#23     //  getDescriptor:()Ljava/lang/String;
+   #709 = NameAndType        #198:#23     //  getGenericSignature:()Ljava/lang/String;
+   #710 = NameAndType        #207:#23     //  getName:()Ljava/lang/String;
+   #711 = NameAndType        #208:#23     //  getName0:()Ljava/lang/String;
+   #712 = NameAndType        #221:#23     //  getSimpleBinaryName:()Ljava/lang/String;
+   #713 = NameAndType        #222:#23     //  getSimpleName:()Ljava/lang/String;
+   #714 = NameAndType        #235:#23     //  intern:()Ljava/lang/String;
+   #715 = NameAndType        #322:#23     //  name:()Ljava/lang/String;
+   #716 = NameAndType        #374:#23     //  toString:()Ljava/lang/String;
+   #717 = NameAndType        #344:#513    //  replace:(CC)Ljava/lang/String;
+   #718 = NameAndType        #357:#32     //  substring:(I)Ljava/lang/String;
+   #719 = NameAndType        #357:#35     //  substring:(II)Ljava/lang/String;
+   #720 = NameAndType        #318:#39     //  lastIndexOf:(Ljava/lang/String;)I
+   #721 = NameAndType        #54:#42      //  "<init>":(Ljava/lang/String;)V
+   #722 = NameAndType        #116:#42     //  checkPackageAccess:(Ljava/lang/String;)V
+   #723 = NameAndType        #139:#43     //  desiredAssertionStatus:(Ljava/lang/String;)Z
+   #724 = NameAndType        #356:#43     //  startsWith:(Ljava/lang/String;)Z
+   #725 = NameAndType        #227:#514    //  getTargetException:()Ljava/lang/Throwable;
+   #726 = NameAndType        #371:#45     //  throwException:(Ljava/lang/Throwable;)V
+   #727 = NameAndType        #173:#518    //  getDeclaredConstructors:()[Ljava/lang/reflect/Constructor;
+   #728 = NameAndType        #174:#520    //  getDeclaredConstructors0:(Z)[Ljava/lang/reflect/Constructor;
+   #729 = NameAndType        #330:#520    //  privateGetDeclaredConstructors:(Z)[Ljava/lang/reflect/Constructor;
+   #730 = NameAndType        #177:#523    //  getDeclaredFields0:(Z)[Ljava/lang/reflect/Field;
+   #731 = NameAndType        #331:#523    //  privateGetDeclaredFields:(Z)[Ljava/lang/reflect/Field;
+   #732 = NameAndType        #156:#525    //  getArray:()[Ljava/lang/reflect/Method;
+   #733 = NameAndType        #179:#525    //  getDeclaredMethods:()[Ljava/lang/reflect/Method;
+   #734 = NameAndType        #334:#525    //  privateGetPublicMethods:()[Ljava/lang/reflect/Method;
+   #735 = NameAndType        #152:#526    //  get:(I)Ljava/lang/reflect/Method;
+   #736 = NameAndType        #343:#527    //  removeByNameAndSignature:(Ljava/lang/reflect/Method;)V
+   #737 = NameAndType        #180:#528    //  getDeclaredMethods0:(Z)[Ljava/lang/reflect/Method;
+   #738 = NameAndType        #332:#528    //  privateGetDeclaredMethods:(Z)[Ljava/lang/reflect/Method;
+   #739 = NameAndType        #99:#529     //  addAll:([Ljava/lang/reflect/Method;)V
+   #740 = NameAndType        #195:#530    //  getGenericComponentType:()Ljava/lang/reflect/Type;
+   #741 = NameAndType        #218:#530    //  getReturnType:()Ljava/lang/reflect/Type;
+   #742 = NameAndType        #224:#530    //  getSuperclass:()Ljava/lang/reflect/Type;
+   #743 = NameAndType        #210:#531    //  getParameterTypes:()[Ljava/lang/reflect/Type;
+   #744 = NameAndType        #223:#531    //  getSuperInterfaces:()[Ljava/lang/reflect/Type;
+   #745 = NameAndType        #228:#532    //  getTypeParameters:()[Ljava/lang/reflect/TypeVariable;
+   #746 = NameAndType        #98:#533     //  add:(Ljava/security/Permission;)V
+   #747 = NameAndType        #117:#533    //  checkPermission:(Ljava/security/Permission;)V
+   #748 = NameAndType        #213:#534    //  getProtectionDomain0:()Ljava/security/ProtectionDomain;
+   #749 = NameAndType        #258:#536    //  iterator:()Ljava/util/Iterator;
+   #750 = NameAndType        #339:#538    //  putAll:(Ljava/util/Map;)V
+   #751 = NameAndType        #143:#539    //  entrySet:()Ljava/util/Set;
+   #752 = NameAndType        #229:#540    //  getUnsafe:()Lsun/misc/Unsafe;
+   #753 = NameAndType        #165:#541    //  getConstantPool:()Lsun/reflect/ConstantPool;
+   #754 = NameAndType        #215:#542    //  getReflectionFactory:()Lsun/reflect/ReflectionFactory;
+   #755 = NameAndType        #191:#545    //  getFactory:()Lsun/reflect/generics/factory/GenericsFactory;
+   #756 = NameAndType        #196:#546    //  getGenericInfo:()Lsun/reflect/generics/repository/ClassRepository;
+   #757 = NameAndType        #217:#547    //  getResourceAsStream:(Ljava/lang/String;)Ljava/io/InputStream;
+   #758 = NameAndType        #226:#547    //  getSystemResourceAsStream:(Ljava/lang/String;)Ljava/io/InputStream;
+   #759 = NameAndType        #113:#549    //  checkClassLoaderPermission:(Ljava/lang/ClassLoader;Ljava/lang/Class;)V
+   #760 = NameAndType        #118:#550    //  checkProxyPackageAccess:(Ljava/lang/ClassLoader;[Ljava/lang/Class;)V
+   #761 = NameAndType        #373:#552    //  toClass:(Ljava/lang/reflect/Type;)Ljava/lang/Class;
+   #762 = NameAndType        #54:#555     //  "<init>":([Ljava/lang/Object;Ljava/lang/Class$1;)V
+   #763 = NameAndType        #161:#556    //  getClassLoader:(Ljava/lang/Class;)Ljava/lang/ClassLoader;
+   #764 = NameAndType        #323:#557    //  needsPackageAccessCheck:(Ljava/lang/ClassLoader;Ljava/lang/ClassLoader;)Z
+   #765 = NameAndType        #324:#558    //  newInstance:(Ljava/lang/Class;I)Ljava/lang/Object;
+   #766 = NameAndType        #152:#36     //  get:(Ljava/lang/Object;)Ljava/lang/Object;
+   #767 = NameAndType        #324:#47     //  newInstance:([Ljava/lang/Object;)Ljava/lang/Object;
+   #768 = NameAndType        #372:#559    //  toArray:([Ljava/lang/Object;)[Ljava/lang/Object;
+   #769 = NameAndType        #106:#560    //  arrayContentsEq:([Ljava/lang/Object;[Ljava/lang/Object;)Z
+   #770 = NameAndType        #141:#561    //  doPrivileged:(Ljava/security/PrivilegedAction;)Ljava/lang/Object;
+   #771 = NameAndType        #209:#562    //  getPackage:(Ljava/lang/Class;)Ljava/lang/Package;
+   #772 = NameAndType        #105:#563    //  argumentTypesToString:([Ljava/lang/Class;)Ljava/lang/String;
+   #773 = NameAndType        #110:#565    //  cannotCastMsg:(Ljava/lang/Object;)Ljava/lang/String;
+   #774 = NameAndType        #345:#41     //  resolveName:(Ljava/lang/String;)Ljava/lang/String;
+   #775 = NameAndType        #104:#567    //  append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+   #776 = NameAndType        #153:#568    //  getAnnotation:(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;
+   #777 = NameAndType        #372:#570    //  toArray:(Ljava/util/Map;)[Ljava/lang/annotation/Annotation;
+   #778 = NameAndType        #54:#571     //  "<init>":(Ljava/lang/Class;Ljava/lang/reflect/Constructor;)V
+   #779 = NameAndType        #167:#573    //  getConstructor0:([Ljava/lang/Class;I)Ljava/lang/reflect/Constructor;
+   #780 = NameAndType        #127:#576    //  copyConstructor:(Ljava/lang/reflect/Constructor;)Ljava/lang/reflect/Constructor;
+   #781 = NameAndType        #128:#577    //  copyConstructors:([Ljava/lang/reflect/Constructor;)[Ljava/lang/reflect/Constructor;
+   #782 = NameAndType        #193:#578    //  getField0:(Ljava/lang/String;)Ljava/lang/reflect/Field;
+   #783 = NameAndType        #129:#579    //  copyField:(Ljava/lang/reflect/Field;)Ljava/lang/reflect/Field;
+   #784 = NameAndType        #130:#580    //  copyFields:([Ljava/lang/reflect/Field;)[Ljava/lang/reflect/Field;
+   #785 = NameAndType        #99:#581     //  addAll:(Ljava/util/Collection;[Ljava/lang/reflect/Field;)V
+   #786 = NameAndType        #333:#582    //  privateGetPublicFields:(Ljava/util/Set;)[Ljava/lang/reflect/Field;
+   #787 = NameAndType        #159:#583    //  getCheckMemberAccessMethod:(Ljava/lang/Class;)Ljava/lang/reflect/Method;
+   #788 = NameAndType        #54:#584     //  "<init>":(Ljava/lang/Class;Ljava/lang/reflect/Method;)V
+   #789 = NameAndType        #131:#585    //  copyMethod:(Ljava/lang/reflect/Method;)Ljava/lang/reflect/Method;
+   #790 = NameAndType        #132:#586    //  copyMethods:([Ljava/lang/reflect/Method;)[Ljava/lang/reflect/Method;
+   #791 = NameAndType        #216:#587    //  getResource:(Ljava/lang/String;)Ljava/net/URL;
+   #792 = NameAndType        #225:#587    //  getSystemResource:(Ljava/lang/String;)Ljava/net/URL;
+   #793 = NameAndType        #54:#588     //  "<init>":(Ljava/security/CodeSource;Ljava/security/PermissionCollection;)V
+   #794 = NameAndType        #200:#589    //  getInstance:(Ljava/lang/Class;)Lsun/reflect/annotation/AnnotationType;
+   #795 = NameAndType        #321:#590    //  make:(Ljava/lang/Class;)Lsun/reflect/generics/scope/ClassScope;
+   #796 = NameAndType        #150:#591    //  forName0:(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;
+   #797 = NameAndType        #142:#593    //  ensureMemberAccess:(Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/Object;I)V
+   #798 = NameAndType        #338:#594    //  put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+   #799 = NameAndType        #236:#38     //  invoke:(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
+   #800 = NameAndType        #346:#596    //  searchFields:([Ljava/lang/reflect/Field;Ljava/lang/String;)Ljava/lang/reflect/Field;
+   #801 = NameAndType        #147:#597    //  filterFields:(Ljava/lang/Class;[Ljava/lang/reflect/Field;)[Ljava/lang/reflect/Field;
+   #802 = NameAndType        #203:#44     //  getMethod:(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+   #803 = NameAndType        #204:#44     //  getMethod0:(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+   #804 = NameAndType        #148:#601    //  filterMethods:(Ljava/lang/Class;[Ljava/lang/reflect/Method;)[Ljava/lang/reflect/Method;
+   #805 = NameAndType        #329:#602    //  parseAnnotations:([BLsun/reflect/ConstantPool;Ljava/lang/Class;)Ljava/util/Map;
+   #806 = NameAndType        #321:#603    //  make:(Ljava/lang/reflect/GenericDeclaration;Lsun/reflect/generics/scope/Scope;)Lsun/reflect/generics/factory/CoreReflectionFactory;
+   #807 = NameAndType        #321:#604    //  make:(Ljava/lang/String;Lsun/reflect/generics/factory/GenericsFactory;)Lsun/reflect/generics/repository/ClassRepository;
+   #808 = NameAndType        #321:#605    //  make:(Ljava/lang/String;Lsun/reflect/generics/factory/GenericsFactory;)Lsun/reflect/generics/repository/ConstructorRepository;
+   #809 = NameAndType        #321:#606    //  make:(Ljava/lang/String;Lsun/reflect/generics/factory/GenericsFactory;)Lsun/reflect/generics/repository/MethodRepository;
+   #810 = NameAndType        #347:#607    //  searchMethods:([Ljava/lang/reflect/Method;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+   #811 = Fieldref           #394.#609    //  java/lang/Class.classRedefinedCount:I
+   #812 = Fieldref           #394.#610    //  java/lang/Class.lastRedefinedCount:I
+   #813 = Fieldref           #394.#611    //  java/lang/Class.initted:Z
+   #814 = Fieldref           #394.#613    //  java/lang/Class.useCaches:Z
+   #815 = Fieldref           #394.#614    //  java/lang/Class.serialPersistentFields:[Ljava/io/ObjectStreamField;
+   #816 = Fieldref           #394.#615    //  java/lang/Class.newInstanceCallerCache:Ljava/lang/Class;
+   #817 = Fieldref           #394.#616    //  java/lang/Class.smHelper:Ljava/lang/Class$SecurityManagerHelper;
+   #818 = Fieldref           #394.#618    //  java/lang/Class.enumConstants:[Ljava/lang/Object;
+   #819 = Fieldref           #394.#623    //  java/lang/Class.name:Ljava/lang/String;
+   #820 = Fieldref           #394.#624    //  java/lang/Class.declaredConstructors:Ljava/lang/ref/SoftReference;
+   #821 = Fieldref           #394.#625    //  java/lang/Class.declaredFields:Ljava/lang/ref/SoftReference;
+   #822 = Fieldref           #394.#626    //  java/lang/Class.declaredMethods:Ljava/lang/ref/SoftReference;
+   #823 = Fieldref           #394.#627    //  java/lang/Class.declaredPublicFields:Ljava/lang/ref/SoftReference;
+   #824 = Fieldref           #394.#628    //  java/lang/Class.declaredPublicMethods:Ljava/lang/ref/SoftReference;
+   #825 = Fieldref           #394.#629    //  java/lang/Class.publicConstructors:Ljava/lang/ref/SoftReference;
+   #826 = Fieldref           #394.#630    //  java/lang/Class.publicFields:Ljava/lang/ref/SoftReference;
+   #827 = Fieldref           #394.#631    //  java/lang/Class.publicMethods:Ljava/lang/ref/SoftReference;
+   #828 = Fieldref           #394.#632    //  java/lang/Class.cachedConstructor:Ljava/lang/reflect/Constructor;
+   #829 = Fieldref           #394.#634    //  java/lang/Class.allPermDomain:Ljava/security/ProtectionDomain;
+   #830 = Fieldref           #394.#635    //  java/lang/Class.annotations:Ljava/util/Map;
+   #831 = Fieldref           #394.#637    //  java/lang/Class.declaredAnnotations:Ljava/util/Map;
+   #832 = Fieldref           #394.#638    //  java/lang/Class.enumConstantDirectory:Ljava/util/Map;
+   #833 = Fieldref           #394.#639    //  java/lang/Class.reflectionFactory:Lsun/reflect/ReflectionFactory;
+   #834 = Fieldref           #394.#640    //  java/lang/Class.annotationType:Lsun/reflect/annotation/AnnotationType;
+   #835 = Fieldref           #394.#641    //  java/lang/Class.genericInfo:Lsun/reflect/generics/repository/ClassRepository;
+   #836 = Fieldref           #401.#612    //  java/lang/Class$SecurityManagerHelper.overrideCheckMemberAccess:Z
+   #837 = Fieldref           #401.#622    //  java/lang/Class$SecurityManagerHelper.sm:Ljava/lang/SecurityManager;
+   #838 = Fieldref           #403.#617    //  java/lang/ClassLoader.assertionLock:Ljava/lang/Object;
+   #839 = Fieldref           #403.#636    //  java/lang/ClassLoader.classAssertionStatus:Ljava/util/Map;
+   #840 = Fieldref           #463.#619    //  sun/security/util/SecurityConstants.CHECK_MEMBER_ACCESS_PERMISSION:Ljava/lang/RuntimePermission;
+   #841 = Fieldref           #463.#620    //  sun/security/util/SecurityConstants.GET_CLASSLOADER_PERMISSION:Ljava/lang/RuntimePermission;
+   #842 = Fieldref           #463.#621    //  sun/security/util/SecurityConstants.GET_PD_PERMISSION:Ljava/lang/RuntimePermission;
+   #843 = Fieldref           #463.#633    //  sun/security/util/SecurityConstants.ALL_PERMISSION:Ljava/security/AllPermission;
+   #844 = Methodref          #386.#692    //  "[Ljava/lang/Object;".clone:()Ljava/lang/Object;
+   #845 = Methodref          #387.#692    //  "[Ljava/lang/reflect/Constructor;".clone:()Ljava/lang/Object;
+   #846 = Methodref          #394.#642    //  java/lang/Class.getModifiers:()I
+   #847 = Methodref          #394.#646    //  java/lang/Class.checkInitted:()V
+   #848 = Methodref          #394.#647    //  java/lang/Class.clearCachesOnClassRedefinition:()V
+   #849 = Methodref          #394.#649    //  java/lang/Class.initAnnotationsIfNecessary:()V
+   #850 = Methodref          #394.#650    //  java/lang/Class.registerNatives:()V
+   #851 = Methodref          #394.#652    //  java/lang/Class.isAnonymousClass:()Z
+   #852 = Methodref          #394.#653    //  java/lang/Class.isArray:()Z
+   #853 = Methodref          #394.#655    //  java/lang/Class.isEnum:()Z
+   #854 = Methodref          #394.#657    //  java/lang/Class.isInterface:()Z
+   #855 = Methodref          #394.#658    //  java/lang/Class.isLocalOrAnonymousClass:()Z
+   #856 = Methodref          #394.#660    //  java/lang/Class.isPrimitive:()Z
+   #857 = Methodref          #394.#661    //  java/lang/Class.getRawAnnotations:()[B
+   #858 = Methodref          #394.#662    //  java/lang/Class.isAsciiDigit:(C)Z
+   #859 = Methodref          #394.#669    //  java/lang/Class.getComponentType:()Ljava/lang/Class;
+   #860 = Methodref          #394.#670    //  java/lang/Class.getDeclaringClass:()Ljava/lang/Class;
+   #861 = Methodref          #394.#671    //  java/lang/Class.getDeclaringClass0:()Ljava/lang/Class;
+   #862 = Methodref          #394.#672    //  java/lang/Class.getEnclosingClass:()Ljava/lang/Class;
+   #863 = Methodref          #394.#674    //  java/lang/Class.getSuperclass:()Ljava/lang/Class;
+   #864 = Methodref          #394.#675    //  java/lang/Class.getDeclaredClasses0:()[Ljava/lang/Class;
+   #865 = Methodref          #394.#676    //  java/lang/Class.getInterfaces:()[Ljava/lang/Class;
+   #866 = Methodref          #394.#678    //  java/lang/Class.checkMemberAccess:(ILjava/lang/Class;Z)V
+   #867 = Methodref          #394.#680    //  java/lang/Class.desiredAssertionStatus0:(Ljava/lang/Class;)Z
+   #868 = Methodref          #394.#681    //  java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
+   #869 = Methodref          #394.#686    //  java/lang/Class.getEnclosingMethodInfo:()Ljava/lang/Class$EnclosingMethodInfo;
+   #870 = Methodref          #394.#689    //  java/lang/Class.getClassLoader:()Ljava/lang/ClassLoader;
+   #871 = Methodref          #394.#690    //  java/lang/Class.getClassLoader0:()Ljava/lang/ClassLoader;
+   #872 = Methodref          #394.#691    //  java/lang/Class.checkPackageAccess:(Ljava/lang/ClassLoader;Z)V
+   #873 = Methodref          #394.#697    //  java/lang/Class.getEnclosingMethod0:()[Ljava/lang/Object;
+   #874 = Methodref          #394.#698    //  java/lang/Class.getEnumConstantsShared:()[Ljava/lang/Object;
+   #875 = Methodref          #394.#703    //  java/lang/Class.isInstance:(Ljava/lang/Object;)Z
+   #876 = Methodref          #394.#706    //  java/lang/Class.isCheckMemberAccessOverridden:(Ljava/lang/SecurityManager;)Z
+   #877 = Methodref          #394.#707    //  java/lang/Class.getCanonicalName:()Ljava/lang/String;
+   #878 = Methodref          #394.#709    //  java/lang/Class.getGenericSignature:()Ljava/lang/String;
+   #879 = Methodref          #394.#710    //  java/lang/Class.getName:()Ljava/lang/String;
+   #880 = Methodref          #394.#711    //  java/lang/Class.getName0:()Ljava/lang/String;
+   #881 = Methodref          #394.#712    //  java/lang/Class.getSimpleBinaryName:()Ljava/lang/String;
+   #882 = Methodref          #394.#713    //  java/lang/Class.getSimpleName:()Ljava/lang/String;
+   #883 = Methodref          #394.#716    //  java/lang/Class.toString:()Ljava/lang/String;
+   #884 = Methodref          #394.#727    //  java/lang/Class.getDeclaredConstructors:()[Ljava/lang/reflect/Constructor;
+   #885 = Methodref          #394.#728    //  java/lang/Class.getDeclaredConstructors0:(Z)[Ljava/lang/reflect/Constructor;
+   #886 = Methodref          #394.#729    //  java/lang/Class.privateGetDeclaredConstructors:(Z)[Ljava/lang/reflect/Constructor;
+   #887 = Methodref          #394.#730    //  java/lang/Class.getDeclaredFields0:(Z)[Ljava/lang/reflect/Field;
+   #888 = Methodref          #394.#731    //  java/lang/Class.privateGetDeclaredFields:(Z)[Ljava/lang/reflect/Field;
+   #889 = Methodref          #394.#733    //  java/lang/Class.getDeclaredMethods:()[Ljava/lang/reflect/Method;
+   #890 = Methodref          #394.#734    //  java/lang/Class.privateGetPublicMethods:()[Ljava/lang/reflect/Method;
+   #891 = Methodref          #394.#737    //  java/lang/Class.getDeclaredMethods0:(Z)[Ljava/lang/reflect/Method;
+   #892 = Methodref          #394.#738    //  java/lang/Class.privateGetDeclaredMethods:(Z)[Ljava/lang/reflect/Method;
+   #893 = Methodref          #394.#748    //  java/lang/Class.getProtectionDomain0:()Ljava/security/ProtectionDomain;
+   #894 = Methodref          #394.#753    //  java/lang/Class.getConstantPool:()Lsun/reflect/ConstantPool;
+   #895 = Methodref          #394.#754    //  java/lang/Class.getReflectionFactory:()Lsun/reflect/ReflectionFactory;
+   #896 = Methodref          #394.#755    //  java/lang/Class.getFactory:()Lsun/reflect/generics/factory/GenericsFactory;
+   #897 = Methodref          #394.#756    //  java/lang/Class.getGenericInfo:()Lsun/reflect/generics/repository/ClassRepository;
+   #898 = Methodref          #394.#761    //  java/lang/Class.toClass:(Ljava/lang/reflect/Type;)Ljava/lang/Class;
+   #899 = Methodref          #394.#769    //  java/lang/Class.arrayContentsEq:([Ljava/lang/Object;[Ljava/lang/Object;)Z
+   #900 = Methodref          #394.#772    //  java/lang/Class.argumentTypesToString:([Ljava/lang/Class;)Ljava/lang/String;
+   #901 = Methodref          #394.#773    //  java/lang/Class.cannotCastMsg:(Ljava/lang/Object;)Ljava/lang/String;
+   #902 = Methodref          #394.#774    //  java/lang/Class.resolveName:(Ljava/lang/String;)Ljava/lang/String;
+   #903 = Methodref          #394.#776    //  java/lang/Class.getAnnotation:(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;
+   #904 = Methodref          #394.#779    //  java/lang/Class.getConstructor0:([Ljava/lang/Class;I)Ljava/lang/reflect/Constructor;
+   #905 = Methodref          #394.#781    //  java/lang/Class.copyConstructors:([Ljava/lang/reflect/Constructor;)[Ljava/lang/reflect/Constructor;
+   #906 = Methodref          #394.#782    //  java/lang/Class.getField0:(Ljava/lang/String;)Ljava/lang/reflect/Field;
+   #907 = Methodref          #394.#784    //  java/lang/Class.copyFields:([Ljava/lang/reflect/Field;)[Ljava/lang/reflect/Field;
+   #908 = Methodref          #394.#785    //  java/lang/Class.addAll:(Ljava/util/Collection;[Ljava/lang/reflect/Field;)V
+   #909 = Methodref          #394.#786    //  java/lang/Class.privateGetPublicFields:(Ljava/util/Set;)[Ljava/lang/reflect/Field;
+   #910 = Methodref          #394.#787    //  java/lang/Class.getCheckMemberAccessMethod:(Ljava/lang/Class;)Ljava/lang/reflect/Method;
+   #911 = Methodref          #394.#790    //  java/lang/Class.copyMethods:([Ljava/lang/reflect/Method;)[Ljava/lang/reflect/Method;
+   #912 = Methodref          #394.#796    //  java/lang/Class.forName0:(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;
+   #913 = Methodref          #394.#800    //  java/lang/Class.searchFields:([Ljava/lang/reflect/Field;Ljava/lang/String;)Ljava/lang/reflect/Field;
+   #914 = Methodref          #394.#802    //  java/lang/Class.getMethod:(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+   #915 = Methodref          #394.#803    //  java/lang/Class.getMethod0:(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+   #916 = Methodref          #394.#810    //  java/lang/Class.searchMethods:([Ljava/lang/reflect/Method;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+   #917 = Methodref          #395.#778    //  java/lang/Class$1."<init>":(Ljava/lang/Class;Ljava/lang/reflect/Constructor;)V
+   #918 = Methodref          #396.#679    //  java/lang/Class$2."<init>":(Ljava/lang/Class;)V
+   #919 = Methodref          #397.#645    //  java/lang/Class$3."<init>":()V
+   #920 = Methodref          #398.#788    //  java/lang/Class$4."<init>":(Ljava/lang/Class;Ljava/lang/reflect/Method;)V
+   #921 = Methodref          #399.#654    //  java/lang/Class$EnclosingMethodInfo.isConstructor:()Z
+   #922 = Methodref          #399.#659    //  java/lang/Class$EnclosingMethodInfo.isMethod:()Z
+   #923 = Methodref          #399.#672    //  java/lang/Class$EnclosingMethodInfo.getEnclosingClass:()Ljava/lang/Class;
+   #924 = Methodref          #399.#708    //  java/lang/Class$EnclosingMethodInfo.getDescriptor:()Ljava/lang/String;
+   #925 = Methodref          #399.#710    //  java/lang/Class$EnclosingMethodInfo.getName:()Ljava/lang/String;
+   #926 = Methodref          #399.#762    //  java/lang/Class$EnclosingMethodInfo."<init>":([Ljava/lang/Object;Ljava/lang/Class$1;)V
+   #927 = Methodref          #400.#643    //  java/lang/Class$MethodArray.length:()I
+   #928 = Methodref          #400.#645    //  java/lang/Class$MethodArray."<init>":()V
+   #929 = Methodref          #400.#648    //  java/lang/Class$MethodArray.compactAndTrim:()V
+   #930 = Methodref          #400.#687    //  java/lang/Class$MethodArray.addAll:(Ljava/lang/Class$MethodArray;)V
+   #931 = Methodref          #400.#688    //  java/lang/Class$MethodArray.addAllIfNotPresent:(Ljava/lang/Class$MethodArray;)V
+   #932 = Methodref          #400.#732    //  java/lang/Class$MethodArray.getArray:()[Ljava/lang/reflect/Method;
+   #933 = Methodref          #400.#735    //  java/lang/Class$MethodArray.get:(I)Ljava/lang/reflect/Method;
+   #934 = Methodref          #400.#736    //  java/lang/Class$MethodArray.removeByNameAndSignature:(Ljava/lang/reflect/Method;)V
+   #935 = Methodref          #400.#739    //  java/lang/Class$MethodArray.addAll:([Ljava/lang/reflect/Method;)V
+   #936 = Methodref          #401.#705    //  java/lang/Class$SecurityManagerHelper."<init>":(Ljava/lang/SecurityManager;)V
+   #937 = Methodref          #402.#721    //  java/lang/ClassCastException."<init>":(Ljava/lang/String;)V
+   #938 = Methodref          #403.#723    //  java/lang/ClassLoader.desiredAssertionStatus:(Ljava/lang/String;)Z
+   #939 = Methodref          #403.#757    //  java/lang/ClassLoader.getResourceAsStream:(Ljava/lang/String;)Ljava/io/InputStream;
+   #940 = Methodref          #403.#758    //  java/lang/ClassLoader.getSystemResourceAsStream:(Ljava/lang/String;)Ljava/io/InputStream;
+   #941 = Methodref          #403.#759    //  java/lang/ClassLoader.checkClassLoaderPermission:(Ljava/lang/ClassLoader;Ljava/lang/Class;)V
+   #942 = Methodref          #403.#763    //  java/lang/ClassLoader.getClassLoader:(Ljava/lang/Class;)Ljava/lang/ClassLoader;
+   #943 = Methodref          #403.#791    //  java/lang/ClassLoader.getResource:(Ljava/lang/String;)Ljava/net/URL;
+   #944 = Methodref          #403.#792    //  java/lang/ClassLoader.getSystemResource:(Ljava/lang/String;)Ljava/net/URL;
+   #945 = Methodref          #407.#715    //  java/lang/Enum.name:()Ljava/lang/String;
+   #946 = Methodref          #408.#721    //  java/lang/IllegalAccessException."<init>":(Ljava/lang/String;)V
+   #947 = Methodref          #409.#721    //  java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+   #948 = Methodref          #411.#721    //  java/lang/InstantiationException."<init>":(Ljava/lang/String;)V
+   #949 = Methodref          #412.#721    //  java/lang/InternalError."<init>":(Ljava/lang/String;)V
+   #950 = Methodref          #413.#721    //  java/lang/NoSuchFieldException."<init>":(Ljava/lang/String;)V
+   #951 = Methodref          #415.#721    //  java/lang/NoSuchMethodException."<init>":(Ljava/lang/String;)V
+   #952 = Methodref          #416.#645    //  java/lang/NullPointerException."<init>":()V
+   #953 = Methodref          #417.#645    //  java/lang/Object."<init>":()V
+   #954 = Methodref          #417.#668    //  java/lang/Object.getClass:()Ljava/lang/Class;
+   #955 = Methodref          #417.#702    //  java/lang/Object.equals:(Ljava/lang/Object;)Z
+   #956 = Methodref          #418.#771    //  java/lang/Package.getPackage:(Ljava/lang/Class;)Ljava/lang/Package;
+   #957 = Methodref          #420.#684    //  java/lang/SecurityManager.checkMemberAccess:(Ljava/lang/Class;I)V
+   #958 = Methodref          #420.#722    //  java/lang/SecurityManager.checkPackageAccess:(Ljava/lang/String;)V
+   #959 = Methodref          #420.#747    //  java/lang/SecurityManager.checkPermission:(Ljava/security/Permission;)V
+   #960 = Methodref          #421.#643    //  java/lang/String.length:()I
+   #961 = Methodref          #421.#663    //  java/lang/String.charAt:(I)C
+   #962 = Methodref          #421.#664    //  java/lang/String.lastIndexOf:(I)I
+   #963 = Methodref          #421.#702    //  java/lang/String.equals:(Ljava/lang/Object;)Z
+   #964 = Methodref          #421.#714    //  java/lang/String.intern:()Ljava/lang/String;
+   #965 = Methodref          #421.#717    //  java/lang/String.replace:(CC)Ljava/lang/String;
+   #966 = Methodref          #421.#718    //  java/lang/String.substring:(I)Ljava/lang/String;
+   #967 = Methodref          #421.#719    //  java/lang/String.substring:(II)Ljava/lang/String;
+   #968 = Methodref          #421.#720    //  java/lang/String.lastIndexOf:(Ljava/lang/String;)I
+   #969 = Methodref          #421.#724    //  java/lang/String.startsWith:(Ljava/lang/String;)Z
+   #970 = Methodref          #422.#645    //  java/lang/StringBuilder."<init>":()V
+   #971 = Methodref          #422.#716    //  java/lang/StringBuilder.toString:()Ljava/lang/String;
+   #972 = Methodref          #422.#775    //  java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+   #973 = Methodref          #423.#704    //  java/lang/System.getSecurityManager:()Ljava/lang/SecurityManager;
+   #974 = Methodref          #426.#693    //  java/lang/ref/SoftReference.get:()Ljava/lang/Object;
+   #975 = Methodref          #426.#699    //  java/lang/ref/SoftReference."<init>":(Ljava/lang/Object;)V
+   #976 = Methodref          #428.#765    //  java/lang/reflect/Array.newInstance:(Ljava/lang/Class;I)Ljava/lang/Object;
+   #977 = Methodref          #429.#642    //  java/lang/reflect/Constructor.getModifiers:()I
+   #978 = Methodref          #429.#677    //  java/lang/reflect/Constructor.getParameterTypes:()[Ljava/lang/Class;
+   #979 = Methodref          #429.#767    //  java/lang/reflect/Constructor.newInstance:([Ljava/lang/Object;)Ljava/lang/Object;
+   #980 = Methodref          #430.#710    //  java/lang/reflect/Field.getName:()Ljava/lang/String;
+   #981 = Methodref          #433.#725    //  java/lang/reflect/InvocationTargetException.getTargetException:()Ljava/lang/Throwable;
+   #982 = Methodref          #434.#642    //  java/lang/reflect/Method.getModifiers:()I
+   #983 = Methodref          #434.#673    //  java/lang/reflect/Method.getReturnType:()Ljava/lang/Class;
+   #984 = Methodref          #434.#677    //  java/lang/reflect/Method.getParameterTypes:()[Ljava/lang/Class;
+   #985 = Methodref          #434.#710    //  java/lang/reflect/Method.getName:()Ljava/lang/String;
+   #986 = Methodref          #434.#799    //  java/lang/reflect/Method.invoke:(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
+   #987 = Methodref          #435.#666    //  java/lang/reflect/Modifier.isAbstract:(I)Z
+   #988 = Methodref          #436.#683    //  java/lang/reflect/Proxy.isProxyClass:(Ljava/lang/Class;)Z
+   #989 = Methodref          #439.#770    //  java/security/AccessController.doPrivileged:(Ljava/security/PrivilegedAction;)Ljava/lang/Object;
+   #990 = Methodref          #440.#645    //  java/security/Permissions."<init>":()V
+   #991 = Methodref          #440.#746    //  java/security/Permissions.add:(Ljava/security/Permission;)V
+   #992 = Methodref          #441.#793    //  java/security/ProtectionDomain."<init>":(Ljava/security/CodeSource;Ljava/security/PermissionCollection;)V
+   #993 = Methodref          #442.#645    //  java/util/ArrayList."<init>":()V
+   #994 = Methodref          #444.#645    //  java/util/HashMap."<init>":()V
+   #995 = Methodref          #444.#665    //  java/util/HashMap."<init>":(I)V
+   #996 = Methodref          #445.#645    //  java/util/HashSet."<init>":()V
+   #997 = Methodref          #451.#726    //  sun/misc/Unsafe.throwException:(Ljava/lang/Throwable;)V
+   #998 = Methodref          #451.#752    //  sun/misc/Unsafe.getUnsafe:()Lsun/misc/Unsafe;
+   #999 = Methodref          #452.#667    //  sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+  #1000 = Methodref          #452.#685    //  sun/reflect/Reflection.quickCheckMemberAccess:(Ljava/lang/Class;I)Z
+  #1001 = Methodref          #452.#797    //  sun/reflect/Reflection.ensureMemberAccess:(Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/Object;I)V
+  #1002 = Methodref          #452.#801    //  sun/reflect/Reflection.filterFields:(Ljava/lang/Class;[Ljava/lang/reflect/Field;)[Ljava/lang/reflect/Field;
+  #1003 = Methodref          #452.#804    //  sun/reflect/Reflection.filterMethods:(Ljava/lang/Class;[Ljava/lang/reflect/Method;)[Ljava/lang/reflect/Method;
+  #1004 = Methodref          #453.#780    //  sun/reflect/ReflectionFactory.copyConstructor:(Ljava/lang/reflect/Constructor;)Ljava/lang/reflect/Constructor;
+  #1005 = Methodref          #453.#783    //  sun/reflect/ReflectionFactory.copyField:(Ljava/lang/reflect/Field;)Ljava/lang/reflect/Field;
+  #1006 = Methodref          #453.#789    //  sun/reflect/ReflectionFactory.copyMethod:(Ljava/lang/reflect/Method;)Ljava/lang/reflect/Method;
+  #1007 = Methodref          #454.#645    //  sun/reflect/ReflectionFactory$GetReflectionFactoryAction."<init>":()V
+  #1008 = Methodref          #455.#777    //  sun/reflect/annotation/AnnotationParser.toArray:(Ljava/util/Map;)[Ljava/lang/annotation/Annotation;
+  #1009 = Methodref          #455.#805    //  sun/reflect/annotation/AnnotationParser.parseAnnotations:([BLsun/reflect/ConstantPool;Ljava/lang/Class;)Ljava/util/Map;
+  #1010 = Methodref          #456.#656    //  sun/reflect/annotation/AnnotationType.isInherited:()Z
+  #1011 = Methodref          #456.#794    //  sun/reflect/annotation/AnnotationType.getInstance:(Ljava/lang/Class;)Lsun/reflect/annotation/AnnotationType;
+  #1012 = Methodref          #457.#806    //  sun/reflect/generics/factory/CoreReflectionFactory.make:(Ljava/lang/reflect/GenericDeclaration;Lsun/reflect/generics/scope/Scope;)Lsun/reflect/generics/factory/CoreReflectionFactory;
+  #1013 = Methodref          #458.#742    //  sun/reflect/generics/repository/ClassRepository.getSuperclass:()Ljava/lang/reflect/Type;
+  #1014 = Methodref          #458.#744    //  sun/reflect/generics/repository/ClassRepository.getSuperInterfaces:()[Ljava/lang/reflect/Type;
+  #1015 = Methodref          #458.#745    //  sun/reflect/generics/repository/ClassRepository.getTypeParameters:()[Ljava/lang/reflect/TypeVariable;
+  #1016 = Methodref          #458.#807    //  sun/reflect/generics/repository/ClassRepository.make:(Ljava/lang/String;Lsun/reflect/generics/factory/GenericsFactory;)Lsun/reflect/generics/repository/ClassRepository;
+  #1017 = Methodref          #459.#743    //  sun/reflect/generics/repository/ConstructorRepository.getParameterTypes:()[Ljava/lang/reflect/Type;
+  #1018 = Methodref          #459.#808    //  sun/reflect/generics/repository/ConstructorRepository.make:(Ljava/lang/String;Lsun/reflect/generics/factory/GenericsFactory;)Lsun/reflect/generics/repository/ConstructorRepository;
+  #1019 = Methodref          #460.#741    //  sun/reflect/generics/repository/MethodRepository.getReturnType:()Ljava/lang/reflect/Type;
+  #1020 = Methodref          #460.#743    //  sun/reflect/generics/repository/MethodRepository.getParameterTypes:()[Ljava/lang/reflect/Type;
+  #1021 = Methodref          #460.#809    //  sun/reflect/generics/repository/MethodRepository.make:(Ljava/lang/String;Lsun/reflect/generics/factory/GenericsFactory;)Lsun/reflect/generics/repository/MethodRepository;
+  #1022 = Methodref          #461.#795    //  sun/reflect/generics/scope/ClassScope.make:(Ljava/lang/Class;)Lsun/reflect/generics/scope/ClassScope;
+  #1023 = Methodref          #462.#682    //  sun/reflect/misc/ReflectUtil.isNonPublicProxyClass:(Ljava/lang/Class;)Z
+  #1024 = Methodref          #462.#760    //  sun/reflect/misc/ReflectUtil.checkProxyPackageAccess:(Ljava/lang/ClassLoader;[Ljava/lang/Class;)V
+  #1025 = Methodref          #462.#764    //  sun/reflect/misc/ReflectUtil.needsPackageAccessCheck:(Ljava/lang/ClassLoader;Ljava/lang/ClassLoader;)Z
+  #1026 = InterfaceMethodref #431.#740    //  java/lang/reflect/GenericArrayType.getGenericComponentType:()Ljava/lang/reflect/Type;
+  #1027 = InterfaceMethodref #443.#700    //  java/util/Collection.add:(Ljava/lang/Object;)Z
+  #1028 = InterfaceMethodref #446.#651    //  java/util/Iterator.hasNext:()Z
+  #1029 = InterfaceMethodref #446.#696    //  java/util/Iterator.next:()Ljava/lang/Object;
+  #1030 = InterfaceMethodref #447.#644    //  java/util/List.size:()I
+  #1031 = InterfaceMethodref #447.#768    //  java/util/List.toArray:([Ljava/lang/Object;)[Ljava/lang/Object;
+  #1032 = InterfaceMethodref #448.#750    //  java/util/Map.putAll:(Ljava/util/Map;)V
+  #1033 = InterfaceMethodref #448.#751    //  java/util/Map.entrySet:()Ljava/util/Set;
+  #1034 = InterfaceMethodref #448.#766    //  java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+  #1035 = InterfaceMethodref #448.#798    //  java/util/Map.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+  #1036 = InterfaceMethodref #449.#694    //  java/util/Map$Entry.getKey:()Ljava/lang/Object;
+  #1037 = InterfaceMethodref #449.#695    //  java/util/Map$Entry.getValue:()Ljava/lang/Object;
+  #1038 = InterfaceMethodref #450.#700    //  java/util/Set.add:(Ljava/lang/Object;)Z
+  #1039 = InterfaceMethodref #450.#701    //  java/util/Set.contains:(Ljava/lang/Object;)Z
+  #1040 = InterfaceMethodref #450.#749    //  java/util/Set.iterator:()Ljava/util/Iterator;
+  #1041 = Utf8               Class.java
+  #1042 = Utf8               ClassValueMap
+  #1043 = Utf8               EnclosingMethodInfo
+  #1044 = Utf8               GetReflectionFactoryAction
+  #1045 = Utf8               MethodArray
+  #1046 = Utf8               SecurityManagerHelper
+{
+  transient java.lang.ClassValue$ClassValueMap classValueMap;
+    flags: ACC_TRANSIENT
+
+  public java.lang.String toString();
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: new           #422                // class java/lang/StringBuilder
+         3: dup           
+         4: invokespecial #970                // Method java/lang/StringBuilder."<init>":()V
+         7: aload_0       
+         8: invokevirtual #854                // Method isInterface:()Z
+        11: ifeq          19
+        14: ldc           #15                 // String interface 
+        16: goto          33
+        19: aload_0       
+        20: invokevirtual #856                // Method isPrimitive:()Z
+        23: ifeq          31
+        26: ldc           #1                  // String 
+        28: goto          33
+        31: ldc           #14                 // String class 
+        33: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        36: aload_0       
+        37: invokevirtual #879                // Method getName:()Ljava/lang/String;
+        40: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        43: invokevirtual #971                // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+        46: areturn       
+      StackMapTable: number_of_entries = 3
+           frame_type = 83 /* same_locals_1_stack_item */
+          stack = [ class java/lang/StringBuilder ]
+           frame_type = 75 /* same_locals_1_stack_item */
+          stack = [ class java/lang/StringBuilder ]
+           frame_type = 255 /* full_frame */
+          offset_delta = 1
+          locals = [ class java/lang/Class ]
+          stack = [ class java/lang/StringBuilder, class java/lang/String ]
+
+      LineNumberTable:
+        line 151: 0
+
+  public static java.lang.Class<?> forName(java.lang.String) throws java.lang.ClassNotFoundException;
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=3, locals=1, args_size=1
+         0: aload_0       
+         1: iconst_1      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: invokestatic  #942                // Method java/lang/ClassLoader.getClassLoader:(Ljava/lang/Class;)Ljava/lang/ClassLoader;
+         8: invokestatic  #912                // Method forName0:(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;
+        11: areturn       
+      LineNumberTable:
+        line 190: 0
+    Exceptions:
+      throws java.lang.ClassNotFoundException
+    Signature: #551                         // (Ljava/lang/String;)Ljava/lang/Class<*>;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public static java.lang.Class<?> forName(java.lang.String, boolean, java.lang.ClassLoader) throws java.lang.ClassNotFoundException;
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=3, locals=5, args_size=3
+         0: aload_2       
+         1: ifnonnull     32
+         4: invokestatic  #973                // Method java/lang/System.getSecurityManager:()Ljava/lang/SecurityManager;
+         7: astore_3      
+         8: aload_3       
+         9: ifnull        32
+        12: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+        15: invokestatic  #942                // Method java/lang/ClassLoader.getClassLoader:(Ljava/lang/Class;)Ljava/lang/ClassLoader;
+        18: astore        4
+        20: aload         4
+        22: ifnull        32
+        25: aload_3       
+        26: getstatic     #841                // Field sun/security/util/SecurityConstants.GET_CLASSLOADER_PERMISSION:Ljava/lang/RuntimePermission;
+        29: invokevirtual #959                // Method java/lang/SecurityManager.checkPermission:(Ljava/security/Permission;)V
+        32: aload_0       
+        33: iload_1       
+        34: aload_2       
+        35: invokestatic  #912                // Method forName0:(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;
+        38: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 32 /* same */
+
+      LineNumberTable:
+        line 260: 0
+        line 261: 4
+        line 262: 8
+        line 263: 12
+        line 264: 20
+        line 265: 25
+        line 270: 32
+    Exceptions:
+      throws java.lang.ClassNotFoundException
+    Signature: #592                         // (Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class<*>;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public T newInstance() throws java.lang.InstantiationException, java.lang.IllegalAccessException;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=4, args_size=1
+         0: invokestatic  #973                // Method java/lang/System.getSecurityManager:()Ljava/lang/SecurityManager;
+         3: ifnull        15
+         6: aload_0       
+         7: iconst_0      
+         8: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+        11: iconst_0      
+        12: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+        15: aload_0       
+        16: getfield      #828                // Field cachedConstructor:Ljava/lang/reflect/Constructor;
+        19: ifnonnull     85
+        22: aload_0       
+        23: ldc_w         #394                // class java/lang/Class
+        26: if_acmpne     39
+        29: new           #408                // class java/lang/IllegalAccessException
+        32: dup           
+        33: ldc           #8                  // String Can not call newInstance() on the Class for java.lang.Class
+        35: invokespecial #946                // Method java/lang/IllegalAccessException."<init>":(Ljava/lang/String;)V
+        38: athrow        
+        39: iconst_0      
+        40: anewarray     #394                // class java/lang/Class
+        43: astore_1      
+        44: aload_0       
+        45: aload_1       
+        46: iconst_1      
+        47: invokespecial #904                // Method getConstructor0:([Ljava/lang/Class;I)Ljava/lang/reflect/Constructor;
+        50: astore_2      
+        51: new           #395                // class java/lang/Class$1
+        54: dup           
+        55: aload_0       
+        56: aload_2       
+        57: invokespecial #917                // Method java/lang/Class$1."<init>":(Ljava/lang/Class;Ljava/lang/reflect/Constructor;)V
+        60: invokestatic  #989                // Method java/security/AccessController.doPrivileged:(Ljava/security/PrivilegedAction;)Ljava/lang/Object;
+        63: pop           
+        64: aload_0       
+        65: aload_2       
+        66: putfield      #828                // Field cachedConstructor:Ljava/lang/reflect/Constructor;
+        69: goto          85
+        72: astore_1      
+        73: new           #411                // class java/lang/InstantiationException
+        76: dup           
+        77: aload_0       
+        78: invokevirtual #879                // Method getName:()Ljava/lang/String;
+        81: invokespecial #948                // Method java/lang/InstantiationException."<init>":(Ljava/lang/String;)V
+        84: athrow        
+        85: aload_0       
+        86: getfield      #828                // Field cachedConstructor:Ljava/lang/reflect/Constructor;
+        89: astore_1      
+        90: aload_1       
+        91: invokevirtual #977                // Method java/lang/reflect/Constructor.getModifiers:()I
+        94: istore_2      
+        95: aload_0       
+        96: iload_2       
+        97: invokestatic  #1000               // Method sun/reflect/Reflection.quickCheckMemberAccess:(Ljava/lang/Class;I)Z
+       100: ifne          127
+       103: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+       106: astore_3      
+       107: aload_0       
+       108: getfield      #816                // Field newInstanceCallerCache:Ljava/lang/Class;
+       111: aload_3       
+       112: if_acmpeq     127
+       115: aload_3       
+       116: aload_0       
+       117: aconst_null   
+       118: iload_2       
+       119: invokestatic  #1001               // Method sun/reflect/Reflection.ensureMemberAccess:(Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/Object;I)V
+       122: aload_0       
+       123: aload_3       
+       124: putfield      #816                // Field newInstanceCallerCache:Ljava/lang/Class;
+       127: aload_1       
+       128: aconst_null   
+       129: checkcast     #386                // class "[Ljava/lang/Object;"
+       132: invokevirtual #979                // Method java/lang/reflect/Constructor.newInstance:([Ljava/lang/Object;)Ljava/lang/Object;
+       135: areturn       
+       136: astore_3      
+       137: invokestatic  #998                // Method sun/misc/Unsafe.getUnsafe:()Lsun/misc/Unsafe;
+       140: aload_3       
+       141: invokevirtual #981                // Method java/lang/reflect/InvocationTargetException.getTargetException:()Ljava/lang/Throwable;
+       144: invokevirtual #997                // Method sun/misc/Unsafe.throwException:(Ljava/lang/Throwable;)V
+       147: aconst_null   
+       148: areturn       
+      Exception table:
+         from    to  target type
+            39    69    72   Class java/lang/NoSuchMethodException
+           127   135   136   Class java/lang/reflect/InvocationTargetException
+      StackMapTable: number_of_entries = 6
+           frame_type = 15 /* same */
+           frame_type = 23 /* same */
+           frame_type = 96 /* same_locals_1_stack_item */
+          stack = [ class java/lang/NoSuchMethodException ]
+           frame_type = 12 /* same */
+           frame_type = 253 /* append */
+             offset_delta = 41
+        locals = [ class java/lang/reflect/Constructor, int ]
+           frame_type = 72 /* same_locals_1_stack_item */
+          stack = [ class java/lang/reflect/InvocationTargetException ]
+
+      LineNumberTable:
+        line 329: 0
+        line 330: 6
+        line 337: 15
+        line 338: 22
+        line 339: 29
+        line 344: 39
+        line 345: 44
+        line 350: 51
+        line 357: 64
+        line 360: 69
+        line 358: 72
+        line 359: 73
+        line 362: 85
+        line 364: 90
+        line 365: 95
+        line 366: 103
+        line 367: 107
+        line 368: 115
+        line 369: 122
+        line 374: 127
+        line 375: 136
+        line 376: 137
+        line 378: 147
+    Exceptions:
+      throws java.lang.InstantiationException, java.lang.IllegalAccessException
+    Signature: #24                          // ()TT;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public native boolean isInstance(java.lang.Object);
+    flags: ACC_PUBLIC, ACC_NATIVE
+
+  public native boolean isAssignableFrom(java.lang.Class<?>);
+    flags: ACC_PUBLIC, ACC_NATIVE
+    Signature: #499                         // (Ljava/lang/Class<*>;)Z
+
+  public native boolean isInterface();
+    flags: ACC_PUBLIC, ACC_NATIVE
+
+  public native boolean isArray();
+    flags: ACC_PUBLIC, ACC_NATIVE
+
+  public native boolean isPrimitive();
+    flags: ACC_PUBLIC, ACC_NATIVE
+
+  public boolean isAnnotation();
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: aload_0       
+         1: invokevirtual #846                // Method getModifiers:()I
+         4: sipush        8192
+         7: iand          
+         8: ifeq          15
+        11: iconst_1      
+        12: goto          16
+        15: iconst_0      
+        16: ireturn       
+      StackMapTable: number_of_entries = 2
+           frame_type = 15 /* same */
+           frame_type = 64 /* same_locals_1_stack_item */
+          stack = [ int ]
+
+      LineNumberTable:
+        line 505: 0
+
+  public boolean isSynthetic();
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: aload_0       
+         1: invokevirtual #846                // Method getModifiers:()I
+         4: sipush        4096
+         7: iand          
+         8: ifeq          15
+        11: iconst_1      
+        12: goto          16
+        15: iconst_0      
+        16: ireturn       
+      StackMapTable: number_of_entries = 2
+           frame_type = 15 /* same */
+           frame_type = 64 /* same_locals_1_stack_item */
+          stack = [ int ]
+
+      LineNumberTable:
+        line 516: 0
+
+  public java.lang.String getName();
+    flags: ACC_PUBLIC
+    Code:
+      stack=3, locals=2, args_size=1
+         0: aload_0       
+         1: getfield      #819                // Field name:Ljava/lang/String;
+         4: astore_1      
+         5: aload_1       
+         6: ifnonnull     19
+         9: aload_0       
+        10: aload_0       
+        11: invokespecial #880                // Method getName0:()Ljava/lang/String;
+        14: dup           
+        15: astore_1      
+        16: putfield      #819                // Field name:Ljava/lang/String;
+        19: aload_1       
+        20: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 252 /* append */
+             offset_delta = 19
+        locals = [ class java/lang/String ]
+
+      LineNumberTable:
+        line 571: 0
+        line 572: 5
+        line 573: 9
+        line 574: 19
+
+  public java.lang.ClassLoader getClassLoader();
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=3, args_size=1
+         0: aload_0       
+         1: invokevirtual #871                // Method getClassLoader0:()Ljava/lang/ClassLoader;
+         4: astore_1      
+         5: aload_1       
+         6: ifnonnull     11
+         9: aconst_null   
+        10: areturn       
+        11: invokestatic  #973                // Method java/lang/System.getSecurityManager:()Ljava/lang/SecurityManager;
+        14: astore_2      
+        15: aload_2       
+        16: ifnull        26
+        19: aload_1       
+        20: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+        23: invokestatic  #941                // Method java/lang/ClassLoader.checkClassLoaderPermission:(Ljava/lang/ClassLoader;Ljava/lang/Class;)V
+        26: aload_1       
+        27: areturn       
+      StackMapTable: number_of_entries = 2
+           frame_type = 252 /* append */
+             offset_delta = 11
+        locals = [ class java/lang/ClassLoader ]
+           frame_type = 252 /* append */
+             offset_delta = 14
+        locals = [ class java/lang/SecurityManager ]
+
+      LineNumberTable:
+        line 609: 0
+        line 610: 5
+        line 611: 9
+        line 612: 11
+        line 613: 15
+        line 614: 19
+        line 616: 26
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  native java.lang.ClassLoader getClassLoader0();
+    flags: ACC_NATIVE
+
+  public java.lang.reflect.TypeVariable<java.lang.Class<T>>[] getTypeParameters();
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0       
+         1: invokespecial #878                // Method getGenericSignature:()Ljava/lang/String;
+         4: ifnull        18
+         7: aload_0       
+         8: invokespecial #897                // Method getGenericInfo:()Lsun/reflect/generics/repository/ClassRepository;
+        11: invokevirtual #1015               // Method sun/reflect/generics/repository/ClassRepository.getTypeParameters:()[Ljava/lang/reflect/TypeVariable;
+        14: checkcast     #391                // class "[Ljava/lang/reflect/TypeVariable;"
+        17: areturn       
+        18: iconst_0      
+        19: anewarray     #438                // class java/lang/reflect/TypeVariable
+        22: checkcast     #391                // class "[Ljava/lang/reflect/TypeVariable;"
+        25: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 18 /* same */
+
+      LineNumberTable:
+        line 639: 0
+        line 640: 7
+        line 642: 18
+    Signature: #554                         // ()[Ljava/lang/reflect/TypeVariable<Ljava/lang/Class<TT;>;>;
+
+  public native java.lang.Class<? super T> getSuperclass();
+    flags: ACC_PUBLIC, ACC_NATIVE
+    Signature: #490                         // ()Ljava/lang/Class<-TT;>;
+
+  public java.lang.reflect.Type getGenericSuperclass();
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0       
+         1: invokespecial #878                // Method getGenericSignature:()Ljava/lang/String;
+         4: ifnull        24
+         7: aload_0       
+         8: invokevirtual #854                // Method isInterface:()Z
+        11: ifeq          16
+        14: aconst_null   
+        15: areturn       
+        16: aload_0       
+        17: invokespecial #897                // Method getGenericInfo:()Lsun/reflect/generics/repository/ClassRepository;
+        20: invokevirtual #1013               // Method sun/reflect/generics/repository/ClassRepository.getSuperclass:()Ljava/lang/reflect/Type;
+        23: areturn       
+        24: aload_0       
+        25: invokevirtual #863                // Method getSuperclass:()Ljava/lang/Class;
+        28: areturn       
+      StackMapTable: number_of_entries = 2
+           frame_type = 16 /* same */
+           frame_type = 7 /* same */
+
+      LineNumberTable:
+        line 690: 0
+        line 694: 7
+        line 695: 14
+        line 696: 16
+        line 698: 24
+
+  public java.lang.Package getPackage();
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0       
+         1: invokestatic  #956                // Method java/lang/Package.getPackage:(Ljava/lang/Class;)Ljava/lang/Package;
+         4: areturn       
+      LineNumberTable:
+        line 717: 0
+
+  public native java.lang.Class<?>[] getInterfaces();
+    flags: ACC_PUBLIC, ACC_NATIVE
+    Signature: #492                         // ()[Ljava/lang/Class<*>;
+
+  public java.lang.reflect.Type[] getGenericInterfaces();
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0       
+         1: invokespecial #878                // Method getGenericSignature:()Ljava/lang/String;
+         4: ifnull        15
+         7: aload_0       
+         8: invokespecial #897                // Method getGenericInfo:()Lsun/reflect/generics/repository/ClassRepository;
+        11: invokevirtual #1014               // Method sun/reflect/generics/repository/ClassRepository.getSuperInterfaces:()[Ljava/lang/reflect/Type;
+        14: areturn       
+        15: aload_0       
+        16: invokevirtual #865                // Method getInterfaces:()[Ljava/lang/Class;
+        19: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 15 /* same */
+
+      LineNumberTable:
+        line 813: 0
+        line 814: 7
+        line 816: 15
+
+  public native java.lang.Class<?> getComponentType();
+    flags: ACC_PUBLIC, ACC_NATIVE
+    Signature: #489                         // ()Ljava/lang/Class<*>;
+
+  public native int getModifiers();
+    flags: ACC_PUBLIC, ACC_NATIVE
+
+  public native java.lang.Object[] getSigners();
+    flags: ACC_PUBLIC, ACC_NATIVE
+
+  native void setSigners(java.lang.Object[]);
+    flags: ACC_NATIVE
+
+  public java.lang.reflect.Method getEnclosingMethod();
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=14, args_size=1
+         0: aload_0       
+         1: invokespecial #869                // Method getEnclosingMethodInfo:()Ljava/lang/Class$EnclosingMethodInfo;
+         4: astore_1      
+         5: aload_1       
+         6: ifnonnull     11
+         9: aconst_null   
+        10: areturn       
+        11: aload_1       
+        12: invokevirtual #922                // Method java/lang/Class$EnclosingMethodInfo.isMethod:()Z
+        15: ifne          20
+        18: aconst_null   
+        19: areturn       
+        20: aload_1       
+        21: invokevirtual #924                // Method java/lang/Class$EnclosingMethodInfo.getDescriptor:()Ljava/lang/String;
+        24: aload_0       
+        25: invokespecial #896                // Method getFactory:()Lsun/reflect/generics/factory/GenericsFactory;
+        28: invokestatic  #1021               // Method sun/reflect/generics/repository/MethodRepository.make:(Ljava/lang/String;Lsun/reflect/generics/factory/GenericsFactory;)Lsun/reflect/generics/repository/MethodRepository;
+        31: astore_2      
+        32: aload_2       
+        33: invokevirtual #1019               // Method sun/reflect/generics/repository/MethodRepository.getReturnType:()Ljava/lang/reflect/Type;
+        36: invokestatic  #898                // Method toClass:(Ljava/lang/reflect/Type;)Ljava/lang/Class;
+        39: astore_3      
+        40: aload_2       
+        41: invokevirtual #1020               // Method sun/reflect/generics/repository/MethodRepository.getParameterTypes:()[Ljava/lang/reflect/Type;
+        44: astore        4
+        46: aload         4
+        48: arraylength   
+        49: anewarray     #394                // class java/lang/Class
+        52: astore        5
+        54: iconst_0      
+        55: istore        6
+        57: iload         6
+        59: aload         5
+        61: arraylength   
+        62: if_icmpge     84
+        65: aload         5
+        67: iload         6
+        69: aload         4
+        71: iload         6
+        73: aaload        
+        74: invokestatic  #898                // Method toClass:(Ljava/lang/reflect/Type;)Ljava/lang/Class;
+        77: aastore       
+        78: iinc          6, 1
+        81: goto          57
+        84: aload_1       
+        85: invokevirtual #923                // Method java/lang/Class$EnclosingMethodInfo.getEnclosingClass:()Ljava/lang/Class;
+        88: astore        6
+        90: aload         6
+        92: iconst_1      
+        93: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+        96: iconst_1      
+        97: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+       100: aload         6
+       102: invokevirtual #889                // Method getDeclaredMethods:()[Ljava/lang/reflect/Method;
+       105: astore        7
+       107: aload         7
+       109: arraylength   
+       110: istore        8
+       112: iconst_0      
+       113: istore        9
+       115: iload         9
+       117: iload         8
+       119: if_icmpge     228
+       122: aload         7
+       124: iload         9
+       126: aaload        
+       127: astore        10
+       129: aload         10
+       131: invokevirtual #985                // Method java/lang/reflect/Method.getName:()Ljava/lang/String;
+       134: aload_1       
+       135: invokevirtual #925                // Method java/lang/Class$EnclosingMethodInfo.getName:()Ljava/lang/String;
+       138: invokevirtual #963                // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+       141: ifeq          222
+       144: aload         10
+       146: invokevirtual #984                // Method java/lang/reflect/Method.getParameterTypes:()[Ljava/lang/Class;
+       149: astore        11
+       151: aload         11
+       153: arraylength   
+       154: aload         5
+       156: arraylength   
+       157: if_icmpne     222
+       160: iconst_1      
+       161: istore        12
+       163: iconst_0      
+       164: istore        13
+       166: iload         13
+       168: aload         11
+       170: arraylength   
+       171: if_icmpge     202
+       174: aload         11
+       176: iload         13
+       178: aaload        
+       179: aload         5
+       181: iload         13
+       183: aaload        
+       184: invokevirtual #955                // Method java/lang/Object.equals:(Ljava/lang/Object;)Z
+       187: ifne          196
+       190: iconst_0      
+       191: istore        12
+       193: goto          202
+       196: iinc          13, 1
+       199: goto          166
+       202: iload         12
+       204: ifeq          222
+       207: aload         10
+       209: invokevirtual #983                // Method java/lang/reflect/Method.getReturnType:()Ljava/lang/Class;
+       212: aload_3       
+       213: invokevirtual #955                // Method java/lang/Object.equals:(Ljava/lang/Object;)Z
+       216: ifeq          222
+       219: aload         10
+       221: areturn       
+       222: iinc          9, 1
+       225: goto          115
+       228: new           #412                // class java/lang/InternalError
+       231: dup           
+       232: ldc           #10                 // String Enclosing method not found
+       234: invokespecial #949                // Method java/lang/InternalError."<init>":(Ljava/lang/String;)V
+       237: athrow        
+      StackMapTable: number_of_entries = 10
+           frame_type = 252 /* append */
+             offset_delta = 11
+        locals = [ class java/lang/Class$EnclosingMethodInfo ]
+           frame_type = 8 /* same */
+           frame_type = 255 /* full_frame */
+          offset_delta = 36
+          locals = [ class java/lang/Class, class java/lang/Class$EnclosingMethodInfo, class sun/reflect/generics/repository/MethodRepository, class java/lang/Class, class "[Ljava/lang/reflect/Type;", class "[Ljava/lang/Class;", int ]
+          stack = []
+           frame_type = 250 /* chop */
+          offset_delta = 26
+           frame_type = 255 /* full_frame */
+          offset_delta = 30
+          locals = [ class java/lang/Class, class java/lang/Class$EnclosingMethodInfo, class sun/reflect/generics/repository/MethodRepository, class java/lang/Class, class "[Ljava/lang/reflect/Type;", class "[Ljava/lang/Class;", class java/lang/Class, class "[Ljava/lang/reflect/Method;", int, int ]
+          stack = []
+           frame_type = 255 /* full_frame */
+          offset_delta = 50
+          locals = [ class java/lang/Class, class java/lang/Class$EnclosingMethodInfo, class sun/reflect/generics/repository/MethodRepository, class java/lang/Class, class "[Ljava/lang/reflect/Type;", class "[Ljava/lang/Class;", class java/lang/Class, class "[Ljava/lang/reflect/Method;", int, int, class java/lang/reflect/Method, class "[Ljava/lang/Class;", int, int ]
+          stack = []
+           frame_type = 29 /* same */
+           frame_type = 250 /* chop */
+          offset_delta = 5
+           frame_type = 248 /* chop */
+          offset_delta = 19
+           frame_type = 248 /* chop */
+          offset_delta = 5
+
+      LineNumberTable:
+        line 897: 0
+        line 899: 5
+        line 900: 9
+        line 902: 11
+        line 903: 18
+        line 905: 20
+        line 907: 32
+        line 908: 40
+        line 909: 46
+        line 914: 54
+        line 915: 65
+        line 914: 78
+        line 918: 84
+        line 924: 90
+        line 932: 100
+        line 933: 129
+        line 934: 144
+        line 935: 151
+        line 936: 160
+        line 937: 163
+        line 938: 174
+        line 939: 190
+        line 940: 193
+        line 937: 196
+        line 944: 202
+        line 945: 207
+        line 946: 219
+        line 932: 222
+        line 952: 228
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Constructor<?> getEnclosingConstructor();
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=13, args_size=1
+         0: aload_0       
+         1: invokespecial #869                // Method getEnclosingMethodInfo:()Ljava/lang/Class$EnclosingMethodInfo;
+         4: astore_1      
+         5: aload_1       
+         6: ifnonnull     11
+         9: aconst_null   
+        10: areturn       
+        11: aload_1       
+        12: invokevirtual #921                // Method java/lang/Class$EnclosingMethodInfo.isConstructor:()Z
+        15: ifne          20
+        18: aconst_null   
+        19: areturn       
+        20: aload_1       
+        21: invokevirtual #924                // Method java/lang/Class$EnclosingMethodInfo.getDescriptor:()Ljava/lang/String;
+        24: aload_0       
+        25: invokespecial #896                // Method getFactory:()Lsun/reflect/generics/factory/GenericsFactory;
+        28: invokestatic  #1018               // Method sun/reflect/generics/repository/ConstructorRepository.make:(Ljava/lang/String;Lsun/reflect/generics/factory/GenericsFactory;)Lsun/reflect/generics/repository/ConstructorRepository;
+        31: astore_2      
+        32: aload_2       
+        33: invokevirtual #1017               // Method sun/reflect/generics/repository/ConstructorRepository.getParameterTypes:()[Ljava/lang/reflect/Type;
+        36: astore_3      
+        37: aload_3       
+        38: arraylength   
+        39: anewarray     #394                // class java/lang/Class
+        42: astore        4
+        44: iconst_0      
+        45: istore        5
+        47: iload         5
+        49: aload         4
+        51: arraylength   
+        52: if_icmpge     73
+        55: aload         4
+        57: iload         5
+        59: aload_3       
+        60: iload         5
+        62: aaload        
+        63: invokestatic  #898                // Method toClass:(Ljava/lang/reflect/Type;)Ljava/lang/Class;
+        66: aastore       
+        67: iinc          5, 1
+        70: goto          47
+        73: aload_1       
+        74: invokevirtual #923                // Method java/lang/Class$EnclosingMethodInfo.getEnclosingClass:()Ljava/lang/Class;
+        77: astore        5
+        79: aload         5
+        81: iconst_1      
+        82: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+        85: iconst_1      
+        86: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+        89: aload         5
+        91: invokevirtual #884                // Method getDeclaredConstructors:()[Ljava/lang/reflect/Constructor;
+        94: astore        6
+        96: aload         6
+        98: arraylength   
+        99: istore        7
+       101: iconst_0      
+       102: istore        8
+       104: iload         8
+       106: iload         7
+       108: if_icmpge     190
+       111: aload         6
+       113: iload         8
+       115: aaload        
+       116: astore        9
+       118: aload         9
+       120: invokevirtual #978                // Method java/lang/reflect/Constructor.getParameterTypes:()[Ljava/lang/Class;
+       123: astore        10
+       125: aload         10
+       127: arraylength   
+       128: aload         4
+       130: arraylength   
+       131: if_icmpne     184
+       134: iconst_1      
+       135: istore        11
+       137: iconst_0      
+       138: istore        12
+       140: iload         12
+       142: aload         10
+       144: arraylength   
+       145: if_icmpge     176
+       148: aload         10
+       150: iload         12
+       152: aaload        
+       153: aload         4
+       155: iload         12
+       157: aaload        
+       158: invokevirtual #955                // Method java/lang/Object.equals:(Ljava/lang/Object;)Z
+       161: ifne          170
+       164: iconst_0      
+       165: istore        11
+       167: goto          176
+       170: iinc          12, 1
+       173: goto          140
+       176: iload         11
+       178: ifeq          184
+       181: aload         9
+       183: areturn       
+       184: iinc          8, 1
+       187: goto          104
+       190: new           #412                // class java/lang/InternalError
+       193: dup           
+       194: ldc           #9                  // String Enclosing constructor not found
+       196: invokespecial #949                // Method java/lang/InternalError."<init>":(Ljava/lang/String;)V
+       199: athrow        
+      StackMapTable: number_of_entries = 10
+           frame_type = 252 /* append */
+             offset_delta = 11
+        locals = [ class java/lang/Class$EnclosingMethodInfo ]
+           frame_type = 8 /* same */
+           frame_type = 255 /* full_frame */
+          offset_delta = 26
+          locals = [ class java/lang/Class, class java/lang/Class$EnclosingMethodInfo, class sun/reflect/generics/repository/ConstructorRepository, class "[Ljava/lang/reflect/Type;", class "[Ljava/lang/Class;", int ]
+          stack = []
+           frame_type = 250 /* chop */
+          offset_delta = 25
+           frame_type = 255 /* full_frame */
+          offset_delta = 30
+          locals = [ class java/lang/Class, class java/lang/Class$EnclosingMethodInfo, class sun/reflect/generics/repository/ConstructorRepository, class "[Ljava/lang/reflect/Type;", class "[Ljava/lang/Class;", class java/lang/Class, class "[Ljava/lang/reflect/Constructor;", int, int ]
+          stack = []
+           frame_type = 255 /* full_frame */
+          offset_delta = 35
+          locals = [ class java/lang/Class, class java/lang/Class$EnclosingMethodInfo, class sun/reflect/generics/repository/ConstructorRepository, class "[Ljava/lang/reflect/Type;", class "[Ljava/lang/Class;", class java/lang/Class, class "[Ljava/lang/reflect/Constructor;", int, int, class java/lang/reflect/Constructor, class "[Ljava/lang/Class;", int, int ]
+          stack = []
+           frame_type = 29 /* same */
+           frame_type = 250 /* chop */
+          offset_delta = 5
+           frame_type = 248 /* chop */
+          offset_delta = 7
+           frame_type = 248 /* chop */
+          offset_delta = 5
+
+      LineNumberTable:
+        line 1035: 0
+        line 1037: 5
+        line 1038: 9
+        line 1040: 11
+        line 1041: 18
+        line 1043: 20
+        line 1045: 32
+        line 1046: 37
+        line 1051: 44
+        line 1052: 55
+        line 1051: 67
+        line 1055: 73
+        line 1061: 79
+        line 1067: 89
+        line 1068: 118
+        line 1069: 125
+        line 1070: 134
+        line 1071: 137
+        line 1072: 148
+        line 1073: 164
+        line 1074: 167
+        line 1071: 170
+        line 1078: 176
+        line 1079: 181
+        line 1067: 184
+        line 1083: 190
+    Signature: #517                         // ()Ljava/lang/reflect/Constructor<*>;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.Class<?> getDeclaringClass();
+    flags: ACC_PUBLIC
+    Code:
+      stack=3, locals=2, args_size=1
+         0: aload_0       
+         1: invokespecial #861                // Method getDeclaringClass0:()Ljava/lang/Class;
+         4: astore_1      
+         5: aload_1       
+         6: ifnull        20
+         9: aload_1       
+        10: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+        13: invokestatic  #942                // Method java/lang/ClassLoader.getClassLoader:(Ljava/lang/Class;)Ljava/lang/ClassLoader;
+        16: iconst_1      
+        17: invokespecial #872                // Method checkPackageAccess:(Ljava/lang/ClassLoader;Z)V
+        20: aload_1       
+        21: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 252 /* append */
+             offset_delta = 20
+        locals = [ class java/lang/Class ]
+
+      LineNumberTable:
+        line 1101: 0
+        line 1103: 5
+        line 1104: 9
+        line 1106: 20
+    Signature: #489                         // ()Ljava/lang/Class<*>;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.Class<?> getEnclosingClass();
+    flags: ACC_PUBLIC
+    Code:
+      stack=3, locals=4, args_size=1
+         0: aload_0       
+         1: invokespecial #869                // Method getEnclosingMethodInfo:()Ljava/lang/Class$EnclosingMethodInfo;
+         4: astore_1      
+         5: aload_1       
+         6: ifnonnull     17
+         9: aload_0       
+        10: invokevirtual #860                // Method getDeclaringClass:()Ljava/lang/Class;
+        13: astore_2      
+        14: goto          43
+        17: aload_1       
+        18: invokevirtual #923                // Method java/lang/Class$EnclosingMethodInfo.getEnclosingClass:()Ljava/lang/Class;
+        21: astore_3      
+        22: aload_3       
+        23: aload_0       
+        24: if_acmpeq     31
+        27: aload_3       
+        28: ifnonnull     41
+        31: new           #412                // class java/lang/InternalError
+        34: dup           
+        35: ldc           #12                 // String Malformed enclosing method information
+        37: invokespecial #949                // Method java/lang/InternalError."<init>":(Ljava/lang/String;)V
+        40: athrow        
+        41: aload_3       
+        42: astore_2      
+        43: aload_2       
+        44: ifnull        58
+        47: aload_2       
+        48: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+        51: invokestatic  #942                // Method java/lang/ClassLoader.getClassLoader:(Ljava/lang/Class;)Ljava/lang/ClassLoader;
+        54: iconst_1      
+        55: invokespecial #872                // Method checkPackageAccess:(Ljava/lang/ClassLoader;Z)V
+        58: aload_2       
+        59: areturn       
+      StackMapTable: number_of_entries = 5
+           frame_type = 252 /* append */
+             offset_delta = 17
+        locals = [ class java/lang/Class$EnclosingMethodInfo ]
+           frame_type = 253 /* append */
+             offset_delta = 13
+        locals = [ top, class java/lang/Class ]
+           frame_type = 9 /* same */
+           frame_type = 255 /* full_frame */
+          offset_delta = 1
+          locals = [ class java/lang/Class, class java/lang/Class$EnclosingMethodInfo, class java/lang/Class ]
+          stack = []
+           frame_type = 14 /* same */
+
+      LineNumberTable:
+        line 1132: 0
+        line 1135: 5
+        line 1137: 9
+        line 1139: 17
+        line 1141: 22
+        line 1142: 31
+        line 1144: 41
+        line 1147: 43
+        line 1148: 47
+        line 1150: 58
+    Signature: #489                         // ()Ljava/lang/Class<*>;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.String getSimpleName();
+    flags: ACC_PUBLIC
+    Code:
+      stack=3, locals=4, args_size=1
+         0: aload_0       
+         1: invokevirtual #852                // Method isArray:()Z
+         4: ifeq          33
+         7: new           #422                // class java/lang/StringBuilder
+        10: dup           
+        11: invokespecial #970                // Method java/lang/StringBuilder."<init>":()V
+        14: aload_0       
+        15: invokevirtual #859                // Method getComponentType:()Ljava/lang/Class;
+        18: invokevirtual #882                // Method getSimpleName:()Ljava/lang/String;
+        21: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        24: ldc           #13                 // String []
+        26: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        29: invokevirtual #971                // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+        32: areturn       
+        33: aload_0       
+        34: invokespecial #881                // Method getSimpleBinaryName:()Ljava/lang/String;
+        37: astore_1      
+        38: aload_1       
+        39: ifnonnull     60
+        42: aload_0       
+        43: invokevirtual #879                // Method getName:()Ljava/lang/String;
+        46: astore_1      
+        47: aload_1       
+        48: aload_1       
+        49: ldc           #5                  // String .
+        51: invokevirtual #968                // Method java/lang/String.lastIndexOf:(Ljava/lang/String;)I
+        54: iconst_1      
+        55: iadd          
+        56: invokevirtual #966                // Method java/lang/String.substring:(I)Ljava/lang/String;
+        59: areturn       
+        60: aload_1       
+        61: invokevirtual #960                // Method java/lang/String.length:()I
+        64: istore_2      
+        65: iload_2       
+        66: iconst_1      
+        67: if_icmplt     80
+        70: aload_1       
+        71: iconst_0      
+        72: invokevirtual #961                // Method java/lang/String.charAt:(I)C
+        75: bipush        36
+        77: if_icmpeq     90
+        80: new           #412                // class java/lang/InternalError
+        83: dup           
+        84: ldc           #11                 // String Malformed class name
+        86: invokespecial #949                // Method java/lang/InternalError."<init>":(Ljava/lang/String;)V
+        89: athrow        
+        90: iconst_1      
+        91: istore_3      
+        92: iload_3       
+        93: iload_2       
+        94: if_icmpge     114
+        97: aload_1       
+        98: iload_3       
+        99: invokevirtual #961                // Method java/lang/String.charAt:(I)C
+       102: invokestatic  #858                // Method isAsciiDigit:(C)Z
+       105: ifeq          114
+       108: iinc          3, 1
+       111: goto          92
+       114: aload_1       
+       115: iload_3       
+       116: invokevirtual #966                // Method java/lang/String.substring:(I)Ljava/lang/String;
+       119: areturn       
+      StackMapTable: number_of_entries = 6
+           frame_type = 33 /* same */
+           frame_type = 252 /* append */
+             offset_delta = 26
+        locals = [ class java/lang/String ]
+           frame_type = 252 /* append */
+             offset_delta = 19
+        locals = [ int ]
+           frame_type = 9 /* same */
+           frame_type = 252 /* append */
+             offset_delta = 1
+        locals = [ int ]
+           frame_type = 21 /* same */
+
+      LineNumberTable:
+        line 1166: 0
+        line 1167: 7
+        line 1169: 33
+        line 1170: 38
+        line 1171: 42
+        line 1172: 47
+        line 1188: 60
+        line 1189: 65
+        line 1190: 80
+        line 1191: 90
+        line 1192: 92
+        line 1193: 108
+        line 1195: 114
+
+  public java.lang.String getCanonicalName();
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=3, args_size=1
+         0: aload_0       
+         1: invokevirtual #852                // Method isArray:()Z
+         4: ifeq          41
+         7: aload_0       
+         8: invokevirtual #859                // Method getComponentType:()Ljava/lang/Class;
+        11: invokevirtual #877                // Method getCanonicalName:()Ljava/lang/String;
+        14: astore_1      
+        15: aload_1       
+        16: ifnull        39
+        19: new           #422                // class java/lang/StringBuilder
+        22: dup           
+        23: invokespecial #970                // Method java/lang/StringBuilder."<init>":()V
+        26: aload_1       
+        27: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        30: ldc           #13                 // String []
+        32: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        35: invokevirtual #971                // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+        38: areturn       
+        39: aconst_null   
+        40: areturn       
+        41: aload_0       
+        42: invokespecial #855                // Method isLocalOrAnonymousClass:()Z
+        45: ifeq          50
+        48: aconst_null   
+        49: areturn       
+        50: aload_0       
+        51: invokevirtual #862                // Method getEnclosingClass:()Ljava/lang/Class;
+        54: astore_1      
+        55: aload_1       
+        56: ifnonnull     64
+        59: aload_0       
+        60: invokevirtual #879                // Method getName:()Ljava/lang/String;
+        63: areturn       
+        64: aload_1       
+        65: invokevirtual #877                // Method getCanonicalName:()Ljava/lang/String;
+        68: astore_2      
+        69: aload_2       
+        70: ifnonnull     75
+        73: aconst_null   
+        74: areturn       
+        75: new           #422                // class java/lang/StringBuilder
+        78: dup           
+        79: invokespecial #970                // Method java/lang/StringBuilder."<init>":()V
+        82: aload_2       
+        83: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        86: ldc           #5                  // String .
+        88: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        91: aload_0       
+        92: invokevirtual #882                // Method getSimpleName:()Ljava/lang/String;
+        95: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        98: invokevirtual #971                // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+       101: areturn       
+      StackMapTable: number_of_entries = 5
+           frame_type = 252 /* append */
+             offset_delta = 39
+        locals = [ class java/lang/String ]
+           frame_type = 250 /* chop */
+          offset_delta = 1
+           frame_type = 8 /* same */
+           frame_type = 252 /* append */
+             offset_delta = 13
+        locals = [ class java/lang/Class ]
+           frame_type = 252 /* append */
+             offset_delta = 10
+        locals = [ class java/lang/String ]
+
+      LineNumberTable:
+        line 1217: 0
+        line 1218: 7
+        line 1219: 15
+        line 1220: 19
+        line 1222: 39
+        line 1224: 41
+        line 1225: 48
+        line 1226: 50
+        line 1227: 55
+        line 1228: 59
+        line 1230: 64
+        line 1231: 69
+        line 1232: 73
+        line 1233: 75
+
+  public boolean isAnonymousClass();
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: ldc           #1                  // String 
+         2: aload_0       
+         3: invokevirtual #882                // Method getSimpleName:()Ljava/lang/String;
+         6: invokevirtual #963                // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+         9: ireturn       
+      LineNumberTable:
+        line 1245: 0
+
+  public boolean isLocalClass();
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0       
+         1: invokespecial #855                // Method isLocalOrAnonymousClass:()Z
+         4: ifeq          18
+         7: aload_0       
+         8: invokevirtual #851                // Method isAnonymousClass:()Z
+        11: ifne          18
+        14: iconst_1      
+        15: goto          19
+        18: iconst_0      
+        19: ireturn       
+      StackMapTable: number_of_entries = 2
+           frame_type = 18 /* same */
+           frame_type = 64 /* same_locals_1_stack_item */
+          stack = [ int ]
+
+      LineNumberTable:
+        line 1256: 0
+
+  public boolean isMemberClass();
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0       
+         1: invokespecial #881                // Method getSimpleBinaryName:()Ljava/lang/String;
+         4: ifnull        18
+         7: aload_0       
+         8: invokespecial #855                // Method isLocalOrAnonymousClass:()Z
+        11: ifne          18
+        14: iconst_1      
+        15: goto          19
+        18: iconst_0      
+        19: ireturn       
+      StackMapTable: number_of_entries = 2
+           frame_type = 18 /* same */
+           frame_type = 64 /* same_locals_1_stack_item */
+          stack = [ int ]
+
+      LineNumberTable:
+        line 1267: 0
+
+  public java.lang.Class<?>[] getClasses();
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=1, args_size=1
+         0: aload_0       
+         1: iconst_0      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_0      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: new           #396                // class java/lang/Class$2
+        12: dup           
+        13: aload_0       
+        14: invokespecial #918                // Method java/lang/Class$2."<init>":(Ljava/lang/Class;)V
+        17: invokestatic  #989                // Method java/security/AccessController.doPrivileged:(Ljava/security/PrivilegedAction;)Ljava/lang/Object;
+        20: checkcast     #385                // class "[Ljava/lang/Class;"
+        23: areturn       
+      LineNumberTable:
+        line 1338: 0
+        line 1346: 9
+    Signature: #492                         // ()[Ljava/lang/Class<*>;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Field[] getFields() throws java.lang.SecurityException;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=1, args_size=1
+         0: aload_0       
+         1: iconst_0      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: aconst_null   
+        11: invokespecial #909                // Method privateGetPublicFields:(Ljava/util/Set;)[Ljava/lang/reflect/Field;
+        14: invokestatic  #907                // Method copyFields:([Ljava/lang/reflect/Field;)[Ljava/lang/reflect/Field;
+        17: areturn       
+      LineNumberTable:
+        line 1414: 0
+        line 1415: 9
+    Exceptions:
+      throws java.lang.SecurityException
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Method[] getMethods() throws java.lang.SecurityException;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=1, args_size=1
+         0: aload_0       
+         1: iconst_0      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: invokespecial #890                // Method privateGetPublicMethods:()[Ljava/lang/reflect/Method;
+        13: invokestatic  #911                // Method copyMethods:([Ljava/lang/reflect/Method;)[Ljava/lang/reflect/Method;
+        16: areturn       
+      LineNumberTable:
+        line 1466: 0
+        line 1467: 9
+    Exceptions:
+      throws java.lang.SecurityException
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Constructor<?>[] getConstructors() throws java.lang.SecurityException;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=1, args_size=1
+         0: aload_0       
+         1: iconst_0      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: iconst_1      
+        11: invokespecial #886                // Method privateGetDeclaredConstructors:(Z)[Ljava/lang/reflect/Constructor;
+        14: invokestatic  #905                // Method copyConstructors:([Ljava/lang/reflect/Constructor;)[Ljava/lang/reflect/Constructor;
+        17: areturn       
+      LineNumberTable:
+        line 1516: 0
+        line 1517: 9
+    Exceptions:
+      throws java.lang.SecurityException
+    Signature: #519                         // ()[Ljava/lang/reflect/Constructor<*>;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Field getField(java.lang.String) throws java.lang.NoSuchFieldException, java.lang.SecurityException;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=3, args_size=2
+         0: aload_0       
+         1: iconst_0      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: aload_1       
+        11: invokespecial #906                // Method getField0:(Ljava/lang/String;)Ljava/lang/reflect/Field;
+        14: astore_2      
+        15: aload_2       
+        16: ifnonnull     28
+        19: new           #413                // class java/lang/NoSuchFieldException
+        22: dup           
+        23: aload_1       
+        24: invokespecial #950                // Method java/lang/NoSuchFieldException."<init>":(Ljava/lang/String;)V
+        27: athrow        
+        28: aload_2       
+        29: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 252 /* append */
+             offset_delta = 28
+        locals = [ class java/lang/reflect/Field ]
+
+      LineNumberTable:
+        line 1576: 0
+        line 1577: 9
+        line 1578: 15
+        line 1579: 19
+        line 1581: 28
+    Exceptions:
+      throws java.lang.NoSuchFieldException, java.lang.SecurityException
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Method getMethod(java.lang.String, java.lang.Class<?>...) throws java.lang.NoSuchMethodException, java.lang.SecurityException;
+    flags: ACC_PUBLIC, ACC_VARARGS
+    Code:
+      stack=4, locals=4, args_size=3
+         0: aload_0       
+         1: iconst_0      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: aload_1       
+        11: aload_2       
+        12: invokespecial #915                // Method getMethod0:(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+        15: astore_3      
+        16: aload_3       
+        17: ifnonnull     61
+        20: new           #415                // class java/lang/NoSuchMethodException
+        23: dup           
+        24: new           #422                // class java/lang/StringBuilder
+        27: dup           
+        28: invokespecial #970                // Method java/lang/StringBuilder."<init>":()V
+        31: aload_0       
+        32: invokevirtual #879                // Method getName:()Ljava/lang/String;
+        35: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        38: ldc           #5                  // String .
+        40: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        43: aload_1       
+        44: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        47: aload_2       
+        48: invokestatic  #900                // Method argumentTypesToString:([Ljava/lang/Class;)Ljava/lang/String;
+        51: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        54: invokevirtual #971                // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+        57: invokespecial #951                // Method java/lang/NoSuchMethodException."<init>":(Ljava/lang/String;)V
+        60: athrow        
+        61: aload_3       
+        62: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 252 /* append */
+             offset_delta = 61
+        locals = [ class java/lang/reflect/Method ]
+
+      LineNumberTable:
+        line 1662: 0
+        line 1663: 9
+        line 1664: 16
+        line 1665: 20
+        line 1667: 61
+    Exceptions:
+      throws java.lang.NoSuchMethodException, java.lang.SecurityException
+    Signature: #599                         // (Ljava/lang/String;[Ljava/lang/Class<*>;)Ljava/lang/reflect/Method;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Constructor<T> getConstructor(java.lang.Class<?>...) throws java.lang.NoSuchMethodException, java.lang.SecurityException;
+    flags: ACC_PUBLIC, ACC_VARARGS
+    Code:
+      stack=4, locals=2, args_size=2
+         0: aload_0       
+         1: iconst_0      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: aload_1       
+        11: iconst_0      
+        12: invokespecial #904                // Method getConstructor0:([Ljava/lang/Class;I)Ljava/lang/reflect/Constructor;
+        15: areturn       
+      LineNumberTable:
+        line 1717: 0
+        line 1718: 9
+    Exceptions:
+      throws java.lang.NoSuchMethodException, java.lang.SecurityException
+    Signature: #574                         // ([Ljava/lang/Class<*>;)Ljava/lang/reflect/Constructor<TT;>;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.Class<?>[] getDeclaredClasses() throws java.lang.SecurityException;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=1, args_size=1
+         0: aload_0       
+         1: iconst_1      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_0      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: invokespecial #864                // Method getDeclaredClasses0:()[Ljava/lang/Class;
+        13: areturn       
+      LineNumberTable:
+        line 1760: 0
+        line 1761: 9
+    Exceptions:
+      throws java.lang.SecurityException
+    Signature: #492                         // ()[Ljava/lang/Class<*>;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Field[] getDeclaredFields() throws java.lang.SecurityException;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=1, args_size=1
+         0: aload_0       
+         1: iconst_1      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: iconst_0      
+        11: invokespecial #888                // Method privateGetDeclaredFields:(Z)[Ljava/lang/reflect/Field;
+        14: invokestatic  #907                // Method copyFields:([Ljava/lang/reflect/Field;)[Ljava/lang/reflect/Field;
+        17: areturn       
+      LineNumberTable:
+        line 1805: 0
+        line 1806: 9
+    Exceptions:
+      throws java.lang.SecurityException
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Method[] getDeclaredMethods() throws java.lang.SecurityException;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=1, args_size=1
+         0: aload_0       
+         1: iconst_1      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: iconst_0      
+        11: invokespecial #892                // Method privateGetDeclaredMethods:(Z)[Ljava/lang/reflect/Method;
+        14: invokestatic  #911                // Method copyMethods:([Ljava/lang/reflect/Method;)[Ljava/lang/reflect/Method;
+        17: areturn       
+      LineNumberTable:
+        line 1854: 0
+        line 1855: 9
+    Exceptions:
+      throws java.lang.SecurityException
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Constructor<?>[] getDeclaredConstructors() throws java.lang.SecurityException;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=1, args_size=1
+         0: aload_0       
+         1: iconst_1      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: iconst_0      
+        11: invokespecial #886                // Method privateGetDeclaredConstructors:(Z)[Ljava/lang/reflect/Constructor;
+        14: invokestatic  #905                // Method copyConstructors:([Ljava/lang/reflect/Constructor;)[Ljava/lang/reflect/Constructor;
+        17: areturn       
+      LineNumberTable:
+        line 1900: 0
+        line 1901: 9
+    Exceptions:
+      throws java.lang.SecurityException
+    Signature: #519                         // ()[Ljava/lang/reflect/Constructor<*>;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Field getDeclaredField(java.lang.String) throws java.lang.NoSuchFieldException, java.lang.SecurityException;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=3, args_size=2
+         0: aload_0       
+         1: iconst_1      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: aload_0       
+        11: iconst_0      
+        12: invokespecial #888                // Method privateGetDeclaredFields:(Z)[Ljava/lang/reflect/Field;
+        15: aload_1       
+        16: invokespecial #913                // Method searchFields:([Ljava/lang/reflect/Field;Ljava/lang/String;)Ljava/lang/reflect/Field;
+        19: astore_2      
+        20: aload_2       
+        21: ifnonnull     33
+        24: new           #413                // class java/lang/NoSuchFieldException
+        27: dup           
+        28: aload_1       
+        29: invokespecial #950                // Method java/lang/NoSuchFieldException."<init>":(Ljava/lang/String;)V
+        32: athrow        
+        33: aload_2       
+        34: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 252 /* append */
+             offset_delta = 33
+        locals = [ class java/lang/reflect/Field ]
+
+      LineNumberTable:
+        line 1945: 0
+        line 1946: 9
+        line 1947: 20
+        line 1948: 24
+        line 1950: 33
+    Exceptions:
+      throws java.lang.NoSuchFieldException, java.lang.SecurityException
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Method getDeclaredMethod(java.lang.String, java.lang.Class<?>...) throws java.lang.NoSuchMethodException, java.lang.SecurityException;
+    flags: ACC_PUBLIC, ACC_VARARGS
+    Code:
+      stack=4, locals=4, args_size=3
+         0: aload_0       
+         1: iconst_1      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: iconst_0      
+        11: invokespecial #892                // Method privateGetDeclaredMethods:(Z)[Ljava/lang/reflect/Method;
+        14: aload_1       
+        15: aload_2       
+        16: invokestatic  #916                // Method searchMethods:([Ljava/lang/reflect/Method;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+        19: astore_3      
+        20: aload_3       
+        21: ifnonnull     65
+        24: new           #415                // class java/lang/NoSuchMethodException
+        27: dup           
+        28: new           #422                // class java/lang/StringBuilder
+        31: dup           
+        32: invokespecial #970                // Method java/lang/StringBuilder."<init>":()V
+        35: aload_0       
+        36: invokevirtual #879                // Method getName:()Ljava/lang/String;
+        39: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        42: ldc           #5                  // String .
+        44: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        47: aload_1       
+        48: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        51: aload_2       
+        52: invokestatic  #900                // Method argumentTypesToString:([Ljava/lang/Class;)Ljava/lang/String;
+        55: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        58: invokevirtual #971                // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+        61: invokespecial #951                // Method java/lang/NoSuchMethodException."<init>":(Ljava/lang/String;)V
+        64: athrow        
+        65: aload_3       
+        66: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 252 /* append */
+             offset_delta = 65
+        locals = [ class java/lang/reflect/Method ]
+
+      LineNumberTable:
+        line 2001: 0
+        line 2002: 9
+        line 2003: 20
+        line 2004: 24
+        line 2006: 65
+    Exceptions:
+      throws java.lang.NoSuchMethodException, java.lang.SecurityException
+    Signature: #599                         // (Ljava/lang/String;[Ljava/lang/Class<*>;)Ljava/lang/reflect/Method;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.lang.reflect.Constructor<T> getDeclaredConstructor(java.lang.Class<?>...) throws java.lang.NoSuchMethodException, java.lang.SecurityException;
+    flags: ACC_PUBLIC, ACC_VARARGS
+    Code:
+      stack=4, locals=2, args_size=2
+         0: aload_0       
+         1: iconst_1      
+         2: invokestatic  #999                // Method sun/reflect/Reflection.getCallerClass:()Ljava/lang/Class;
+         5: iconst_1      
+         6: invokespecial #866                // Method checkMemberAccess:(ILjava/lang/Class;Z)V
+         9: aload_0       
+        10: aload_1       
+        11: iconst_1      
+        12: invokespecial #904                // Method getConstructor0:([Ljava/lang/Class;I)Ljava/lang/reflect/Constructor;
+        15: areturn       
+      LineNumberTable:
+        line 2052: 0
+        line 2053: 9
+    Exceptions:
+      throws java.lang.NoSuchMethodException, java.lang.SecurityException
+    Signature: #574                         // ([Ljava/lang/Class<*>;)Ljava/lang/reflect/Constructor<TT;>;
+    RuntimeVisibleAnnotations:
+      0: #475()
+
+  public java.io.InputStream getResourceAsStream(java.lang.String);
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=3, args_size=2
+         0: aload_0       
+         1: aload_1       
+         2: invokespecial #902                // Method resolveName:(Ljava/lang/String;)Ljava/lang/String;
+         5: astore_1      
+         6: aload_0       
+         7: invokevirtual #871                // Method getClassLoader0:()Ljava/lang/ClassLoader;
+        10: astore_2      
+        11: aload_2       
+        12: ifnonnull     20
+        15: aload_1       
+        16: invokestatic  #940                // Method java/lang/ClassLoader.getSystemResourceAsStream:(Ljava/lang/String;)Ljava/io/InputStream;
+        19: areturn       
+        20: aload_2       
+        21: aload_1       
+        22: invokevirtual #939                // Method java/lang/ClassLoader.getResourceAsStream:(Ljava/lang/String;)Ljava/io/InputStream;
+        25: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 252 /* append */
+             offset_delta = 20
+        locals = [ class java/lang/ClassLoader ]
+
+      LineNumberTable:
+        line 2092: 0
+        line 2093: 6
+        line 2094: 11
+        line 2096: 15
+        line 2098: 20
+
+  public java.net.URL getResource(java.lang.String);
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=3, args_size=2
+         0: aload_0       
+         1: aload_1       
+         2: invokespecial #902                // Method resolveName:(Ljava/lang/String;)Ljava/lang/String;
+         5: astore_1      
+         6: aload_0       
+         7: invokevirtual #871                // Method getClassLoader0:()Ljava/lang/ClassLoader;
+        10: astore_2      
+        11: aload_2       
+        12: ifnonnull     20
+        15: aload_1       
+        16: invokestatic  #944                // Method java/lang/ClassLoader.getSystemResource:(Ljava/lang/String;)Ljava/net/URL;
+        19: areturn       
+        20: aload_2       
+        21: aload_1       
+        22: invokevirtual #943                // Method java/lang/ClassLoader.getResource:(Ljava/lang/String;)Ljava/net/URL;
+        25: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 252 /* append */
+             offset_delta = 20
+        locals = [ class java/lang/ClassLoader ]
+
+      LineNumberTable:
+        line 2136: 0
+        line 2137: 6
+        line 2138: 11
+        line 2140: 15
+        line 2142: 20
+
+  public java.security.ProtectionDomain getProtectionDomain();
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=4, args_size=1
+         0: invokestatic  #973                // Method java/lang/System.getSecurityManager:()Ljava/lang/SecurityManager;
+         3: astore_1      
+         4: aload_1       
+         5: ifnull        15
+         8: aload_1       
+         9: getstatic     #842                // Field sun/security/util/SecurityConstants.GET_PD_PERMISSION:Ljava/lang/RuntimePermission;
+        12: invokevirtual #959                // Method java/lang/SecurityManager.checkPermission:(Ljava/security/Permission;)V
+        15: aload_0       
+        16: invokespecial #893                // Method getProtectionDomain0:()Ljava/security/ProtectionDomain;
+        19: astore_2      
+        20: aload_2       
+        21: ifnonnull     61
+        24: getstatic     #829                // Field allPermDomain:Ljava/security/ProtectionDomain;
+        27: ifnonnull     57
+        30: new           #440                // class java/security/Permissions
+        33: dup           
+        34: invokespecial #990                // Method java/security/Permissions."<init>":()V
+        37: astore_3      
+        38: aload_3       
+        39: getstatic     #843                // Field sun/security/util/SecurityConstants.ALL_PERMISSION:Ljava/security/AllPermission;
+        42: invokevirtual #991                // Method java/security/Permissions.add:(Ljava/security/Permission;)V
+        45: new           #441                // class java/security/ProtectionDomain
+        48: dup           
+        49: aconst_null   
+        50: aload_3       
+        51: invokespecial #992                // Method java/security/ProtectionDomain."<init>":(Ljava/security/CodeSource;Ljava/security/PermissionCollection;)V
+        54: putstatic     #829                // Field allPermDomain:Ljava/security/ProtectionDomain;
+        57: getstatic     #829                // Field allPermDomain:Ljava/security/ProtectionDomain;
+        60: astore_2      
+        61: aload_2       
+        62: areturn       
+      StackMapTable: number_of_entries = 3
+           frame_type = 252 /* append */
+             offset_delta = 15
+        locals = [ class java/lang/SecurityManager ]
+           frame_type = 252 /* append */
+             offset_delta = 41
+        locals = [ class java/security/ProtectionDomain ]
+           frame_type = 3 /* same */
+
+      LineNumberTable:
+        line 2172: 0
+        line 2173: 4
+        line 2174: 8
+        line 2176: 15
+        line 2177: 20
+        line 2178: 24
+        line 2179: 30
+        line 2181: 38
+        line 2182: 45
+        line 2185: 57
+        line 2187: 61
+
+  native void setProtectionDomain0(java.security.ProtectionDomain);
+    flags: ACC_NATIVE
+
+  static native java.lang.Class getPrimitiveClass(java.lang.String);
+    flags: ACC_STATIC, ACC_NATIVE
+
+  native sun.reflect.ConstantPool getConstantPool();
+    flags: ACC_NATIVE
+
+  public boolean desiredAssertionStatus();
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=4, args_size=1
+         0: aload_0       
+         1: invokevirtual #870                // Method getClassLoader:()Ljava/lang/ClassLoader;
+         4: astore_1      
+         5: aload_1       
+         6: ifnonnull     14
+         9: aload_0       
+        10: invokestatic  #867                // Method desiredAssertionStatus0:(Ljava/lang/Class;)Z
+        13: ireturn       
+        14: aload_1       
+        15: getfield      #838                // Field java/lang/ClassLoader.assertionLock:Ljava/lang/Object;
+        18: dup           
+        19: astore_2      
+        20: monitorenter  
+        21: aload_1       
+        22: getfield      #839                // Field java/lang/ClassLoader.classAssertionStatus:Ljava/util/Map;
+        25: ifnull        39
+        28: aload_1       
+        29: aload_0       
+        30: invokevirtual #879                // Method getName:()Ljava/lang/String;
+        33: invokevirtual #938                // Method java/lang/ClassLoader.desiredAssertionStatus:(Ljava/lang/String;)Z
+        36: aload_2       
+        37: monitorexit   
+        38: ireturn       
+        39: aload_2       
+        40: monitorexit   
+        41: goto          49
+        44: astore_3      
+        45: aload_2       
+        46: monitorexit   
+        47: aload_3       
+        48: athrow        
+        49: aload_0       
+        50: invokestatic  #867                // Method desiredAssertionStatus0:(Ljava/lang/Class;)Z
+        53: ireturn       
+      Exception table:
+         from    to  target type
+            21    38    44   any
+            39    41    44   any
+            44    47    44   any
+      StackMapTable: number_of_entries = 4
+           frame_type = 252 /* append */
+             offset_delta = 14
+        locals = [ class java/lang/ClassLoader ]
+           frame_type = 252 /* append */
+             offset_delta = 24
+        locals = [ class java/lang/Object ]
+           frame_type = 68 /* same_locals_1_stack_item */
+          stack = [ class java/lang/Throwable ]
+           frame_type = 250 /* chop */
+          offset_delta = 4
+
+      LineNumberTable:
+        line 2975: 0
+        line 2977: 5
+        line 2978: 9
+        line 2982: 14
+        line 2983: 21
+        line 2984: 28
+        line 2986: 39
+        line 2987: 49
+
+  public boolean isEnum();
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: aload_0       
+         1: invokevirtual #846                // Method getModifiers:()I
+         4: sipush        16384
+         7: iand          
+         8: ifeq          25
+        11: aload_0       
+        12: invokevirtual #863                // Method getSuperclass:()Ljava/lang/Class;
+        15: ldc_w         #407                // class java/lang/Enum
+        18: if_acmpne     25
+        21: iconst_1      
+        22: goto          26
+        25: iconst_0      
+        26: ireturn       
+      StackMapTable: number_of_entries = 2
+           frame_type = 25 /* same */
+           frame_type = 64 /* same_locals_1_stack_item */
+          stack = [ int ]
+
+      LineNumberTable:
+        line 3005: 0
+
+  public T[] getEnumConstants();
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=2, args_size=1
+         0: aload_0       
+         1: invokevirtual #874                // Method getEnumConstantsShared:()[Ljava/lang/Object;
+         4: astore_1      
+         5: aload_1       
+         6: ifnull        19
+         9: aload_1       
+        10: invokevirtual #844                // Method "[Ljava/lang/Object;".clone:()Ljava/lang/Object;
+        13: checkcast     #386                // class "[Ljava/lang/Object;"
+        16: goto          20
+        19: aconst_null   
+        20: areturn       
+      StackMapTable: number_of_entries = 2
+           frame_type = 252 /* append */
+             offset_delta = 19
+        locals = [ class "[Ljava/lang/Object;" ]
+           frame_type = 64 /* same_locals_1_stack_item */
+          stack = [ class "[Ljava/lang/Object;" ]
+
+      LineNumberTable:
+        line 3063: 0
+        line 3064: 5
+    Signature: #28                          // ()[TT;
+
+  T[] getEnumConstantsShared();
+    flags: 
+    Code:
+      stack=4, locals=2, args_size=1
+         0: aload_0       
+         1: getfield      #818                // Field enumConstants:[Ljava/lang/Object;
+         4: ifnonnull     71
+         7: aload_0       
+         8: invokevirtual #853                // Method isEnum:()Z
+        11: ifne          16
+        14: aconst_null   
+        15: areturn       
+        16: aload_0       
+        17: ldc           #17                 // String values
+        19: iconst_0      
+        20: anewarray     #394                // class java/lang/Class
+        23: invokevirtual #914                // Method getMethod:(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+        26: astore_1      
+        27: new           #398                // class java/lang/Class$4
+        30: dup           
+        31: aload_0       
+        32: aload_1       
+        33: invokespecial #920                // Method java/lang/Class$4."<init>":(Ljava/lang/Class;Ljava/lang/reflect/Method;)V
+        36: invokestatic  #989                // Method java/security/AccessController.doPrivileged:(Ljava/security/PrivilegedAction;)Ljava/lang/Object;
+        39: pop           
+        40: aload_0       
+        41: aload_1       
+        42: aconst_null   
+        43: iconst_0      
+        44: anewarray     #417                // class java/lang/Object
+        47: invokevirtual #986                // Method java/lang/reflect/Method.invoke:(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
+        50: checkcast     #386                // class "[Ljava/lang/Object;"
+        53: checkcast     #386                // class "[Ljava/lang/Object;"
+        56: putfield      #818                // Field enumConstants:[Ljava/lang/Object;
+        59: goto          71
+        62: astore_1      
+        63: aconst_null   
+        64: areturn       
+        65: astore_1      
+        66: aconst_null   
+        67: areturn       
+        68: astore_1      
+        69: aconst_null   
+        70: areturn       
+        71: aload_0       
+        72: getfield      #818                // Field enumConstants:[Ljava/lang/Object;
+        75: areturn       
+      Exception table:
+         from    to  target type
+            16    59    62   Class java/lang/reflect/InvocationTargetException
+            16    59    65   Class java/lang/NoSuchMethodException
+            16    59    68   Class java/lang/IllegalAccessException
+      StackMapTable: number_of_entries = 5
+           frame_type = 16 /* same */
+           frame_type = 109 /* same_locals_1_stack_item */
+          stack = [ class java/lang/reflect/InvocationTargetException ]
+           frame_type = 66 /* same_locals_1_stack_item */
+          stack = [ class java/lang/NoSuchMethodException ]
+           frame_type = 66 /* same_locals_1_stack_item */
+          stack = [ class java/lang/IllegalAccessException ]
+           frame_type = 2 /* same */
+
+      LineNumberTable:
+        line 3074: 0
+        line 3075: 7
+        line 3077: 16
+        line 3078: 27
+        line 3085: 40
+        line 3091: 59
+        line 3089: 62
+        line 3090: 65
+        line 3091: 68
+        line 3093: 71
+    Signature: #28                          // ()[TT;
+
+  java.util.Map<java.lang.String, T> enumConstantDirectory();
+    flags: 
+    Code:
+      stack=4, locals=7, args_size=1
+         0: aload_0       
+         1: getfield      #832                // Field enumConstantDirectory:Ljava/util/Map;
+         4: ifnonnull     109
+         7: aload_0       
+         8: invokevirtual #874                // Method getEnumConstantsShared:()[Ljava/lang/Object;
+        11: astore_1      
+        12: aload_1       
+        13: ifnonnull     47
+        16: new           #409                // class java/lang/IllegalArgumentException
+        19: dup           
+        20: new           #422                // class java/lang/StringBuilder
+        23: dup           
+        24: invokespecial #970                // Method java/lang/StringBuilder."<init>":()V
+        27: aload_0       
+        28: invokevirtual #879                // Method getName:()Ljava/lang/String;
+        31: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        34: ldc_w         #382                // String  is not an enum type
+        37: invokevirtual #972                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        40: invokevirtual #971                // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+        43: invokespecial #947                // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+        46: athrow        
+        47: new           #444                // class java/util/HashMap
+        50: dup           
+        51: iconst_2      
+        52: aload_1       
+        53: arraylength   
+        54: imul          
+        55: invokespecial #995                // Method java/util/HashMap."<init>":(I)V
+        58: astore_2      
+        59: aload_1       
+        60: astore_3      
+        61: aload_3       
+        62: arraylength   
+        63: istore        4
+        65: iconst_0      
+        66: istore        5
+        68: iload         5
+        70: iload         4
+        72: if_icmpge     104
+        75: aload_3       
+        76: iload         5
+        78: aaload        
+        79: astore        6
+        81: aload_2       
+        82: aload         6
+        84: checkcast     #407                // class java/lang/Enum
+        87: invokevirtual #945                // Method java/lang/Enum.name:()Ljava/lang/String;
+        90: aload         6
+        92: invokeinterface #1035,  3         // InterfaceMethod java/util/Map.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+        97: pop           
+        98: iinc          5, 1
+       101: goto          68
+       104: aload_0       
+       105: aload_2       
+       106: putfield      #832                // Field enumConstantDirectory:Ljava/util/Map;
+       109: aload_0       
+       110: getfield      #832                // Field enumConstantDirectory:Ljava/util/Map;
+       113: areturn       
+      StackMapTable: number_of_entries = 4
+           frame_type = 252 /* append */
+             offset_delta = 47
+        locals = [ class "[Ljava/lang/Object;" ]
+           frame_type = 255 /* full_frame */
+          offset_delta = 20
+          locals = [ class java/lang/Class, class "[Ljava/lang/Object;", class java/util/Map, class "[Ljava/lang/Object;", int, int ]
+          stack = []
+           frame_type = 248 /* chop */
+          offset_delta = 35
+           frame_type = 249 /* chop */
+          offset_delta = 4
+
+      LineNumberTable:
+        line 3105: 0
+        line 3106: 7
+        line 3107: 12
+        line 3108: 16
+        line 3110: 47
+        line 3111: 59
+        line 3112: 81
+        line 3111: 98
+        line 3113: 104
+        line 3115: 109
+    Signature: #566                         // ()Ljava/util/Map<Ljava/lang/String;TT;>;
+
+  public T cast(java.lang.Object);
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=2, args_size=2
+         0: aload_1       
+         1: ifnull        25
+         4: aload_0       
+         5: aload_1       
+         6: invokevirtual #875                // Method isInstance:(Ljava/lang/Object;)Z
+         9: ifne          25
+        12: new           #402                // class java/lang/ClassCastException
+        15: dup           
+        16: aload_0       
+        17: aload_1       
+        18: invokespecial #901                // Method cannotCastMsg:(Ljava/lang/Object;)Ljava/lang/String;
+        21: invokespecial #937                // Method java/lang/ClassCastException."<init>":(Ljava/lang/String;)V
+        24: athrow        
+        25: aload_1       
+        26: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 25 /* same */
+
+      LineNumberTable:
+        line 3132: 0
+        line 3133: 12
+        line 3134: 25
+    Signature: #506                         // (Ljava/lang/Object;)TT;
+
+  public <U extends java/lang/Object> java.lang.Class<? extends U> asSubclass(java.lang.Class<U>);
+    flags: ACC_PUBLIC
+    Code:
+      stack=3, locals=2, args_size=2
+         0: aload_1       
+         1: aload_0       
+         2: invokevirtual #868                // Method isAssignableFrom:(Ljava/lang/Class;)Z
+         5: ifeq          10
+         8: aload_0       
+         9: areturn       
+        10: new           #402                // class java/lang/ClassCastException
+        13: dup           
+        14: aload_0       
+        15: invokevirtual #883                // Method toString:()Ljava/lang/String;
+        18: invokespecial #937                // Method java/lang/ClassCastException."<init>":(Ljava/lang/String;)V
+        21: athrow        
+      StackMapTable: number_of_entries = 1
+           frame_type = 10 /* same */
+
+      LineNumberTable:
+        line 3162: 0
+        line 3163: 8
+        line 3165: 10
+    Signature: #484                         // <U:Ljava/lang/Object;>(Ljava/lang/Class<TU;>;)Ljava/lang/Class<+TU;>;
+
+  public <A extends java/lang/annotation/Annotation> A getAnnotation(java.lang.Class<A>);
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_1       
+         1: ifnonnull     12
+         4: new           #416                // class java/lang/NullPointerException
+         7: dup           
+         8: invokespecial #952                // Method java/lang/NullPointerException."<init>":()V
+        11: athrow        
+        12: aload_0       
+        13: invokespecial #849                // Method initAnnotationsIfNecessary:()V
+        16: aload_0       
+        17: getfield      #830                // Field annotations:Ljava/util/Map;
+        20: aload_1       
+        21: invokeinterface #1034,  2         // InterfaceMethod java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        26: checkcast     #425                // class java/lang/annotation/Annotation
+        29: areturn       
+      StackMapTable: number_of_entries = 1
+           frame_type = 12 /* same */
+
+      LineNumberTable:
+        line 3173: 0
+        line 3174: 4
+        line 3176: 12
+        line 3177: 16
+    Signature: #479                         // <A::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TA;>;)TA;
+
+  public boolean isAnnotationPresent(java.lang.Class<? extends java.lang.annotation.Annotation>);
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_1       
+         1: ifnonnull     12
+         4: new           #416                // class java/lang/NullPointerException
+         7: dup           
+         8: invokespecial #952                // Method java/lang/NullPointerException."<init>":()V
+        11: athrow        
+        12: aload_0       
+        13: aload_1       
+        14: invokevirtual #903                // Method getAnnotation:(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;
+        17: ifnull        24
+        20: iconst_1      
+        21: goto          25
+        24: iconst_0      
+        25: ireturn       
+      StackMapTable: number_of_entries = 3
+           frame_type = 12 /* same */
+           frame_type = 11 /* same */
+           frame_type = 64 /* same_locals_1_stack_item */
+          stack = [ int ]
+
+      LineNumberTable:
+        line 3186: 0
+        line 3187: 4
+        line 3189: 12
+    Signature: #569                         // (Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z
+
+  public java.lang.annotation.Annotation[] getAnnotations();
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0       
+         1: invokespecial #849                // Method initAnnotationsIfNecessary:()V
+         4: aload_0       
+         5: getfield      #830                // Field annotations:Ljava/util/Map;
+         8: invokestatic  #1008               // Method sun/reflect/annotation/AnnotationParser.toArray:(Ljava/util/Map;)[Ljava/lang/annotation/Annotation;
+        11: areturn       
+      LineNumberTable:
+        line 3197: 0
+        line 3198: 4
+
+  public java.lang.annotation.Annotation[] getDeclaredAnnotations();
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0       
+         1: invokespecial #849                // Method initAnnotationsIfNecessary:()V
+         4: aload_0       
+         5: getfield      #831                // Field declaredAnnotations:Ljava/util/Map;
+         8: invokestatic  #1008               // Method sun/reflect/annotation/AnnotationParser.toArray:(Ljava/util/Map;)[Ljava/lang/annotation/Annotation;
+        11: areturn       
+      LineNumberTable:
+        line 3205: 0
+        line 3206: 4
+
+  void setAnnotationType(sun.reflect.annotation.AnnotationType);
+    flags: 
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_0       
+         1: aload_1       
+         2: putfield      #834                // Field annotationType:Lsun/reflect/annotation/AnnotationType;
+         5: return        
+      LineNumberTable:
+        line 3239: 0
+        line 3240: 5
+
+  sun.reflect.annotation.AnnotationType getAnnotationType();
+    flags: 
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0       
+         1: getfield      #834                // Field annotationType:Lsun/reflect/annotation/AnnotationType;
+         4: areturn       
+      LineNumberTable:
+        line 3243: 0
+
+  static java.lang.reflect.Method access$100(java.lang.Class) throws java.lang.NoSuchMethodError;
+    flags: ACC_STATIC, ACC_SYNTHETIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0       
+         1: invokestatic  #910                // Method getCheckMemberAccessMethod:(Ljava/lang/Class;)Ljava/lang/reflect/Method;
+         4: areturn       
+      LineNumberTable:
+        line 119: 0
+    Exceptions:
+      throws java.lang.NoSuchMethodError
+
+  static boolean access$200(java.lang.Object[], java.lang.Object[]);
+    flags: ACC_STATIC, ACC_SYNTHETIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_0       
+         1: aload_1       
+         2: invokestatic  #899                // Method arrayContentsEq:([Ljava/lang/Object;[Ljava/lang/Object;)Z
+         5: ireturn       
+      LineNumberTable:
+        line 119: 0
+
+  static boolean access$302(boolean);
+    flags: ACC_STATIC, ACC_SYNTHETIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: iload_0       
+         1: dup           
+         2: putstatic     #814                // Field useCaches:Z
+         5: ireturn       
+      LineNumberTable:
+        line 119: 0
+
+  static boolean access$402(boolean);
+    flags: ACC_STATIC, ACC_SYNTHETIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: iload_0       
+         1: dup           
+         2: putstatic     #813                // Field initted:Z
+         5: ireturn       
+      LineNumberTable:
+        line 119: 0
+
+  static {};
+    flags: ACC_STATIC
+    Code:
+      stack=1, locals=0, args_size=0
+         0: invokestatic  #850                // Method registerNatives:()V
+         3: iconst_1      
+         4: putstatic     #814                // Field useCaches:Z
+         7: iconst_0      
+         8: anewarray     #392                // class java/io/ObjectStreamField
+        11: putstatic     #815                // Field serialPersistentFields:[Ljava/io/ObjectStreamField;
+        14: iconst_0      
+        15: putstatic     #813                // Field initted:Z
+        18: return        
+      LineNumberTable:
+        line 129: 0
+        line 2345: 3
+        line 2946: 7
+        line 3021: 14
+}

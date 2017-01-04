@@ -108,19 +108,6 @@ class CClassFile(object):
 		self.attributes_count = arg.get('attributes_count',0)# u2 
 		self.attribute_info = arg.get('attribute_info',[])
 	
-	# 从常量池中获取值
-	def getConstant(self,num):
-		try:
-			source = self.cp_info[num]
-			if source.__contains__('#'):
-				temp = source.replace('#','')
-				pointers = temp.split(',')
-				target = [self.cp_info[int(i)] for i in pointers]
-				return target
-			return source
-		except Exception, e:
-			print '==========================',num,len(self.cp_info)
-
 # =================================================================
 # FieldInfo 构造
 class FieldInfo(object):
@@ -182,14 +169,14 @@ class AttributeInfo(object):
 	def __getConstant(self,num):
 		try:
 			source = self.__constant_pool[num]
-			if source.__contains__('#'):
+			if isinstance(source,list) and source.__contains__('#'):
 				temp = source.replace('#','')
 				pointers = temp.split(',')
 				target = [self.__constant_pool[int(i)] for i in pointers]
 				return target
 			return source
 		except Exception, e:
-			print '==========================',num,len(self.__constant_pool)
+			print '===========AttributeInfo getConstant Exception ==============',num,len(self.__constant_pool)
 
 	def __attrHandler(self):
 		attr = {}
@@ -238,7 +225,9 @@ class AttributeInfo(object):
 				})
 		elif attribute_name == 'ConstantValue':#字段表，field定义的常量池
 			# 结构：u2 constantvalue_index , attribute_length === 2
-			attr['ConstantValue'] = self.__getConstant(getDecimal(self.__cursor(attribute_length)))
+			value_temp = getDecimal(self.__cursor(attribute_length))
+			print 'xxxxxxxxxxxxxx',value_temp,self.__getConstant(value_temp)
+			attr['ConstantValue'] = self.__getConstant(value_temp)
 		# 一个方法的 Code 属性最多只能有一个 StackMapTable 属性,否则将抛出 ClassFormatError 异常
 		# 每个栈映射帧都显式或隐式地指定了一个字节码偏移量,用于表示局部变量表和操作数栈的验证类型
 		elif attribute_name == 'StackMapTable':#Code属性 ，JDK1.6中新增的属性，供新的类型检验器检查和处理目标方法的局部变量和操作数有所需要的类是否匹配 

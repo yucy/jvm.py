@@ -1,59 +1,177 @@
-public class cls.test {
+public class cls.test
+  SourceFile: "test.java"
+  minor version: 0
+  major version: 51
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #12.#36        //  java/lang/Object."<init>":()V
+   #2 = Fieldref           #11.#37        //  cls/test.n2:I
+   #3 = Integer            34567
+   #4 = Fieldref           #11.#38        //  cls/test.n3:I
+   #5 = Fieldref           #39.#40        //  java/lang/System.out:Ljava/io/PrintStream;
+   #6 = String             #41            //  11111111111111
+   #7 = Methodref          #42.#43        //  java/io/PrintStream.println:(Ljava/lang/String;)V
+   #8 = String             #44            //  
+   #9 = Fieldref           #11.#45        //  cls/test.char4:C
+  #10 = String             #46            //  abcde
+  #11 = Class              #47            //  cls/test
+  #12 = Class              #48            //  java/lang/Object
+  #13 = Utf8               m
+  #14 = Utf8               I
+  #15 = Utf8               n1
+  #16 = Utf8               ConstantValue
+  #17 = Integer            123456
+  #18 = Utf8               n2
+  #19 = Integer            23456
+  #20 = Utf8               n3
+  #21 = Utf8               char4
+  #22 = Utf8               C
+  #23 = Utf8               <init>
+  #24 = Utf8               ()V
+  #25 = Utf8               Code
+  #26 = Utf8               LineNumberTable
+  #27 = Utf8               inc
+  #28 = Utf8               (I)V
+  #29 = Utf8               StackMapTable
+  #30 = Utf8               tcc
+  #31 = Utf8               main
+  #32 = Utf8               ([Ljava/lang/String;)V
+  #33 = Utf8               <clinit>
+  #34 = Utf8               SourceFile
+  #35 = Utf8               test.java
+  #36 = NameAndType        #23:#24        //  "<init>":()V
+  #37 = NameAndType        #18:#14        //  n2:I
+  #38 = NameAndType        #20:#14        //  n3:I
+  #39 = Class              #49            //  java/lang/System
+  #40 = NameAndType        #50:#51        //  out:Ljava/io/PrintStream;
+  #41 = Utf8               11111111111111
+  #42 = Class              #52            //  java/io/PrintStream
+  #43 = NameAndType        #53:#54        //  println:(Ljava/lang/String;)V
+  #44 = Utf8               
+  #45 = NameAndType        #21:#22        //  char4:C
+  #46 = Utf8               abcde
+  #47 = Utf8               cls/test
+  #48 = Utf8               java/lang/Object
+  #49 = Utf8               java/lang/System
+  #50 = Utf8               out
+  #51 = Utf8               Ljava/io/PrintStream;
+  #52 = Utf8               java/io/PrintStream
+  #53 = Utf8               println
+  #54 = Utf8               (Ljava/lang/String;)V
+{
+  public static final int n1;
+    flags: ACC_PUBLIC, ACC_STATIC, ACC_FINAL
+    ConstantValue: int 123456
+
+  public final int n2;
+    flags: ACC_PUBLIC, ACC_FINAL
+    ConstantValue: int 23456
+
+  public int n3;
+    flags: ACC_PUBLIC
+
+  public static char char4;
+    flags: ACC_PUBLIC, ACC_STATIC
+
   public cls.test();
+    flags: ACC_PUBLIC
     Code:
-       0: aload_0
-       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
-       4: return
+      stack=2, locals=1, args_size=1
+         0: aload_0       
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: aload_0       
+         5: sipush        23456
+         8: putfield      #2                  // Field n2:I
+        11: aload_0       
+        12: ldc           #3                  // int 34567
+        14: putfield      #4                  // Field n3:I
+        17: return        
+      LineNumberTable:
+        line 3: 0
+        line 7: 4
+        line 8: 11
+
+  public void inc(int);
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=2, args_size=2
+         0: iload_1       
+         1: tableswitch   { // 2 to 4
+                       2: 28
+                       3: 33
+                       4: 38
+                 default: 43
+            }
+        28: iconst_1      
+        29: istore_1      
+        30: goto          45
+        33: iconst_2      
+        34: istore_1      
+        35: goto          45
+        38: iconst_2      
+        39: istore_1      
+        40: goto          45
+        43: iconst_0      
+        44: istore_1      
+        45: return        
+      LineNumberTable:
+        line 15: 0
+        line 16: 28
+        line 17: 33
+        line 18: 38
+        line 19: 43
+        line 21: 45
+      StackMapTable: number_of_entries = 5
+           frame_type = 28 /* same */
+           frame_type = 4 /* same */
+           frame_type = 4 /* same */
+           frame_type = 4 /* same */
+           frame_type = 1 /* same */
+
+
+  public synchronized void tcc();
+    flags: ACC_PUBLIC, ACC_SYNCHRONIZED
+    Code:
+      stack=1, locals=2, args_size=1
+         0: bipush        10
+         2: istore_1      
+         3: return        
+      LineNumberTable:
+        line 24: 0
+        line 25: 3
 
   public static void main(java.lang.String[]);
+    flags: ACC_PUBLIC, ACC_STATIC
     Code:
-       0: aload_0
-       1: iconst_0
-       2: aaload
-       3: astore_1
-       4: aload_0
-       5: iconst_1
-       6: aaload
-       7: astore_2
-       8: new           #2                  // class java/lang/StringBuilder
-      11: dup
-      12: invokespecial #3                  // Method java/lang/StringBuilder."<init>":()V
-      15: ldc           #4                  // String The [
-      17: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-      20: aload_1
-      21: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-      24: ldc           #6                  // String  ] is %s than [
-      26: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-      29: aload_2
-      30: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-      33: ldc           #7                  // String  ].\n
-      35: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-      38: invokevirtual #8                  // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
-      41: astore_3
-      42: aload_1
-      43: aload_2
-      44: invokevirtual #9                  // Method java/lang/String.compareTo:(Ljava/lang/String;)I
-      47: ifle          70
-      50: getstatic     #10                 // Field java/lang/System.out:Ljava/io/PrintStream;
-      53: aload_3
-      54: iconst_1
-      55: anewarray     #11                 // class java/lang/Object
-      58: dup
-      59: iconst_0
-      60: ldc           #12                 // String bigger
-      62: aastore
-      63: invokevirtual #13                 // Method java/io/PrintStream.printf:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
-      66: pop
-      67: goto          87
-      70: getstatic     #10                 // Field java/lang/System.out:Ljava/io/PrintStream;
-      73: aload_3
-      74: iconst_1
-      75: anewarray     #11                 // class java/lang/Object
-      78: dup
-      79: iconst_0
-      80: ldc           #14                 // String smaller
-      82: aastore
-      83: invokevirtual #13                 // Method java/io/PrintStream.printf:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
-      86: pop
-      87: return
+      stack=2, locals=3, args_size=1
+         0: getstatic     #5                  // Field java/lang/System.out:Ljava/io/PrintStream;
+         3: ldc           #6                  // String 11111111111111
+         5: invokevirtual #7                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+         8: bipush        10
+        10: istore_1      
+        11: ldc           #8                  // String 
+        13: astore_2      
+        14: return        
+      LineNumberTable:
+        line 28: 0
+        line 29: 8
+        line 30: 11
+        line 31: 14
+
+  static {};
+    flags: ACC_STATIC
+    Code:
+      stack=1, locals=2, args_size=0
+         0: bipush        122
+         2: putstatic     #9                  // Field char4:C
+         5: sipush        6789
+         8: istore_0      
+         9: ldc           #10                 // String abcde
+        11: astore_1      
+        12: return        
+      LineNumberTable:
+        line 9: 0
+        line 11: 5
+        line 12: 9
+        line 13: 12
 }

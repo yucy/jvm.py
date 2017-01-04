@@ -3,7 +3,14 @@ package cls;
 public class test{
 
     private int m;
-    public static final long n=1;  
+    public static final int n1=123456;
+    public final int n2=23456;
+    public int n3=34567;
+    public static char char4='z';
+    static{
+        int test_int = 6789;
+        String test_str = "abcde";
+    }
     public void inc(int i){  
         switch(i){
             case 2:i = 1;break;

@@ -62,7 +62,7 @@ def javap(_data):
 		constant_name = constant_type.get(tag)
 		# print 'tag:%d\tconstant_name:%s' % (tag,constant_name)
 		# _struct = getStruct(constant_name)
-		ref_index,utf8_data = '',''
+		ref_index,utf8_data = None,''
 		up,down,is_longORdouble  = '','',False
 		if tag == 7:# Class
 			# u1 tag;
@@ -80,7 +80,7 @@ def javap(_data):
 		elif tag in (3,4):# Integer,Float
 			# u1 tag;
 			# u4 bytes;
-			ref_index=constant_2(4)
+			ref_index=getDecimal(cursor(4))
 		# 在 Class 文件的常量池中,所有的 8 字节的常量都占两个表成员(项)的空间。如果一个
 		# CONSTANT_Long_info 或 CONSTANT_Double_info 结构的项在常量池中的索引为 n,则常量
 		# 池中下一个有效的项的索引为 n+2,此时常量池中索引为 n+1 的项有效但必须被认为不可用
@@ -117,7 +117,7 @@ def javap(_data):
 			# u2 bootstrap_method_attr_index;
 			# u2 name_and_type_index;
 			ref_index=constant_3(2,2)
-		constant_info = ref_index+utf8_data
+		constant_info = ref_index if ref_index is not None else utf8_data
 		if is_longORdouble:
 			constant_pool.extend([up,down])
 		else:
@@ -180,7 +180,7 @@ def constant_3(second,third):
 def getConstant(num):
 	try:
 		source = constant_pool[num]
-		if source.__contains__('#'):
+		if isinstance(source,str) and source.__contains__('#'):
 			temp = source.replace('#','')
 			pointers = temp.split(',')
 			target = [constant_pool[int(i)] for i in pointers]

@@ -119,12 +119,17 @@ if __name__=="__main__":
 	if path:
 		readClassFile(path)
 		# _class = jp.javap(data)
-		print '============================='
+		print 'aaaaaaaaaaaaaaaaa'
 		print _self_class.this_class
 		print _self_class.__dict__
 		print isInterface()
 		print _self_class.cp_info
 		method_info = _self_class.method_info
+		for x in _self_class.field_info:
+			print x.__dict__
+			for y in x.attributes:
+				print y.__dict__
+		print 'bbbbbbbbbbbbbbbbbbbbbbbbbb'
 		for x in method_info:
 			print x.name
 			print x.code.__dict__
