@@ -4,7 +4,7 @@ package cls;
 * 1.没有静态语句块
 * 2.没有对静态变量的赋值操作
 */
-public class test_no_clinit{
+public class test_extends extends test{
 
     private static int xxx;
 

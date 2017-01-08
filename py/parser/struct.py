@@ -87,26 +87,26 @@ class Monitor(object):
         # print "value:", value
         # print "trace:", traceback
 		
-# class 构造
-class CClassFile(object):
-	"""docstring for ClassName"""
-	def __init__(self, arg):
-		self.magic = arg.get('magic',None)# u4 
-		self.minor_version = arg.get('minor_version',0)# u2 
-		self.major_version = arg.get('major_version',None)# u2 
-		self.constant_pool_count = arg.get('constant_pool_count',0)# u2 
-		self.cp_info = arg.get('cp_info',[])
-		self.access_flags = arg.get('access_flags',None)# u2 
-		self.this_class = arg.get('this_class',None)# u2 
-		self.super_class = arg.get('super_class',None)# u2 
-		self.interfaces_count = arg.get('interfaces_count',0)# u2 
-		self.interfaces = arg.get('interfaces',[]) # u2 
-		self.fields_count = arg.get('fields_count',0)# u2 
-		self.field_info = arg.get('field_info',[])
-		self.methods_count = arg.get('methods_count',0)# u2 
-		self.method_info = arg.get('method_info',[])
-		self.attributes_count = arg.get('attributes_count',0)# u2 
-		self.attribute_info = arg.get('attribute_info',[])
+# class 构造 goto classLoader:ClassFile
+# class CClassFile(object):
+# 	"""docstring for ClassName"""
+# 	def __init__(self, arg):
+# 		self.magic = arg.get('magic',None)# u4 
+# 		self.minor_version = arg.get('minor_version',0)# u2 
+# 		self.major_version = arg.get('major_version',None)# u2 
+# 		self.constant_pool_count = arg.get('constant_pool_count',0)# u2 
+# 		self.cp_info = arg.get('cp_info',[])
+# 		self.access_flags = arg.get('access_flags',None)# u2 
+# 		self.this_class = arg.get('this_class',None)# u2 
+# 		self.super_class = arg.get('super_class',None)# u2 
+# 		self.interfaces_count = arg.get('interfaces_count',0)# u2 
+# 		self.interfaces = arg.get('interfaces',[]) # u2 
+# 		self.fields_count = arg.get('fields_count',0)# u2 
+# 		self.field_info = arg.get('field_info',[])
+# 		self.methods_count = arg.get('methods_count',0)# u2 
+# 		self.method_info = arg.get('method_info',[])
+# 		self.attributes_count = arg.get('attributes_count',0)# u2 
+# 		self.attribute_info = arg.get('attribute_info',[])
 	
 # =================================================================
 # FieldInfo 构造
@@ -130,6 +130,7 @@ class MethodInfo(object):
 		self.attributes_count = arg.get('attributes_count',0) # u2 
 		allAttr = arg.get('attributes',[])
 		attributes = []
+		self.code = None
 		for attr in allAttr:
 			if attr.attribute_name == 'Code':
 				self.code = attr
@@ -142,11 +143,13 @@ class MethodInfo(object):
 # AttributeInfo 构造
 class AttributeInfo(object):
 	"""docstring for AttributeInfo"""
-	def __init__(self, arg,pool=[]):
+	def __init__(self, datas,pool=[]):
 		self.__offset = 0
-		self.__data = arg
+		self.__data = datas
+		# print datas,pool
 		self.__constant_pool = pool
 		self.attribute_name,self.attribute_length,self.info = self.__attrHandler()
+		# print self.attribute_name,self.attribute_length
 		# 构造完成之后，释放这两个私有成员
 		# 否则外部可以通过_AttributeInfo__data来访问此变量，大爷的，私有属性表现在哪里了
 		self.__data = None
