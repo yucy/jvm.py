@@ -3,10 +3,14 @@ package cls;
 public class test{
 
     private int m;
-    public static final int n1=123456;
+    public static int n0=45678;
+    public static final int n1=12345;
     public final int n2=23456;
     public int n3=34567;
+    public static final int n4="".length();
     public static char char4='z';
+    public static String ss="ss_56789";
+    public final static String ss0="ss_67890";
     static{
         int test_int = 6789;
         String test_str = "abcde";

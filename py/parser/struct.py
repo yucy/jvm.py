@@ -87,26 +87,27 @@ class Monitor(object):
         # print "value:", value
         # print "trace:", traceback
 		
-# class 构造 goto classLoader:ClassFile
-# class CClassFile(object):
-# 	"""docstring for ClassName"""
-# 	def __init__(self, arg):
-# 		self.magic = arg.get('magic',None)# u4 
-# 		self.minor_version = arg.get('minor_version',0)# u2 
-# 		self.major_version = arg.get('major_version',None)# u2 
-# 		self.constant_pool_count = arg.get('constant_pool_count',0)# u2 
-# 		self.cp_info = arg.get('cp_info',[])
-# 		self.access_flags = arg.get('access_flags',None)# u2 
-# 		self.this_class = arg.get('this_class',None)# u2 
-# 		self.super_class = arg.get('super_class',None)# u2 
-# 		self.interfaces_count = arg.get('interfaces_count',0)# u2 
-# 		self.interfaces = arg.get('interfaces',[]) # u2 
-# 		self.fields_count = arg.get('fields_count',0)# u2 
-# 		self.field_info = arg.get('field_info',[])
-# 		self.methods_count = arg.get('methods_count',0)# u2 
-# 		self.method_info = arg.get('method_info',[])
-# 		self.attributes_count = arg.get('attributes_count',0)# u2 
-# 		self.attribute_info = arg.get('attribute_info',[])
+# class_info 构造 , 用于保存方法区信息
+# 内容包括运行时常量池，类型信息，字段信息，方法信息，类加载器引用，Class实例引用,类变量和方法表
+class ClassInfo(object):
+	"""docstring for ClassName"""
+	def __init__(self, arg):
+		self.magic = arg.get('magic',None)# u4 
+		self.minor_version = arg.get('minor_version',0)# u2 
+		self.major_version = arg.get('major_version',None)# u2 
+		self.constant_pool_count = arg.get('constant_pool_count',0)# u2 
+		self.cp_info = arg.get('cp_info',[])
+		self.access_flags = arg.get('access_flags',None)# u2 
+		self.this_class = arg.get('this_class',None)# u2 
+		self.super_class = arg.get('super_class',None)# u2 
+		self.interfaces_count = arg.get('interfaces_count',0)# u2 
+		self.interfaces = arg.get('interfaces',[]) # u2 
+		self.fields_count = arg.get('fields_count',0)# u2 
+		self.field_info = arg.get('field_info',[])
+		self.methods_count = arg.get('methods_count',0)# u2 
+		self.method_info = arg.get('method_info',[])
+		self.attributes_count = arg.get('attributes_count',0)# u2 
+		self.attribute_info = arg.get('attribute_info',[])
 	
 # =================================================================
 # FieldInfo 构造

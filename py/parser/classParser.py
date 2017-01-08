@@ -12,7 +12,6 @@ _MAGIC = int('0XCAFEBABE',16)
 
 class ClassParser(object):
 	
-
 	def __init__(self, _data):
 		# class 二进制文件数据
 		self.data = _data

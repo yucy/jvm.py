@@ -100,7 +100,7 @@ class ExecMethod(object):
 			# tableswitch, lookupswitch 指令后面第2-3个参数来确认参数数量
 			elif temp_code in [0xaa,0xab]:
 				num_params = self.__xswitch(offset,temp_code)
-			print cmd.get(temp_code),'num_params',num_params
+			print cmd.get(temp_code),self.codes[offset:offset+num_params]
 			# 指令方法
 			_instruction = _proxy(temp_code)
 			
@@ -117,8 +117,10 @@ class ExecMethod(object):
 			# elif num_params is 5:
 			# 	_instruction(self.codes[offset],self.codes[offset+1],self.codes[offset+2],self.codes[offset+3],self.codes[offset+4])
 			# elif num_params > 5:
-			# 	_instruction(self.codes[offset,offset+num_params])
+			# 	_instruction(self.codes[offset:offset+num_params])
 			offset += num_params
+
+
 		# 
 		# return has_return,return_value
 		
@@ -2104,7 +2106,7 @@ if __name__ == '__main__':
 	# _method1()
 	cpinfo = [None, '#7,#27', '#28,#29', '#30', '#31,#32', '#33', '#34', '#35', 'm', 'I', 'n', 'J', 'ConstantValue', ['0x00', '0x00', '0x00', '0x00'], ['0x00', '0x00', '0x00', '0x01'], '<init>', '()V', 'Code', 'LineNumberTable', 'inc', '(I)V', 'StackMapTable', 'tcc', 'main', '([Ljava/lang/String;)V', 'SourceFile', 'test.java', '#15,#16', '#36', '#37,#38', '11111111111111', '#39', '#40,#41', '', 'cls/test', 'java/lang/Object', 'java/lang/System', 'out', 'Ljava/io/PrintStream;', 'java/io/PrintStream', 'println', '(Ljava/lang/String;)V']
 	# main_code = [178, 0, 2, 18, 3, 182, 0, 4, 16, 10, 60, 18, 5, 77, 177]
-	clinit_code = [16, 122, 179, 0, 9, 17, 26, 133, 59, 18, 10, 76, 177]
+	clinit_code = [18, 9, 179, 0, 10, 16, 122, 179, 0, 11, 18, 12, 179, 0, 13, 17, 26, 133, 59, 18, 14, 76, 177]
 	init_code = [42, 183, 0, 1, 42, 17, 91, 160, 181, 0, 2, 42, 18, 3, 181, 0, 4, 177]
 	# tableswitch_code = [27, 170, 0, 0, 0, 0, 0, 42, 0, 0, 0, 2, 0, 0, 0, 4, 0, 0, 0, 27, 0, 0, 0, 32, 0, 0, 0, 37, 4, 60, 167, 0, 15, 5, 60, 167, 0, 10, 5, 60, 167, 0, 5, 3, 60, 177]
 	e = ExecMethod(clinit_code,[],cpinfo)
