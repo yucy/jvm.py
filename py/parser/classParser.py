@@ -2,10 +2,9 @@
 import sys
 sys.path.append('..')
 
-import accessFlags
 from common.utils import getDecimal
 from common.content import constant_type,cmd
-from struct import FieldInfo,MethodInfo,AttributeInfo
+from struct.parser_s import FieldInfo,MethodInfo,AttributeInfo
 
 # 3405691582
 _MAGIC = int('0XCAFEBABE',16)
@@ -132,7 +131,7 @@ class ClassParser(object):
 			# print '#%d %s\t\t%s' % (constant_pool_index,constant_name[9:-5],constant_info)
 		# =============常量池处理完毕==================================================
 		# u2 access_flags;
-		access_flags = accessFlags.getAccessFlag('class',getDecimal(self.cursor(2)))
+		access_flags = getDecimal(self.cursor(2))
 		# u2 this_class;
 		this_class = self.getConstant(getDecimal(self.cursor(2)))[0]
 		# u2 super_class;
@@ -213,7 +212,7 @@ class ClassParser(object):
 			# u2 descriptor_index;
 			# u2 attributes_count;
 			args = {
-				'access_flags':accessFlags.getAccessFlag(_type,getDecimal(self.cursor(2))),
+				'access_flags':getDecimal(self.cursor(2)),
 				'name':self.getConstant(getDecimal(self.cursor(2))),
 				'descriptor':self.getConstant(getDecimal(self.cursor(2)))
 			}

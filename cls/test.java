@@ -1,5 +1,7 @@
 package cls;
 
+import java.lang.Exception;
+
 public class test{
 
     private int m;
@@ -24,7 +26,7 @@ public class test{
         }
     }
 
-    public synchronized void tcc(){
+    public synchronized void tcc() throws Exception{
         int i = 10;
     }
 

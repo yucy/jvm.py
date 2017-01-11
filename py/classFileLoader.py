@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import os
 from sys import argv
+from common.accessFlags import getAccessFlag
 from parser.classParser import ClassParser
 
 # 被装载的类文件
@@ -133,6 +134,39 @@ class ClassFile(object):
 	def isAbstractClass(self):
 		return self.access_flags.__contains__('ACC_ABSTRACT')
 
+	# pirnt class with accessFlags
+	def printClass(self):
+		# print '===============following is class================'
+		# print c.this_class
+		# print c.__dict__
+		# print '----is or not a interface:',c.isInterface()
+		print self.cp_info
+		print '===============following is field_info================'
+		for x in self.field_info:
+			x.access_flags = getAccessFlag('field',x.access_flags)
+			print x.__dict__
+			for y in x.attributes:
+				print y.__dict__
+		print '===============following is method_info================'
+		for x in self.method_info:
+			print x.name
+			x.access_flags = getAccessFlag('method',x.access_flags)
+			print x.__dict__
+			if x.Code:
+				print x.Code.__dict__
+			if x.Exceptions:
+				print x.Exceptions.__dict__
+		# print '===============following is _super method_info================'
+		# _super = self.super_class_file
+		# for x in _super.method_info:
+		# 	print x.name
+		# 	if x.code:
+		# 		print x.code.__dict__
+		print '===============following is classFiles================'
+		print len(classFiles)
+		for k,v in classFiles.items():
+			print k,v,v.__dict__
+
 # 程序入口
 if __name__=="__main__":
 	# argv,第一个参数是python后面算起的，我们的启动命令是：python py/classLoader.py cls/demo.class
@@ -148,29 +182,6 @@ if __name__=="__main__":
 	# 如果path不为空
 	if path:
 		c = ClassFile(path)
-		# _class = jp.javap(data)
-		# print '===============following is class================'
-		# print c.this_class
-		# print c.__dict__
-		# print '----is or not a interface:',c.isInterface()
-		print c.cp_info
-		print '===============following is field_info================'
-		for x in c.field_info:
-			print x.__dict__
-			for y in x.attributes:
-				print y.__dict__
-		print '===============following is method_info================'
-		for x in c.method_info:
-			print x.name
-			if x.code:
-				print x.code.__dict__
-		# print '===============following is _super method_info================'
-		# _super = c.super_class_file
-		# for x in _super.method_info:
-		# 	print x.name
-		# 	if x.code:
-		# 		print x.code.__dict__
-		print '===============following is classFiles================'
-		print len(classFiles)
-		for k,v in classFiles.items():
-			print k,v,v.__dict__
+		c.printClass()
+		
+		
