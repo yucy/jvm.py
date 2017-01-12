@@ -1,4 +1,8 @@
 # -*- coding:utf-8 -*-
+import sys
+sys.path.append('..')
+
+from common.content import method_argtype
 '''
 说明：此模块中的结构用于java类加载、链接和初始化过程
 '''
@@ -9,23 +13,23 @@ class ClassInfo(object):
 	"""docstring for ClassName"""
 	def __init__(self, arg):
 		# 运行时常量池
-		self.cp_info = arg.get('cp_info',[])
+		self.cp_info = arg['cp_info']
 		# 类型信息
 		# 1 ．类型的完全限定名
 		# 2 ．类型直接超类的完全限定名 
 		# 3 ．直接超接口的全限定名列表 
 		# 4 ．该类型是类类型还是接口类型 
 		# 5 ．类型的访问修饰符（如 public,abstract,final 等，对应 access_flags. )
-		self.this_class = arg.get('this_class',None)# u2 
-		self.super_class = arg.get('super_class',None)# u2 
-		self.access_flags = arg.get('access_flags',None)# u2 
-		self.interfaces = arg.get('interfaces',[]) # u2 
+		self.this_class = arg['this_class']
+		self.super_class = arg['super_class']
+		self.access_flags = arg['access_flags']
+		self.interfaces = arg['interfaces']
 		
 		# 字段信息
-		self.field_info = [FieldInfo(i) for i in arg.get('field_info',[])]
+		self.field_info = [FieldInfo(i) for i in arg['field_info']]
 		
 		# 方法信息
-		self.method_info = [MethodInfo(i) for i in arg.get('method_info',[])]
+		self.method_info = [MethodInfo(i) for i in arg['method_info']]
 		# 类变量分为两种变量： 
 		# 1 ．运行时变量，在准备阶段就赋予默认值.
 		# 2 ．编译时变量，static+属性表中存在ContentValue属性，直接赋予ContentValue的值。（如果其他类引用了此变量，
@@ -74,9 +78,9 @@ class FieldInfo(object):
 		# 2 ．字段的类型（可能是基本类型或引用类型）
 		# 3 ．字段的修饰符（ pUblic 、 Static 、transient等）
 		# 注意 : 字段的顺序也要保留
-		self.name = arg.get('name')
-		self.type = arg.get('descriptor')
-		self.access_flags = arg.get('access_flags')
+		self.name = arg['name']
+		self.type = arg['descriptor']
+		self.access_flags = arg['access_flags']
 		
 
 # =======================================================================================================
@@ -92,20 +96,110 @@ class MethodInfo(object):
 		# 5 ．方法的字节码（ bytecodes 非本地方法具有） 
 		# 6 ．操作数栈和该方法在栈帧中局部变量的大小等 
 		# 7 ．异常表。
-		self.name = arg.get('name')
-		self.returnType = arg.get('descriptor')
+		self.name = arg['name']
+		self.descriptor = arg['descriptor']
 		# TODO 方法参数的个数、类型和顺序等 
-		self.access_flags = arg.get('access_flags')
+		# 如果以一个L开头的描述符，就是类描述符，它后紧跟着类的字符串，然后分号“；”结束
+		# int j,String s,List l,double[] d ==> ILjava/lang/String;Ljava/util/List;[D
+		# ()V ==> no params and return void
+
+		self.returnType,self.args = self.__parserDescriptor()
+
+		self.args = []
+		[test(x,self.args) for x in args_temp]
+
+		self.access_flags = arg['access_flags']
 		# method's Code Attribute
-		Code = arg.get('Code')
-		self.codes = Code.get('codes')
+		Code = arg['Code']
+		self.codes = Code['codes']
 		#  'max_locals': 3, 'max_stack': 2, 'exception_table_length'
-		self.max_locals = Code.get('max_locals')
-		self.max_stack = Code.get('max_stack')
+		self.max_locals = Code['max_locals']
+		self.max_stack = Code['max_stack']
 		# 'attribute_name': 'Exceptions' {'number_of_exceptions': 1, 'exception_index_table': [['java/lang/Exception']]}
-		Exceptions = arg.get('Exceptions')
-		self.exceptions = Exceptions.get('exception_index_table')
+		Exceptions = arg['Exceptions']
+		self.exceptions = Exceptions['exception_index_table']
+
+	# 方法参数的个数、类型和顺序等 
+	# 如果以一个L开头的描述符，就是类描述符，它后紧跟着类的字符串，然后分号“；”结束
+	# int j,String s,List l,double[] d ==> ILjava/lang/String;Ljava/util/List;[D
+	# ()V ==> no params and return void
+	# (I)Ljava/lang/String; ==> params:int and return string
+	def __parserDescriptor(self):
+		args_returnType = self.descriptor[1:].split(')')
+		returnType = []
+		[self.__parserArgs(x,returnType) for x in args_returnType[1].split(';')]
+
+		args_temp = args_returnType[0].split(';')
+		args = []
+		[self.__parserArgs(x,args) for x in args_temp]
+		return returnType[0],args
+
+
+	def __parserType(self,temp,result):
+		if len(temp) == 0:
+			return
+		head = temp[:1]
+
+		if head == 'L':
+			result.append(temp[1:])
+		elif head == '[': # TODO 暂时只处理一维数组
+			result.append(head + temp[1:2])
+			self.__parserArgs(temp[1:],result)
+		else:
+			result.append(head)
+			self.__parserArgs(temp[1:],result)
+
+def test(args_temp,result):
+	if len(args_temp) == 0:
+		return
+	head = args_temp[:1]
+
+	if head == 'L':
+		result.append(args_temp[1:])
+	elif head == '[': # TODO 暂时只处理一维数组
+		result.append(head + args_temp[1:2])
+		test(args_temp[1:],result)
+	else:
+		result.append(head)
+		test(args_temp[1:],result)
+
+if __name__ == '__main__':
+	descriptor = '(ILjava/lang/String;Ljava/util/List;[D[Ljava/lang/String;)Ljava/lang/String;'
+	temp = descriptor[1:].split(')')
+	print temp
+	method = []
+	print temp[1]
+	[test(x,method) for x in temp[1].split(';')]
+	print '============',method
+
+	args_temp = temp[0].split(';')
+	print args_temp
+	args = []
+	for x in args_temp:
+		test(x,args)
+	print args
+	tt = []
+	[test(x,tt) for x in args_temp]
+	print tt
+		
+
+			
+
 
 
 
 # =======================================================================================================
+'''
+method_argtype={
+	'B': BYTE, # 有符号字节型数
+	'C': CHAR, # Unicode 字符,UTF-16 编码
+	'D': DOUBLE, # 双精度浮点数
+	'F': FLOAT, # 单精度浮点数
+	'I': INT, # 整型数
+	'J': LONG, # 长整数
+	'S': SHORT, # 有符号短整数
+	'Z': BOOLEAN, # 布尔值 true/false
+	'L': REFERENCE, #;  一个名为<Classname>的实例,e.g.: Ljava/lang/String;Ljava/util/List;
+	'[': ARRAY, # 一个一维数组,e.g.:[D -> double[] 
+}
+'''

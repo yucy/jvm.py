@@ -1,6 +1,7 @@
 package cls;
 
 import java.lang.Exception;
+import java.util.List;
 
 public class test{
 
@@ -26,8 +27,9 @@ public class test{
         }
     }
 
-    public synchronized void tcc() throws Exception{
+    public synchronized String tcc(int j,String s,List l,String[] d) throws Exception{
         int i = 10;
+        return "";
     }
 
     public static void main(String[] args) {
