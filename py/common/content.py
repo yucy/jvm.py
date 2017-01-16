@@ -1,7 +1,5 @@
 # -*- coding:utf-8 -*-
 
-[BOOLEAN,FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,ARRAY,REFERENCE] = [bool,float,float,int,chr,int,int,long,list,object]
-
 # 常量表类型
 constant_type={
 	1:'CONSTANT_Utf8_info',
@@ -20,18 +18,18 @@ constant_type={
 	18:'CONSTANT_InvokeDynamic_info',
 }
 
-method_argtype={
-	'B': BYTE, # 有符号字节型数
-	'C': CHAR, # Unicode 字符,UTF-16 编码
-	'D': DOUBLE, # 双精度浮点数
-	'F': FLOAT, # 单精度浮点数
-	'I': INT, # 整型数
-	'J': LONG, # 长整数
-	'S': SHORT, # 有符号短整数
-	'Z': BOOLEAN, # 布尔值 true/false
-	'L': REFERENCE, #;  一个名为<Classname>的实例,e.g.: Ljava/lang/String;Ljava/util/List;
-	'[': ARRAY, # 一个一维数组,e.g.:[D -> double[] 
-}
+# method_argtype={
+# 	'B': BYTE, # 有符号字节型数
+# 	'C': CHAR, # Unicode 字符,UTF-16 编码
+# 	'D': DOUBLE, # 双精度浮点数
+# 	'F': FLOAT, # 单精度浮点数
+# 	'I': INT, # 整型数
+# 	'J': LONG, # 长整数
+# 	'S': SHORT, # 有符号短整数
+# 	'Z': BOOLEAN, # 布尔值 true/false
+# 	'L': REFERENCE, #;  一个名为<Classname>的实例,e.g.: Ljava/lang/String;Ljava/util/List;
+# 	'[': ARRAY, # 一个一维数组,e.g.:[D -> double[] 
+# }
 
 
 # JVM指令集和

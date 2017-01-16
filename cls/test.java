@@ -13,6 +13,8 @@ public class test{
     public static final int n4="".length();
     public static char char4='z';
     public static String ss="ss_56789";
+    public static String ssnull=null;
+    public final static String ssfinalnull=null;
     public final static String ss0="ss_67890";
     static{
         int test_int = 6789;

@@ -1,9 +1,14 @@
 # -*- coding:utf-8 -*-
 import os
 from parser.classParser import ClassParser
+from struct.clinit_s import ClassInfo
 
 # 被装载的类文件
 classFiles = {}
+# 临时方法区，存放cinit_s.ClassInfo信息
+methodArea = {}
+# 临时堆，存放类实例
+heap = {}
 
 # JRE 类路径
 JAVA_HOME = '/home/yucy/git/jvm.py/rt/%s.class'
@@ -16,18 +21,25 @@ MAIN_CLASS = None
 # 内容包括运行时常量池，类型信息，字段信息，方法信息，类加载器引用，Class实例引用
 # 我们这里的类加载器引用都为None，因为都是用bootstrap 加载器加载的，而不是用户自定义类加载器加载
 class Bootstrap(object):
-	# _lancher_class_path:应用启动类路径
-	def __init__(self, _lancher_class_path):
-		self.lancher_class_path = _lancher_class_path
+	# _class_path:类路径
+	def __init__(self, _class_path):
+		self.class_path = _class_path
+		# 最终放入方法区的内容
+		self.classInfo = ClassInfo()
 		self.__load()
 		self.__verity()
 		self.__preparation()
 		self.__resolution()
 		self.__clinit()
+		# 放入方法区
+		methodArea[self.classInfo.this_class] = self.classInfo
 
 	# 装载阶段 - 查找并装载类型的二进制数据. 此阶段在 ClassFile 类中完成了
 	def __load(self):
-		ClassFile(self.lancher_class_path)
+		# 解析好的class二进制文件内容
+		_c_file = ClassFile(self.class_path)
+		self.classInfo.initBaseInfo(_c_file)
+
 
 		# 验证阶段 - 确保被导入类型的正确性
 	def __verity(self):
