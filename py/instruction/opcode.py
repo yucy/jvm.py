@@ -9,7 +9,7 @@ from common.content import cmd
 
 # 数据类型定义常量
 # [FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF] = ['float','double','byte','char','short','int','long','objectref']
-[BOOLEAN,FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF] = [bool,float,float,int,chr,int,int,long,object]
+[BOOLEAN,FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF,ARRAY] = [bool,float,float,int,chr,int,int,long,object,list]
 
 # §2.11.1 的表 2.3 中列出的分类一
 dup_type1 = (BOOLEAN,BYTE,CHAR,SHORT,INT,FLOAT,OBJECTREF)# ,REFERENCE,RETURNADDRESS)
@@ -439,11 +439,11 @@ class Opcode(object):
 	# =============================================================
 	# 从数组中加载一个 reference 类型数据到操作数栈
 	def aaload(self):
-		self.xaload('array')
+		self.xaload(ARRAY)
 		
 	# 从操作数栈读取一个 reference 类型数据存入到数组中
 	def aastore(self):
-		self.xastore('array')
+		self.xastore(ARRAY)
 		
 	# 将一个 null 值压入到操作数栈中
 	def aconst_null(self):
@@ -1505,16 +1505,16 @@ class Opcode(object):
 		self.xstore(index,INT)
 
 	def istore_0(self):
-		self.fstore(0)
+		self.istore(0)
 
 	def istore_1(self):
-		self.fstore(1)
+		self.istore(1)
 
 	def istore_2(self):
-		self.fstore(2)
+		self.istore(2)
 
 	def istore_3(self):
-		self.fstore(3)
+		self.istore(3)
 
 	# int 类型数据相减
 	def isub(self):
@@ -2105,13 +2105,13 @@ if __name__ == '__main__':
 	# print _method1
 	# _method1()
 	cpinfo = [None, '#7,#27', '#28,#29', '#30', '#31,#32', '#33', '#34', '#35', 'm', 'I', 'n', 'J', 'ConstantValue', ['0x00', '0x00', '0x00', '0x00'], ['0x00', '0x00', '0x00', '0x01'], '<init>', '()V', 'Code', 'LineNumberTable', 'inc', '(I)V', 'StackMapTable', 'tcc', 'main', '([Ljava/lang/String;)V', 'SourceFile', 'test.java', '#15,#16', '#36', '#37,#38', '11111111111111', '#39', '#40,#41', '', 'cls/test', 'java/lang/Object', 'java/lang/System', 'out', 'Ljava/io/PrintStream;', 'java/io/PrintStream', 'println', '(Ljava/lang/String;)V']
-	# main_code = [178, 0, 2, 18, 3, 182, 0, 4, 16, 10, 60, 18, 5, 77, 177]
+	main_code = [178, 0, 6, 18, 7, 182, 0, 8, 16, 10, 60, 18, 5, 77, 17, 39, 15, 42, 3, 50, 184, 0, 9, 177]
 	clinit_code = [18, 9, 179, 0, 10, 16, 122, 179, 0, 11, 18, 12, 179, 0, 13, 17, 26, 133, 59, 18, 14, 76, 177]
 	init_code = [42, 183, 0, 1, 42, 17, 91, 160, 181, 0, 2, 42, 18, 3, 181, 0, 4, 177]
 	# tableswitch_code = [27, 170, 0, 0, 0, 0, 0, 42, 0, 0, 0, 2, 0, 0, 0, 4, 0, 0, 0, 27, 0, 0, 0, 32, 0, 0, 0, 37, 4, 60, 167, 0, 15, 5, 60, 167, 0, 10, 5, 60, 167, 0, 5, 3, 60, 177]
-	e = ExecMethod(clinit_code,[],cpinfo)
+	e = ExecMethod(main_code,[],cpinfo)
 	e.execute()
-	print '========================================'
-	e = ExecMethod(init_code,[],cpinfo)
-	e.execute()
+	# print '========================================'
+	# e = ExecMethod(init_code,[],cpinfo)
+	# e.execute()
 

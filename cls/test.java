@@ -18,7 +18,7 @@ public class test{
         int test_int = 6789;
         String test_str = "abcde";
     }
-    public void inc(int i){  
+    public static void inc(int i,String s){  
         switch(i){
             case 2:i = 1;break;
             case 3:i = 2;break;
@@ -36,6 +36,7 @@ public class test{
     	System.out.println("11111111111111");
     	int i = 10;
     	String s = "";
+        inc(12,args[0]);
     }
 
 }
