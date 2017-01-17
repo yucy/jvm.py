@@ -2,7 +2,7 @@
 import sys
 sys.path.append('..')
 
-from common.content import method_argtype
+from common.accessFlags import checkFieldAccess
 from common.base import Base
 '''
 说明：此模块中的结构用于java类加载、链接和初始化过程
@@ -10,8 +10,9 @@ from common.base import Base
 
 # class_info 构造 , 用于保存方法区信息
 # 内容包括运行时常量池，类型信息，字段信息，方法信息，类加载器引用，Class实例引用,类变量和方法表
+# XXX 为了方便，先做成充血模型吧
 class ClassInfo(Base):
-	"""docstring for ClassName"""
+
 	# 结构定义和功能分开
 	def __init__(self):
 		# 运行时常量池
@@ -24,7 +25,7 @@ class ClassInfo(Base):
 		# 5 ．类型的访问修饰符（如 public,abstract,final 等，对应 access_flags. )
 		self.this_class = None
 		self.super_class = None
-		self.access_flags = None
+		self.access_flags = 0
 		self.interfaces = []
 		
 		# 字段信息
@@ -56,26 +57,48 @@ class ClassInfo(Base):
 		# TODO
 		self.methodTable = []
 
-	def initBaseInfo(self,arg):
+	def initBaseInfo(self,_classFile):
 		# 运行时常量池
-		self.cp_info = arg['cp_info']
+		self.cp_info = _classFile['cp_info']
 		# 类型信息
 		# 1 ．类型的完全限定名
 		# 2 ．类型直接超类的完全限定名 
 		# 3 ．直接超接口的全限定名列表 
 		# 4 ．该类型是类类型还是接口类型 
 		# 5 ．类型的访问修饰符（如 public,abstract,final 等，对应 access_flags. )
-		self.this_class = arg['this_class']
-		self.super_class = arg['super_class']
-		self.access_flags = arg['access_flags']
-		self.interfaces = arg['interfaces']
+		self.this_class = _classFile['this_class']
+		self.super_class = _classFile['super_class']
+		self.access_flags = _classFile['access_flags']
+		self.interfaces = _classFile['interfaces']
 		# 字段信息
-		self.field_info = [FieldInfo(i) for i in arg['field_info']]
+		self.field_info = [FieldInfo(i) for i in _classFile['field_info']]
 		# 方法信息
-		self.method_info = [MethodInfo(i) for i in arg['method_info']]
+		self.method_info = [MethodInfo(i) for i in _classFile['method_info']]
 
-	def setClassField(self,_dict):
-		self.class_field = _dict
+	# 初始化类变量，其实也是准备阶段要做的事情
+	def initClassField(self,_classFile):
+		for field in _classFile['field_info']:
+			access_flags = field['access_flags']
+			if checkFieldAccess('STATIC',access_flags):
+				print field
+				_type = arg['descriptor']
+				tempValue = None
+				for attr in field.attributes:
+					# 'info': {'value': ['ss_67890']}, 'attribute_name': 'ConstantValue'
+					if attr['attribute_name'] == 'ConstantValue':
+						tempValue = attr['info']['value'][0] # TODO 取值太麻烦，需要优化
+						break
+				if tempValue is None:
+					if _type in ['B','S','I','L']:
+						tempValue = 0
+					elif _type in ['D','F']:
+						tempValue = 0.0
+					elif _type == 'C':
+						tempValue = b'0'
+					elif _type == 'Z':
+						tempValue = False
+				self.class_field[field['name']] = tempValue
+
 
 	# 返回方法信息 -> 方法表
 	'''

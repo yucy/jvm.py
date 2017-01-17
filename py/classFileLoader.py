@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import os
 from sys import argv
-from common.accessFlags import getAccessFlag
+from common.accessFlags import printAccessFlag
 from parser.classParser import ClassParser
 
 # 被装载的类文件
@@ -143,14 +143,14 @@ class ClassFile(object):
 		print self.cp_info
 		print '===============following is field_info================'
 		for x in self.field_info:
-			x.access_flags = getAccessFlag('field',x.access_flags)
+			x.access_flags = printAccessFlag('field',x.access_flags)
 			print x.__dict__
 			for y in x.attributes:
 				print y.__dict__
 		print '===============following is method_info================'
 		for x in self.method_info:
 			print x.name
-			x.access_flags = getAccessFlag('method',x.access_flags)
+			x.access_flags = printAccessFlag('method',x.access_flags)
 			print x.__dict__
 			if x.Code:
 				print x.Code.__dict__

@@ -37,7 +37,7 @@ class Bootstrap(object):
 	# 装载阶段 - 查找并装载类型的二进制数据. 此阶段在 ClassFile 类中完成了
 	def __load(self):
 		# 解析好的class二进制文件内容
-		_c_file = ClassFile(self.class_path)
+		self._c_file = ClassFile(self.class_path)
 		self.classInfo.initBaseInfo(_c_file)
 
 
@@ -47,7 +47,7 @@ class Bootstrap(object):
 		# 2.元数据验证：子类是否继承了final方法、是否实现了父类或接口必要的方法、子类与父类是否有字段或方法冲突等
 		# 3.字节码验证：字段类型是否匹配、方法体中的代码是否会跳转越界、方法体中的类型转换是否有效等
 		# 4.符号引用验证：全限定名是否能对应到具体类、类，字段和方法访问权限等
-		pass
+		self.classInfo.initClassField()
 
 	# 准备阶段 - 为类或接口的静态字段分配空间,并用默认值初始化这些字段
 	# 数值类型 -> 0，boolean类型 -> False，char -> '\u0000'，reference类型 -> None
@@ -92,7 +92,7 @@ class ClassFile(object):
 		self.major_version = class_args.get('major_version',None)# u2 
 		self.constant_pool_count = class_args.get('constant_pool_count',0)# u2 
 		self.cp_info = class_args.get('cp_info',[])
-		self.access_flags = class_args.get('access_flags',None)# u2 
+		self.access_flags = class_args.get('access_flags',0)# u2 
 		self.this_class = class_args.get('this_class',None)# u2 
 		self.super_class = class_args.get('super_class',None)# u2 
 		self.interfaces_count = class_args.get('interfaces_count',0)# u2 

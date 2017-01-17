@@ -1891,7 +1891,7 @@ class Opcode(Base):
 		self.__type_check(Base.INT,count)
 		if count < 0:
 			raise NegativeArraySizeException(count)
-		_type = atypes.get(atype)
+		_type = self.atypes.get(atype)
 		arrayref = Array(count,_type)
 		self.__push(arrayref)
 
