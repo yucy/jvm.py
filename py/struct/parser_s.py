@@ -78,7 +78,7 @@ class AttributeInfo(object):
 				temp = source.replace('#','')
 				pointers = temp.split(',')
 				target = [self.__constant_pool[int(i)] for i in pointers]
-				return target
+				return target if len(target) > 1 else target[0]
 			return source
 		except Exception, e:
 			print '===========AttributeInfo getConstant Exception ==============',num,len(self.__constant_pool)
@@ -132,7 +132,7 @@ class AttributeInfo(object):
 			# 结构：u2 constantvalue_index , attribute_length === 2
 			value_temp = getDecimal(self.__cursor(attribute_length))
 			# print 'xxxxxxxxxxxxxx',value_temp,self.__getConstant(value_temp)
-			attr['value'] = self.__getConstant(value_temp)
+			attr = self.__getConstant(value_temp)
 		# 一个方法的 Code 属性最多只能有一个 StackMapTable 属性,否则将抛出 ClassFormatError 异常
 		# 每个栈映射帧都显式或隐式地指定了一个字节码偏移量,用于表示局部变量表和操作数栈的验证类型
 		elif attribute_name == 'StackMapTable':#Code属性 ，JDK1.6中新增的属性，供新的类型检验器检查和处理目标方法的局部变量和操作数有所需要的类是否匹配 
@@ -280,17 +280,17 @@ class AttributeInfo(object):
 			# print 'class:%s , method:%s' % (self.__getConstant(getDecimal(self.__cursor(2))),self.__getConstant(getDecimal(self.__cursor(2))))
 		elif attribute_name == 'Synthetic':#类，方法表，字段表 ，标志方法或字段为编译器自动生成的 
 			# ACC_SYNTHETIC ,attribute_length === 0
-			attr['value'] = 1
+			attr = 1
 			# print 'ACC_SYNTHETIC'
 		elif attribute_name == 'Signature':#类，方法表，字段表 ，用于支持泛型情况下的方法签名
 			# u2 signature_index;
-			attr['value'] = self.__getConstant(getDecimal(self.__cursor(2)))
+			attr = self.__getConstant(getDecimal(self.__cursor(2)))
 		elif attribute_name == 'SourceFile':#类文件 ，记录源文件名称 
 			# u2 sourcefile_index;
-			attr['value'] =  self.__getConstant(getDecimal(self.__cursor(2)))
+			attr =  self.__getConstant(getDecimal(self.__cursor(2)))
 		elif attribute_name == 'SourceDebugExtension':#类文件 ，用于存储额外的调试信息 
 			# u1 debug_extension[attribute_length];
-			attr['value'] = ''.join([chr(getDecimal(self.__cursor(1))) for i in xrange(attribute_length)])
+			attr = ''.join([chr(getDecimal(self.__cursor(1))) for i in xrange(attribute_length)])
 		elif attribute_name == 'LineNumberTable':#Code属性 ，用于确定源文件中行号表示的内容在 Java 虚拟机的 code[]数组中对应的部分
 			# u2 line_number_table_length;
 			# {
@@ -365,7 +365,7 @@ class AttributeInfo(object):
 			# 	for i in xrange(local_variable_type_table_length)] 
 		elif attribute_name == 'Deprecated':#类，方法，字段表，被声明为deprecated的方法和字段
 			# attribute_length === 0
-			attr['value'] = 1
+			attr = 1
 		# #类，方法表，字段表 ，为动态注解提供支持 ,RuntimeInvisibleAnnotations用于指明哪些注解是运行时不可见的 
 		elif attribute_name in ['RuntimeVisibleAnnotations','RuntimeInvisibleAnnotations']:#类，方法表，字段表 ，为动态注解提供支持 
 			# u2 num_annotations;
@@ -397,7 +397,7 @@ class AttributeInfo(object):
 				# print [self.__handlerAnnotation() for x in xrange(num_annotations)]
 		elif attribute_name == 'AnnotationDefault':#方法表，用于记录注解类元素的默认值 
 			# element_value default_value;
-			attr['value'] = self.__hadlerAnnotation_element()
+			attr = self.__hadlerAnnotation_element()
 		elif attribute_name == 'BootstrapMethods':#类文件 ，用于保存invokeddynamic指令引用的引导方式限定符  
 			# u2 num_bootstrap_methods;
 			# {

@@ -1,7 +1,11 @@
 # -*- coding:utf-8 -*-
 import os
-from parser.classParser import ClassParser
+# sys.path.append('')
+# print sys.path
+
+from classFileParser import ClassParser
 from struct.clinit_s import ClassInfo
+from common.accessFlags import printAccessFlag
 
 # 被装载的类文件
 classFiles = {}
@@ -11,7 +15,8 @@ methodArea = {}
 heap = {}
 
 # JRE 类路径
-JAVA_HOME = '/home/yucy/git/jvm.py/rt/%s.class'
+# JAVA_HOME = '/home/yucy/git/jvm.py/rt/%s.class'
+JAVA_HOME = 'E:/jar/rt/%s.class'
 # 应用类路径
 APP_HOME = None
 # 应用启动类
@@ -33,11 +38,15 @@ class Bootstrap(object):
 		self.__clinit()
 		# 放入方法区
 		methodArea[self.classInfo.this_class] = self.classInfo
+		# 移除指针，以便GC
+		self.classInfo.clearTempData()
+
+		print '类变量:',self.classInfo.class_field
 
 	# 装载阶段 - 查找并装载类型的二进制数据. 此阶段在 ClassFile 类中完成了
 	def __load(self):
 		# 解析好的class二进制文件内容
-		self._c_file = ClassFile(self.class_path)
+		_c_file = ClassFile(self.class_path)
 		self.classInfo.initBaseInfo(_c_file)
 
 
@@ -47,23 +56,26 @@ class Bootstrap(object):
 		# 2.元数据验证：子类是否继承了final方法、是否实现了父类或接口必要的方法、子类与父类是否有字段或方法冲突等
 		# 3.字节码验证：字段类型是否匹配、方法体中的代码是否会跳转越界、方法体中的类型转换是否有效等
 		# 4.符号引用验证：全限定名是否能对应到具体类、类，字段和方法访问权限等
-		self.classInfo.initClassField()
+		pass
 
 	# 准备阶段 - 为类或接口的静态字段分配空间,并用默认值初始化这些字段
 	# 数值类型 -> 0，boolean类型 -> False，char -> '\u0000'，reference类型 -> None
 	def __preparation(self):
 		# 1.非final的静态字段 : 正常赋予静态变量初始值
 		# 2.final+static字段 : 直接从其ContentValue属性中取出值来做初始化
-		pass
+		self.classInfo.initClassField()
 
 	# 解析阶段 - 把常量池中的符号引用转化为直接引用，可以在指令anewarray、checkcast、getfield、getstatic、instanceof等的触发下执行
-	# 说一句：在这里我们一步到位，加载过程直接到初始化阶段，不用指令这些指令来触发。
+	# 说一句：在这里我们一步到位，加载过程直接到初始化阶段，不用等这些指令来触发。
+	# 说两句：对于指向“类型”【Class对象】、类变量、类方法的直接引用可能是指向方法区的本地指针
 	def __resolution(self):
 		# 1.类或接口的解析
 		# 2.字段的解析
 		# 3.类方法的解析
 		# 4.接口方法的解析
-		pass
+		self.classInfo.handlerCpinfo()
+
+
 
 	# 初始化阶段 - 把类变量初始化为正确的初始值，执行类构造器<clinit>方法，如果有父类，则需要先执行父类的<clinit>方法
 	# 注意接口的情况，只有当子接口或者实现类用到了父接口的静态变量时，才需要执行父接口的<clinit>方法，如果父接口有的话。
@@ -85,7 +97,7 @@ class ClassFile(object):
 		self.super_class_file = None
 		self.loadFile()
 
-	# 类文件内容
+	# 类文件内容Code
 	def __init(self,class_args):
 		self.magic = class_args.get('magic',None)# u4 
 		self.minor_version = class_args.get('minor_version',0)# u2 
@@ -142,18 +154,48 @@ class ClassFile(object):
 		if self.super_class is not None and not classFiles.has_key(self.super_class):
 			# 先到 JAVA_HOME 里面查找，找不到再根据父类路径查找
 			_super_path = JAVA_HOME % self.super_class
+			# print '_super_path:',_super_path
 			if not os.path.exists(_super_path):
 				_super_path = APP_HOME % self.super_class
-			print '_super_path:',_super_path
+			# print '_super_path:',_super_path
 			# 做一次第归
 			self.super_class_file = ClassFile(_super_path)
 			
+	# pirnt class with accessFlags
+	def printClass(self):
+		# print '===============following is class================'
+		# print c.this_class
+		# print c.__dict__
+		# print '----is or not a interface:',c.isInterface()
+		print self.cp_info
+		print '===============following is field_info================'
+		for x in self.field_info:
+			x.access_flags = printAccessFlag('field',x.access_flags)
+			print x.__dict__
+			for y in x.attributes:
+				print y.__dict__
+		print '===============following is method_info================'
+		for x in self.method_info:
+			print x.name
+			x.access_flags = printAccessFlag('method',x.access_flags)
+			print x.__dict__
+			if x.Code:
+				print x.Code.__dict__
+			if x.Exceptions:
+				print x.Exceptions.__dict__
+		# print '===============following is _super method_info================'
+		# _super = self.super_class_file
+		# for x in _super.method_info:
+		# 	print x.name
+		# 	if x.code:
+		# 		print x.code.__dict__
+		print '===============following is classFiles================'
+		print len(classFiles)
+		for k,v in classFiles.items():
+			print k,v,v.__dict__
 
 if __name__ == '__main__':
 	# 加载APP启动类
 	path = '../cls/test.class'
-	c = ClassFile(path)
-	print 'MAIN_CLASS:',MAIN_CLASS
-	print len(classFiles)
-	for k,v in classFiles.items():
-		print k,v,v.__dict__
+	# Bootstrap(path)
+	ClassFile(path).printClass()

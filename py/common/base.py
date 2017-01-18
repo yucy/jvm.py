@@ -39,4 +39,5 @@ class test(Base):
 		print id(self.OBJECTREF)
 		
 if __name__ == '__main__':
-	test()
+	# test()
+	print (int('23',16) << 16)|(int('76',16) << 8)|int('45',16)

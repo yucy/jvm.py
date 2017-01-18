@@ -4,8 +4,10 @@ from sys import argv
 from bootstrap import Bootstrap
 
 def main(start_path):
-	boot = Bootstrap(start_path)
+	# 第一步：解析class 文件
 	
+	# 第二步：根据上面解析的文件，加载class
+	Bootstrap(start_path)
 
 # 执行该 APP启动类的main方法
 def execute():

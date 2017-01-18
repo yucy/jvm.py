@@ -58,35 +58,36 @@ class ClassInfo(Base):
 		self.methodTable = []
 
 	def initBaseInfo(self,_classFile):
+		self.classFile = _classFile
 		# 运行时常量池
-		self.cp_info = _classFile['cp_info']
+		self.cp_info = self.classFile.cp_info
 		# 类型信息
 		# 1 ．类型的完全限定名
 		# 2 ．类型直接超类的完全限定名 
 		# 3 ．直接超接口的全限定名列表 
 		# 4 ．该类型是类类型还是接口类型 
 		# 5 ．类型的访问修饰符（如 public,abstract,final 等，对应 access_flags. )
-		self.this_class = _classFile['this_class']
-		self.super_class = _classFile['super_class']
-		self.access_flags = _classFile['access_flags']
-		self.interfaces = _classFile['interfaces']
+		self.this_class = self.classFile.this_class
+		self.super_class = self.classFile.super_class
+		self.access_flags = self.classFile.access_flags
+		self.interfaces = self.classFile.interfaces
 		# 字段信息
-		self.field_info = [FieldInfo(i) for i in _classFile['field_info']]
+		self.field_info = [FieldInfo(i) for i in self.classFile.field_info]
 		# 方法信息
-		self.method_info = [MethodInfo(i) for i in _classFile['method_info']]
+		self.method_info = [MethodInfo(i) for i in self.classFile.method_info]
 
 	# 初始化类变量，其实也是准备阶段要做的事情
-	def initClassField(self,_classFile):
-		for field in _classFile['field_info']:
-			access_flags = field['access_flags']
+	def initClassField(self):
+		for field in self.classFile.field_info:
+			access_flags = field.access_flags
 			if checkFieldAccess('STATIC',access_flags):
-				print field
-				_type = arg['descriptor']
+				_type = field.descriptor
 				tempValue = None
 				for attr in field.attributes:
 					# 'info': {'value': ['ss_67890']}, 'attribute_name': 'ConstantValue'
-					if attr['attribute_name'] == 'ConstantValue':
-						tempValue = attr['info']['value'][0] # TODO 取值太麻烦，需要优化
+					if attr.attribute_name == 'ConstantValue':
+						# print '===============',attr.info
+						tempValue = attr.info
 						break
 				if tempValue is None:
 					if _type in ['B','S','I','L']:
@@ -97,9 +98,39 @@ class ClassInfo(Base):
 						tempValue = b'0'
 					elif _type == 'Z':
 						tempValue = False
-				self.class_field[field['name']] = tempValue
+				self.class_field[field.name] = tempValue
+
+	# 将常量池中的符号引用转换为直接引用，主要是针对常量池中的类，字段和方法
+	# 对于指向“类型”【Class对象】、类变量、类方法的直接引用可能是指向方法区的本地指针
+	# https://www.zhihu.com/question/30300585?sort=created
+	def handlerCpinfo(self):
+		for content in self.cp_info:
+			# TODO 现在的问题是如何判断符号引用
+			pass
+
+	'''
+	假设常量池项#2为一个 Methodref
+	假设找到的methodblock*是0x45762300，那么常量池项#2的内容会变为：
+	[00 23 76 45]
+	（解析后字节序使用x86原生使用的低位在前字节序（little-endian），为了后续使用方便）
+	这样，以后再查询到常量池项#2时，里面就不再是一个符号引用，而是一个能直接找到Java方法元数据
+	的methodblock*了。这里的methodblock*就是一个“直接引用”。
 
 
+	[None, '#24,#61', '#23,#62', 34567, '#23,#63', '#64', '#65,#66', '#67', '#68,#69', 
+	'#23,#70', 45678, '#23,#71', '#72,#73', '#23,#74', '#23,#75', '#76', '#23,#77', 
+	'#23,#78', '#23,#79', '#80', '#19,#61', '#23,#81', '#82', '#83', '#84', 'm', 'I', 
+	'n0', 'n1', 'ConstantValue', 12345, 'n2', 23456, 'n3', 'n4', 'char4', 'C', 'ss', 
+	'Ljava/lang/String;', 'ssnull', 'ssfinalnull', 'ss0', '#85', 'll', 'Ljava/util/List;', 
+	'<init>', '()V', 'Code', 'LineNumberTable', 'inc', '(ILjava/lang/String;)V', 'StackMapTable', 
+	'tcc', '(ILjava/lang/String;Ljava/util/List;[Ljava/lang/String;)Ljava/lang/String;', 
+	'Exceptions', '#86', 'main', '([Ljava/lang/String;)V', '<clinit>', 'SourceFile', 'test.java', 
+	'#45,#46', '#31,#26', '#33,#26', '', '#87', '#88,#89', '11111111111111', '#90', '#91,#92', 
+	'#49,#50', '#27,#26', '#93', '#94,#95', '#34,#26', '#35,#36', 'ss_56789', '#37,#38', '#39,#38', 
+	'#40,#38', 'java/util/ArrayList', '#43,#44', 'abcde', 'cls/test', 'java/lang/Object', 'ss_67890', 
+	'java/lang/Exception', 'java/lang/System', 'out', 'Ljava/io/PrintStream;', 'java/io/PrintStream', 
+	'println', '(Ljava/lang/String;)V', 'java/lang/String', 'length', '()I']
+	'''
 	# 返回方法信息 -> 方法表
 	'''
 	const char* szMethodName
@@ -117,27 +148,51 @@ class ClassInfo(Base):
 	def isAbstract(self):
 		return self.access_flags.__contains__('ACC_ABSTRACT')
 
+	# 是否是给定class名的子类
+	# const char* szBaseClassName
+	def isDerivedClassOf(self,szBaseClassName):
+		return False or True
+
+	# 是否是给定class名的子类
+	# CClassFile* pBaseClassFile
+	def isDerivedClassOf(self,pBaseClassFile):
+		return False or True
+
+	# 是否是给定class名的父类
+	# const char* szDerivedClassName
+	def isBaseClassOf(self,szDerivedClassName):
+		return False or True
+
+	# 是否是给定class名的父类
+	# CClassFile* pDerivedClassFile
+	def isBaseClassOf(self,pDerivedClassFile):
+		return False or True
+
+	# 移除指针，以便后期的垃圾收集
+	def clearTempData(self):
+		self.classFile = None
+
 # =======================================================================================================
 # 字段信息,包括类级变量和实例变量，不包括局部变量
 class FieldInfo(object):
-	def __init__(self, arg):
-		if arg is None:
-			print '=======clinit FieldInfo arg is None========'
+	def __init__(self, field):
+		if field is None:
+			print '=======clinit FieldInfo field is None========'
 		# 1 ．字段名 
 		# 2 ．字段的类型（可能是基本类型或引用类型）
 		# 3 ．字段的修饰符（ pUblic 、 Static 、transient等）
 		# 注意 : 字段的顺序也要保留
-		self.name = arg['name']
-		self.type = arg['descriptor']
-		self.access_flags = arg['access_flags']
+		self.name = field.name
+		self.type = field.descriptor
+		self.access_flags = field.access_flags
 		
 
 # =======================================================================================================
 # 方法信息
 class MethodInfo(object):
-	def __init__(self, arg):
-		if arg is None:
-			print '=======clinit FieldInfo arg is None========'
+	def __init__(self, method):
+		if method is None:
+			print '=======clinit FieldInfo method is None========'
 		# 1 ．方法名
 		# 2 ．方法返回类型 
 		# 3 ．方法参数的个数、类型和顺序等 
@@ -145,8 +200,8 @@ class MethodInfo(object):
 		# 5 ．方法的字节码（ bytecodes 非本地方法具有） 
 		# 6 ．操作数栈和该方法在栈帧中局部变量的大小等 
 		# 7 ．异常表。
-		self.name = arg['name']
-		self.descriptor = arg['descriptor']
+		self.name = method.name
+		self.descriptor = method.descriptor
 		# TODO 方法参数的个数、类型和顺序等 
 		# 如果以一个L开头的描述符，就是类描述符，它后紧跟着类的字符串，然后分号“；”结束
 		# int j,String s,List l,double[] d ==> ILjava/lang/String;Ljava/util/List;[D
@@ -154,19 +209,17 @@ class MethodInfo(object):
 
 		self.returnType,self.args = self.__parserDescriptor()
 
-		self.args = []
-		[test(x,self.args) for x in args_temp]
-
-		self.access_flags = arg['access_flags']
+		self.access_flags = method.access_flags
 		# method's Code Attribute
-		Code = arg['Code']
-		self.codes = Code['codes']
+		CodeInfo = method.Code.info
+		# print Code.info
+		self.codes = CodeInfo['codes']
 		#  'max_locals': 3, 'max_stack': 2, 'exception_table_length'
-		self.max_locals = Code['max_locals']
-		self.max_stack = Code['max_stack']
+		self.max_locals = CodeInfo['max_locals']
+		self.max_stack = CodeInfo['max_stack']
 		# 'attribute_name': 'Exceptions' {'number_of_exceptions': 1, 'exception_index_table': [['java/lang/Exception']]}
-		Exceptions = arg['Exceptions']
-		self.exceptions = Exceptions['exception_index_table']
+		self.exceptions = method.Exceptions.info['exception_index_table'] \
+				if method.Exceptions is not None else []
 
 	# 方法参数的个数、类型和顺序等 
 	# 如果以一个L开头的描述符，就是类描述符，它后紧跟着类的字符串，然后分号“；”结束
@@ -176,14 +229,14 @@ class MethodInfo(object):
 	def __parserDescriptor(self):
 		args_returnType = self.descriptor[1:].split(')')
 		returnType = []
-		[self.__parserArgs(x,returnType) for x in args_returnType[1].split(';')]
+		[self.__parserType(x,returnType) for x in args_returnType[1].split(';')]
 
 		args_temp = args_returnType[0].split(';')
 		args = []
-		[self.__parserArgs(x,args) for x in args_temp]
+		[self.__parserType(x,args) for x in args_temp]
 		return returnType[0],args
 
-
+	# 递归解析方法参数类型
 	def __parserType(self,temp,result):
 		if len(temp) == 0:
 			return
@@ -193,10 +246,10 @@ class MethodInfo(object):
 			result.append(temp[1:])
 		elif head == '[': # TODO 暂时只处理一维数组
 			result.append(head + temp[1:2])
-			self.__parserArgs(temp[1:],result)
+			self.__parserType(temp[1:],result)
 		else:
 			result.append(head)
-			self.__parserArgs(temp[1:],result)
+			self.__parserType(temp[1:],result)
 
 def test(args_temp,result):
 	if len(args_temp) == 0:

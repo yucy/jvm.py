@@ -2,20 +2,27 @@ package cls;
 
 import java.lang.Exception;
 import java.util.List;
+import java.util.ArrayList;
 
 public class test{
 
+    // 数字类型
     private int m;
     public static int n0=45678;
     public static final int n1=12345;
     public final int n2=23456;
     public int n3=34567;
     public static final int n4="".length();
+    // char类型
     public static char char4='z';
+    // 字符串类型
     public static String ss="ss_56789";
     public static String ssnull=null;
     public final static String ssfinalnull=null;
     public final static String ss0="ss_67890";
+    // 引用类型
+    public final static List ll= new ArrayList();
+    // 静态块
     static{
         int test_int = 6789;
         String test_str = "abcde";
