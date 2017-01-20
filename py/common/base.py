@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+import platform,os
 
 # JVM 全局基类
 class Base(object):
@@ -17,6 +18,9 @@ class Base(object):
 		'L': OBJECTREF, #;  一个名为<Classname>的实例,e.g.: Ljava/lang/String;Ljava/util/List;
 		'[': ARRAY, # 一个一维数组,e.g.:[D -> double[] 
 	}
+	# 判断是否linux系统
+	ISLINUX = 'Linux' in platform.system()
+
 	def __init__(self):
 		pass
 		
@@ -45,3 +49,9 @@ if __name__ == '__main__':
 	# 	print i,e
 	s = '[Ljava/lang/Object;'
 	print s[2:-1]
+	path = '../launcher.py'
+	abspath = os.path.abspath(path)
+	print abspath
+	temp = abspath.replace('\\','/')
+	print temp
+	print s[1]

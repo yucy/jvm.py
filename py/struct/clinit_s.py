@@ -120,7 +120,7 @@ class ClassInfo(Base):
 			# class eg:java/lang/System
 			if tag == 7:
 				# TODO 处理class文件之后还需要加载class进方法区，bootstrap
-				print '+++++++++++++++++handlerCpinfo+++++++++++++++%s' % res
+				print '+++++++++++++++++ClassInfo.handlerCpinfo+++++++++++++++%s' % res
 				Bootstrap(res)
 			# Fieldref eg:['java/lang/System', ['out', 'Ljava/io/PrintStream;']]
 			# class name_and_type

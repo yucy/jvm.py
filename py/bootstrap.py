@@ -6,6 +6,7 @@ import os
 from classFileParser import ClassParser
 from struct.clinit_s import ClassInfo
 from common.accessFlags import printAccessFlag
+from common.base import Base
 
 # 被装载的类文件
 classFiles = {}
@@ -29,6 +30,7 @@ class Bootstrap(object):
 	# _class_path:类路径
 	def __init__(self, _class_path):
 		self.class_path = _class_path
+		self.is_basic = False
 		if methodArea.has_key(_class_path):
 			print '=======has Bootstrap========',_class_path
 			return
@@ -36,6 +38,9 @@ class Bootstrap(object):
 		# 最终放入方法区的内容
 		self.classInfo = ClassInfo()
 		self.__load()
+		# 基础数据类型不加载
+		if self.is_basic:
+			return
 		self.__verity()
 		self.__preparation()
 		self.__resolution()
@@ -49,9 +54,13 @@ class Bootstrap(object):
 
 	# 装载阶段 - 查找并装载类型的二进制数据. 此阶段在 ClassFile 类中完成了
 	def __load(self):
-		print '#################################################',self.class_path
 		if self.class_path.startswith('['):
-			self.class_path = self.class_path[2:-1]
+			# TODO 基本数据类型的数组暂时不解析
+			if self.class_path[1] in ['B','C','D','F','I','J','Z']:
+				self.is_basic = True
+				return
+			else:
+				self.class_path = self.class_path[2:-1]
 		# 解析好的class二进制文件内容
 		_c_file = ClassFile().loadClass(self.class_path)
 		self.classInfo.initBaseInfo(_c_file)
@@ -94,7 +103,7 @@ class Bootstrap(object):
 
 		
 # 类文件，并非Class实例
-class ClassFile(object):
+class ClassFile(Base):
 
 	def __init__(self):
 		# 父类class文件的指针（一个ClassFile实例指针）
@@ -138,7 +147,13 @@ class ClassFile(object):
 		# print '===abspath:',os.path.abspath(path)
 		# print self.this_class
 		self.__load(path)
+		# print '===isLinux:',Base.ISLINUX
 		abspath = os.path.abspath(path)
+		# print '===abspath:',abspath
+		# 判断是否linux系统
+		if not Base.ISLINUX:
+			# linux和windows的文件路径分隔符不一样，这里统一为linux的分隔符【/】
+			abspath = abspath.replace('\\','/')
 		APP_HOME = abspath[:abspath.find(self.this_class)]+'%s.class'
 		# if MAIN_CLASS is None:
 		MAIN_CLASS = self.this_class
@@ -147,7 +162,7 @@ class ClassFile(object):
 	# 加载类，根据java class名称读取相应java class文件的内容
 	def loadClass(self,_class):
 		if classFiles.has_key(_class):
-			print '============================== has_key:',_class
+			print '================loadClass============== has_key:',_class
 			return classFiles[_class]
 		_path = self.__getAbsolutePath(_class)
 		return self.__load(_path)
