@@ -16,6 +16,8 @@ class ClassParser(object):
 		# 的pool和子 classfile 的pool一致，而且id(self) 函数也只会执行一次
 		# 保存常量池
 		self.constant_pool = [None]
+		# 常量池类型，后面转换直接引用时会用到
+		self.cp_tag = [None]
 		# 保存类中的方法信息
 		self.methods = []
 		# 保存类中的字段信息
@@ -54,11 +56,11 @@ class ClassParser(object):
 			'minor_version':minor_version,
 			'major_version':major_version,
 			'constant_pool_count':constant_pool_count,
-			'cp_info':self.constant_pool
+			'cp_info':self.constant_pool,
+			'cp_tag':self.cp_tag
 			})
 		# cp_info constant_pool[constant_pool_count-1];
 		constant_pool_index = 0
-		cp_info = {}
 		while constant_pool_count > constant_pool_index:
 			# print 'constant_pool_count:%d constant_pool_index:%d' % (constant_pool_count , constant_pool_index)
 			constant_pool_index += 1
@@ -122,8 +124,11 @@ class ClassParser(object):
 				# u2 name_and_type_index;
 				ref_index=self.constant_3(2,2)
 			constant_info = ref_index if ref_index is not None else utf8_data
+			# 常量池类型
+			self.cp_tag.append(tag)
 			if is_longORdouble:
 				self.constant_pool.extend([up,down])
+				self.cp_tag.append(0)
 			else:
 				self.constant_pool.append(constant_info)
 			# print '#%d %s\t\t%s' % (constant_pool_index,constant_name[9:-5],constant_info)

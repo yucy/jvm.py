@@ -1,16 +1,19 @@
 # -*- coding:utf-8 -*-
 import os
 from sys import argv
-from bootstrap import Bootstrap
+from bootstrap import Bootstrap,ClassFile,classFiles
 
-def main(start_path):
+def execute(start_path):
 	# 第一步：解析class 文件
-	
+	c = ClassFile()
+	c.initLoad(start_path)
 	# 第二步：根据上面解析的文件，加载class
-	Bootstrap(start_path)
+	for k,v in classFiles.items():
+		print '+++++++++++++++++++++++++++++++++',k
+		Bootstrap(k)
 
 # 执行该 APP启动类的main方法
-def execute():
+def executeMethod():
 	print 234
 	return False or True
 
@@ -21,4 +24,4 @@ if __name__ == '__main__':
 	# path = argv[1]
 	# 加载APP启动类
 	path = '../cls/test.class'
-	main()
+	execute(path)

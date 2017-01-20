@@ -4,6 +4,8 @@ sys.path.append('..')
 
 from common.accessFlags import checkFieldAccess
 from common.base import Base
+from common.content import constant_type
+
 '''
 说明：此模块中的结构用于java类加载、链接和初始化过程
 '''
@@ -104,9 +106,45 @@ class ClassInfo(Base):
 	# 对于指向“类型”【Class对象】、类变量、类方法的直接引用可能是指向方法区的本地指针
 	# https://www.zhihu.com/question/30300585?sort=created
 	def handlerCpinfo(self):
-		for content in self.cp_info:
-			# TODO 现在的问题是如何判断符号引用
-			pass
+		
+		# 导入放在这里是防止模块初始化时的导入循环，也可以放到方法体中
+		from bootstrap import Bootstrap
+		for index,tag in enumerate(self.classFile.cp_tag):
+			# Class ,Fieldref ,Methodref ,InterfaceMethodref
+			if tag not in [7,9,10,11]:
+				continue	
+			# print tag,constant_type.get(tag),self.classFile.cp_info[index]
+			# TODO 其他模块的getContent方法可以删掉
+			res = self.__searchContent(index)
+			# print res
+			# class eg:java/lang/System
+			if tag == 7:
+				# TODO 处理class文件之后还需要加载class进方法区，bootstrap
+				print '+++++++++++++++++handlerCpinfo+++++++++++++++%s' % res
+				Bootstrap(res)
+			# Fieldref eg:['java/lang/System', ['out', 'Ljava/io/PrintStream;']]
+			# class name_and_type
+			elif tag == 9:
+				pass
+			# Methodref eg: ['java/lang/Object', ['<init>', '()V']]
+			# class name_and_type
+			elif tag == 10:
+				pass
+			# InterfaceMethodref
+			elif tag == 11:
+				pass 
+
+
+	# 递归深度优先来查找常量池,从常量池中获取值
+	def __searchContent(self,index):
+		source = self.classFile.cp_info[index]
+		if isinstance(source,str) and source.__contains__('#'):
+			temp = source.replace('#','')
+			pointers = temp.split(',')
+			target = [self.__searchContent(int(i)) for i in pointers]
+			return target if len(target) > 1 else target[0]
+		else:
+			return source
 
 	'''
 	假设常量池项#2为一个 Methodref
@@ -116,20 +154,10 @@ class ClassInfo(Base):
 	这样，以后再查询到常量池项#2时，里面就不再是一个符号引用，而是一个能直接找到Java方法元数据
 	的methodblock*了。这里的methodblock*就是一个“直接引用”。
 
-
-	[None, '#24,#61', '#23,#62', 34567, '#23,#63', '#64', '#65,#66', '#67', '#68,#69', 
-	'#23,#70', 45678, '#23,#71', '#72,#73', '#23,#74', '#23,#75', '#76', '#23,#77', 
-	'#23,#78', '#23,#79', '#80', '#19,#61', '#23,#81', '#82', '#83', '#84', 'm', 'I', 
-	'n0', 'n1', 'ConstantValue', 12345, 'n2', 23456, 'n3', 'n4', 'char4', 'C', 'ss', 
-	'Ljava/lang/String;', 'ssnull', 'ssfinalnull', 'ss0', '#85', 'll', 'Ljava/util/List;', 
-	'<init>', '()V', 'Code', 'LineNumberTable', 'inc', '(ILjava/lang/String;)V', 'StackMapTable', 
-	'tcc', '(ILjava/lang/String;Ljava/util/List;[Ljava/lang/String;)Ljava/lang/String;', 
-	'Exceptions', '#86', 'main', '([Ljava/lang/String;)V', '<clinit>', 'SourceFile', 'test.java', 
-	'#45,#46', '#31,#26', '#33,#26', '', '#87', '#88,#89', '11111111111111', '#90', '#91,#92', 
-	'#49,#50', '#27,#26', '#93', '#94,#95', '#34,#26', '#35,#36', 'ss_56789', '#37,#38', '#39,#38', 
-	'#40,#38', 'java/util/ArrayList', '#43,#44', 'abcde', 'cls/test', 'java/lang/Object', 'ss_67890', 
-	'java/lang/Exception', 'java/lang/System', 'out', 'Ljava/io/PrintStream;', 'java/io/PrintStream', 
-	'println', '(Ljava/lang/String;)V', 'java/lang/String', 'length', '()I']
+	7:'CONSTANT_Class_info',
+	9:'CONSTANT_Fieldref_info',
+	10:'CONSTANT_Methodref_info',
+	11:'CONSTANT_InterfaceMethodref_info',
 	'''
 	# 返回方法信息 -> 方法表
 	'''
@@ -210,13 +238,16 @@ class MethodInfo(object):
 		self.returnType,self.args = self.__parserDescriptor()
 
 		self.access_flags = method.access_flags
+		self.codes = []
+		self.max_locals,self.max_stack = 0,0
 		# method's Code Attribute
-		CodeInfo = method.Code.info
-		# print Code.info
-		self.codes = CodeInfo['codes']
-		#  'max_locals': 3, 'max_stack': 2, 'exception_table_length'
-		self.max_locals = CodeInfo['max_locals']
-		self.max_stack = CodeInfo['max_stack']
+		if method.Code is not None:
+			CodeInfo = method.Code.info
+			# print Code.info
+			self.codes = CodeInfo['codes']
+			#  'max_locals': 3, 'max_stack': 2, 'exception_table_length'
+			self.max_locals = CodeInfo['max_locals']
+			self.max_stack = CodeInfo['max_stack']
 		# 'attribute_name': 'Exceptions' {'number_of_exceptions': 1, 'exception_index_table': [['java/lang/Exception']]}
 		self.exceptions = method.Exceptions.info['exception_index_table'] \
 				if method.Exceptions is not None else []
@@ -285,7 +316,6 @@ if __name__ == '__main__':
 	print tt
 		
 
-			
 
 
 

@@ -40,4 +40,8 @@ class test(Base):
 		
 if __name__ == '__main__':
 	# test()
-	print (int('23',16) << 16)|(int('76',16) << 8)|int('45',16)
+	# ll = [234,6456,533]
+	# for i,e in enumerate(ll):
+	# 	print i,e
+	s = '[Ljava/lang/Object;'
+	print s[2:-1]

@@ -29,6 +29,10 @@ class Bootstrap(object):
 	# _class_path:类路径
 	def __init__(self, _class_path):
 		self.class_path = _class_path
+		if methodArea.has_key(_class_path):
+			print '=======has Bootstrap========',_class_path
+			return
+		# print '------------------',_class_path
 		# 最终放入方法区的内容
 		self.classInfo = ClassInfo()
 		self.__load()
@@ -37,7 +41,7 @@ class Bootstrap(object):
 		self.__resolution()
 		self.__clinit()
 		# 放入方法区
-		methodArea[self.classInfo.this_class] = self.classInfo
+		methodArea[_class_path] = self.classInfo
 		# 移除指针，以便GC
 		self.classInfo.clearTempData()
 
@@ -45,12 +49,14 @@ class Bootstrap(object):
 
 	# 装载阶段 - 查找并装载类型的二进制数据. 此阶段在 ClassFile 类中完成了
 	def __load(self):
+		print '#################################################',self.class_path
+		if self.class_path.startswith('['):
+			self.class_path = self.class_path[2:-1]
 		# 解析好的class二进制文件内容
-		_c_file = ClassFile(self.class_path)
+		_c_file = ClassFile().loadClass(self.class_path)
 		self.classInfo.initBaseInfo(_c_file)
 
-
-		# 验证阶段 - 确保被导入类型的正确性
+	# 验证阶段 - 确保被导入类型的正确性
 	def __verity(self):
 		# 1.文件格式验证：是否以魔数开头、版本号是否在正确范围、常量池中是否有不支持的常量类型等
 		# 2.元数据验证：子类是否继承了final方法、是否实现了父类或接口必要的方法、子类与父类是否有字段或方法冲突等
@@ -90,12 +96,9 @@ class Bootstrap(object):
 # 类文件，并非Class实例
 class ClassFile(object):
 
-	def __init__(self, path):
-		print 'load class file :',path
-		self.path = path
+	def __init__(self):
 		# 父类class文件的指针（一个ClassFile实例指针）
 		self.super_class_file = None
-		self.loadFile()
 
 	# 类文件内容Code
 	def __init(self,class_args):
@@ -104,6 +107,7 @@ class ClassFile(object):
 		self.major_version = class_args.get('major_version',None)# u2 
 		self.constant_pool_count = class_args.get('constant_pool_count',0)# u2 
 		self.cp_info = class_args.get('cp_info',[])
+		self.cp_tag = class_args.get('cp_tag',[])
 		self.access_flags = class_args.get('access_flags',0)# u2 
 		self.this_class = class_args.get('this_class',None)# u2 
 		self.super_class = class_args.get('super_class',None)# u2 
@@ -115,13 +119,47 @@ class ClassFile(object):
 		self.method_info = class_args.get('method_info',[])
 		self.attributes_count = class_args.get('attributes_count',0)# u2 
 		self.attribute_info = class_args.get('attribute_info',[])
-		
-	# 装载阶段 - 查找并装载类型的二进制数据
-	# 根据java class名称读取相应java class文件的内容
-	def loadFile(self):
+
+	# 获取绝对路径
+	def __getAbsolutePath(self,_class):
+		print APP_HOME
+		# 先到 JAVA_HOME 里面查找，找不到再根据父类路径查找
+		_absolute_path = JAVA_HOME % _class
+		if not os.path.exists(_absolute_path):
+			_absolute_path = APP_HOME % _class
+		# print '_absolute_path:',_absolute_path
+		return _absolute_path
+
+	# 加载启动类，初始加载需要指定路径来初始化APP_PATH，而loadClassFile()方法只需指定class就行
+	def initLoad(self,path):
 		global APP_HOME,MAIN_CLASS
+		# 包路径外的绝对路径,只执行一次，因为要根据 this_class 的包路径来切割绝对路径，所以放在这里进行初始化
+		# if APP_HOME is None:
+		# print '===abspath:',os.path.abspath(path)
+		# print self.this_class
+		self.__load(path)
+		abspath = os.path.abspath(path)
+		APP_HOME = abspath[:abspath.find(self.this_class)]+'%s.class'
+		# if MAIN_CLASS is None:
+		MAIN_CLASS = self.this_class
+		# print MAIN_CLASS,APP_HOME
+
+	# 加载类，根据java class名称读取相应java class文件的内容
+	def loadClass(self,_class):
+		if classFiles.has_key(_class):
+			print '============================== has_key:',_class
+			return classFiles[_class]
+		_path = self.__getAbsolutePath(_class)
+		return self.__load(_path)
+		
+	# 装载阶段 - 根据绝对路径查找并装载类型的二进制数据
+	def __load(self,path):
+		print 'load class file :',path
+		if not os.path.exists(path):
+			print 'ERROR XXXXXXXXXXXXXXXXXXXX%s' % path
+			return
 		data = []
-		with open(self.path,'rb') as _file:
+		with open(path,'rb') as _file:
 			data = []
 			while True:
 				b = _file.read(1)
@@ -140,26 +178,15 @@ class ClassFile(object):
 		class_args = ClassParser(data)._cls_args
 		# print 'class_args:',class_args
 		self.__init(class_args)
-		# 包路径外的绝对路径,只执行一次，因为要根据 this_class 的包路径来切割绝对路径，所以放在这里进行初始化
-		if APP_HOME is None:
-			# print '===abspath:',os.path.abspath(path)
-			# print self.this_class
-			abspath = os.path.abspath(self.path)
-			APP_HOME = abspath[:abspath.find(self.this_class)]+'%s.class'
-		if MAIN_CLASS is None:
-			MAIN_CLASS = self.this_class
 		# 每个被装载的类文件
 		classFiles[self.this_class]=self
 		# 处理父类:当父类不为空，并且还未被加载
 		if self.super_class is not None and not classFiles.has_key(self.super_class):
-			# 先到 JAVA_HOME 里面查找，找不到再根据父类路径查找
-			_super_path = JAVA_HOME % self.super_class
-			# print '_super_path:',_super_path
-			if not os.path.exists(_super_path):
-				_super_path = APP_HOME % self.super_class
-			# print '_super_path:',_super_path
 			# 做一次第归
-			self.super_class_file = ClassFile(_super_path)
+			_super = ClassFile()
+			_super.loadClass(self.super_class)
+			self.super_class_file = _super
+		return self
 			
 	# pirnt class with accessFlags
 	def printClass(self):
@@ -167,35 +194,39 @@ class ClassFile(object):
 		# print c.this_class
 		# print c.__dict__
 		# print '----is or not a interface:',c.isInterface()
-		print self.cp_info
-		print '===============following is field_info================'
-		for x in self.field_info:
-			x.access_flags = printAccessFlag('field',x.access_flags)
-			print x.__dict__
-			for y in x.attributes:
-				print y.__dict__
-		print '===============following is method_info================'
-		for x in self.method_info:
-			print x.name
-			x.access_flags = printAccessFlag('method',x.access_flags)
-			print x.__dict__
-			if x.Code:
-				print x.Code.__dict__
-			if x.Exceptions:
-				print x.Exceptions.__dict__
+		print 'cp_info:',self.cp_info
+		print 'cp_tag:',self.cp_tag
+		# print '===============following is field_info================'
+		# for x in self.field_info:
+		# 	x.access_flags = printAccessFlag('field',x.access_flags)
+		# 	print x.__dict__
+		# 	for y in x.attributes:
+		# 		print y.__dict__
+		# print '===============following is method_info================'
+		# for x in self.method_info:
+		# 	print x.name
+		# 	x.access_flags = printAccessFlag('method',x.access_flags)
+		# 	print x.__dict__
+		# 	if x.Code:
+		# 		print x.Code.__dict__
+		# 	if x.Exceptions:
+		# 		print x.Exceptions.__dict__
 		# print '===============following is _super method_info================'
 		# _super = self.super_class_file
 		# for x in _super.method_info:
 		# 	print x.name
-		# 	if x.code:
-		# 		print x.code.__dict__
+		# 	if x.Code is not None:
+		# 		print x.Code.__dict__
 		print '===============following is classFiles================'
 		print len(classFiles)
 		for k,v in classFiles.items():
-			print k,v,v.__dict__
+			print k#,v.__dict__
 
 if __name__ == '__main__':
 	# 加载APP启动类
 	path = '../cls/test.class'
-	# Bootstrap(path)
-	ClassFile(path).printClass()
+	Bootstrap(path)
+	# c = ClassFile()
+	# c.initLoad(path)
+	# c.printClass()
+	# print c.__dict__
