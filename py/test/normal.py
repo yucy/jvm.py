@@ -102,8 +102,26 @@ class test_invoke(object):
 	# t = test_invoke()
 	# t.m1()
 # ==============================================================
+import gzip
+from zipfile import ZipFile
+def testZip(path):
+	_zip = ZipFile(path)
+	print _zip.namelist()
+	tmp = _zip.open('javax/crypto/BadPaddingException.class','r')
+	print tmp
+	_zip.close()
+
+def testGzip(path):
+	_zip = gzip.GzipFile(path)
+	print _zip.fileno()
+	print dir(_zip)
 
 
+if __name__ == '__main__':
+	path = 'C:/Program Files (x86)/Java/jre7/lib/jce.jar'
+	testZip(path)
+	# testGzip(path)
+# ==============================================================
 def test_queue():
 	q = Queue()
 	print dir(q)
@@ -188,8 +206,8 @@ def test_substring():
 	print abspath.replace(class_name,'')
 	print 'a'+'b'
 	
-if __name__ == '__main__':
-	test_substring()
+# if __name__ == '__main__':
+# 	test_substring()
 # ==============================================================
 
 

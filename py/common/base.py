@@ -1,8 +1,11 @@
 # -*- coding:utf-8 -*-
-import platform,os
+import platform,os,sys
 
 # JVM 全局基类
 class Base(object):
+	# 设置递归调用深度为一百万
+	# sys.setrecursionlimit(1000000) 
+
 	# JVM 全局类型定义
 	[BOOLEAN,FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF,ARRAY] = [bool,float,float,int,chr,int,int,long,object,list]
 	# 方法区类型映射
@@ -21,9 +24,43 @@ class Base(object):
 	# 判断是否linux系统
 	ISLINUX = 'Linux' in platform.system()
 
+	# 被装载的类文件
+	classFiles = {}
+	# 临时方法区，存放cinit_s.ClassInfo信息
+	methodArea = {}
+	# 临时堆，存放类实例
+	heap = {}
+
+	# JRE 类路径，读取环境变量【JAVA_HOME】
+	JRE_HOME = os.getenv('JAVA_HOME')+'/jre/lib/'
+	# 初始加载器BOOTSTRAP需要加载的jar包，我们这里采用懒加载模式，即：用到时再加载
+	BOOTSTRAP_JARS = ['rt.jar','jsse.jar','jce.jar','charsets.jar','jfr.jar']
+	# 应用类路径
+	APP_CLASS_PATH = 'E:/git/github/jvm.py/%s.class'
+	# 应用启动类
+	MAIN_CLASS = None
+	# jre的jar文件句柄集合
+	JRE_JARS = []
+	# jre中包含的class和包含class的jar文件在_jars集合中的下标，eg:{'sun/security/mscapi/PRNG': 6}
+	JRE_CLASSES = {}
+
 	def __init__(self):
 		pass
 		
+	# 类方法，参数位类本身，只有类可以调用
+	@classmethod
+	def initJvm(c):
+		# JAVA_HOME = 'E:/jar/rt/%s.class'
+		# APP_CLASS_PATH = None
+		pass
+
+	# 静态方法，无参数，类和实例均可调用
+	@staticmethod
+	def initJVM():
+		# JAVA_HOME = 'E:/jar/rt/%s.class'
+		# APP_CLASS_PATH = None
+		pass
+
 class test(Base):
 	atypes = {
 		4:Base.BOOLEAN,
@@ -42,16 +79,12 @@ class test(Base):
 	def abc(self):
 		print id(self.OBJECTREF)
 		
+		
 if __name__ == '__main__':
 	# test()
 	# ll = [234,6456,533]
 	# for i,e in enumerate(ll):
 	# 	print i,e
-	s = '[Ljava/lang/Object;'
-	print s[2:-1]
-	path = '../launcher.py'
-	abspath = os.path.abspath(path)
-	print abspath
-	temp = abspath.replace('\\','/')
-	print temp
-	print s[1]
+	# s = '[[[Ljava/lang/annotation/Annotation;'
+	# b = Base()
+	print 123

@@ -611,15 +611,7 @@ class AttributeInfo(object):
 # =================================================================
 
 if __name__ == '__main__':
-	mo = Monitor()
-	mo.lock('a')
-	mo.unLock('a')
-	mo.lock('b')
-	mo.lock('b')
-	mo.lock('b')
-	
-	mo.unLock('b')
-	print mo.count
+	print 'aaaaaaaaaaaaaaa'
 
 
 

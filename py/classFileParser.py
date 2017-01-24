@@ -2,7 +2,7 @@
 
 from common.utils import getDecimal
 from common.content import constant_type,cmd
-from struct.parser_s import FieldInfo,MethodInfo,AttributeInfo
+from bean.parserBean import FieldInfo,MethodInfo,AttributeInfo
 
 # 3405691582
 _MAGIC = int('0XCAFEBABE',16)
@@ -246,7 +246,7 @@ class ClassParser(object):
 	# def getStruct(self,struct_name):
 	# 	return getattr(struct,struct_name)
 
-# if __name__=="__main__":
+if __name__=="__main__":
 	# demo
 	# data =  ['0xca', '0xfe', '0xba', '0xbe',...]
 	# _class = javap(data)
@@ -256,7 +256,7 @@ class ClassParser(object):
 	# 	print x.name
 	# 	print x.code.__dict__
 
-	# print _MAGIC
+	print _MAGIC
 	# print range(40,46)
 	# print ''.join([chr(int(data[i],16)) for i in xrange(40,46)])
 	# print getStruct(constant_type.get('1'))

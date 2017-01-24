@@ -102,6 +102,13 @@ class IllegalAccessError(Exception):
 		self.arg = arg
 	def __str__(self):
 		return repr(self.arg)
+
+# 如果字段声明为 final,那就只有在当前类的实例初始化方法(<clinit>)中设置当前类的 final 字段才是合法的,否则将会抛出IllegalAccessError 异常。
+class ClassFileNotFoundError(Exception):
+	def __init__(self, arg):
+		self.arg = arg
+	def __str__(self):
+		return repr('ClassFileNotFoundError,path:%s' % self.arg)
 		
 
 if __name__ == '__main__':

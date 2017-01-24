@@ -119,8 +119,10 @@ class ClassInfo(Base):
 			# print res
 			# class eg:java/lang/System
 			if tag == 7:
-				# TODO 处理class文件之后还需要加载class进方法区，bootstrap
-				print '+++++++++++++++++ClassInfo.handlerCpinfo+++++++++++++++%s' % res
+				# if not Base.methodArea.has_key(_class_path):
+				# 	print '=======has Bootstrap========',_class_path
+				# 	# TODO 处理class文件之后还需要加载class进方法区，bootstrap
+				# print '+++++++++++++++++ClassInfo.handlerCpinfo+++++++++++++++%s' % res
 				Bootstrap(res)
 			# Fieldref eg:['java/lang/System', ['out', 'Ljava/io/PrintStream;']]
 			# class name_and_type

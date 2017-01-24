@@ -1,68 +1,68 @@
 # -*- coding:utf-8 -*-
 import os
-# sys.path.append('')
 # print sys.path
 
 from classFileParser import ClassParser
-from struct.clinit_s import ClassInfo
+from bean.clinitBean import ClassInfo
 from common.accessFlags import printAccessFlag
 from common.base import Base
+from lang.myexceptions import ClassFileNotFoundError
+from zipfile import ZipFile
 
-# 被装载的类文件
-classFiles = {}
-# 临时方法区，存放cinit_s.ClassInfo信息
-methodArea = {}
-# 临时堆，存放类实例
-heap = {}
 
-# JRE 类路径
-# JAVA_HOME = '/home/yucy/git/jvm.py/rt/%s.class'
-JAVA_HOME = 'E:/jar/rt/%s.class'
-# 应用类路径
-APP_HOME = None
-# 应用启动类
-MAIN_CLASS = None
+'''
+对于JVM级别的类加载器在启动时就会把默认的 JAVA_HOME/lib里的class文件加载到JVM中，
+因为这些是系统常用的类，对于其他的第三方类，则采用用到时就去找，找到了就缓存起来的，
+下次再用到这个类的时候就可以直接用缓存起来的类对象了
 
-# 类加载，等class文件加载完成后，就开始类加载过程。类加载完成后放入方法区。
-# 内容包括运行时常量池，类型信息，字段信息，方法信息，类加载器引用，Class实例引用
-# 我们这里的类加载器引用都为None，因为都是用bootstrap 加载器加载的，而不是用户自定义类加载器加载
-class Bootstrap(object):
-	# _class_path:类路径
-	def __init__(self, _class_path):
-		self.class_path = _class_path
+类加载，等class文件加载完成后，就开始类加载过程。类加载完成后放入方法区。
+内容包括运行时常量池，类型信息，字段信息，方法信息，类加载器引用，Class实例引用
+我们这里的类加载器引用都为None，因为都是用bootstrap 加载器加载的，而不是用户自定义类加载器加载
+'''
+class Bootstrap(Base):
+	# _class_name:类路径
+	def __init__(self, _class_name):
+		self.class_name = _class_name
 		self.is_basic = False
-		if methodArea.has_key(_class_path):
-			print '=======has Bootstrap========',_class_path
-			return
-		# print '------------------',_class_path
+		if not Base.methodArea.has_key(self.class_name):
+			self.do()
+			
+
+	def do(self):
+		# print Base.methodArea
 		# 最终放入方法区的内容
 		self.classInfo = ClassInfo()
+		# 放入方法区
+		Base.methodArea[self.class_name] = self.classInfo
 		self.__load()
 		# 基础数据类型不加载
 		if self.is_basic:
 			return
 		self.__verity()
 		self.__preparation()
-		self.__resolution()
-		self.__clinit()
-		# 放入方法区
-		methodArea[_class_path] = self.classInfo
+		# 解析和初始化的过程放在指令执行阶段
+		# self.__resolution()
+		# self.__clinit()
 		# 移除指针，以便GC
 		self.classInfo.clearTempData()
 
-		print '类变量:',self.classInfo.class_field
+		# print '类变量:',self.classInfo.class_field
 
 	# 装载阶段 - 查找并装载类型的二进制数据. 此阶段在 ClassFile 类中完成了
 	def __load(self):
-		if self.class_path.startswith('['):
+		if self.class_name.startswith('['):
+			# 首先去除"["符号，多维数组会有多个"["符号
+			self.class_name = self.class_name[self.class_name.rindex('[')+1:]
 			# TODO 基本数据类型的数组暂时不解析
-			if self.class_path[1] in ['B','C','D','F','I','J','Z']:
+			if self.class_name[0] in ['B','C','D','F','I','J','Z','S']:
 				self.is_basic = True
 				return
-			else:
-				self.class_path = self.class_path[2:-1]
+			else: # 首位字符为'L'，代表引用类型
+				self.class_name = self.class_name[1:-1]
 		# 解析好的class二进制文件内容
-		_c_file = ClassFile().loadClass(self.class_path)
+		_c_file = ClassFile().loadClass(self.class_name)
+		_c_file.printClass()
+		# 初始化方法区的一些基本属性
 		self.classInfo.initBaseInfo(_c_file)
 
 	# 验证阶段 - 确保被导入类型的正确性
@@ -81,7 +81,7 @@ class Bootstrap(object):
 		self.classInfo.initClassField()
 
 	# 解析阶段 - 把常量池中的符号引用转化为直接引用，可以在指令anewarray、checkcast、getfield、getstatic、instanceof等的触发下执行
-	# 说一句：在这里我们一步到位，加载过程直接到初始化阶段，不用等这些指令来触发。
+	# 麻蛋，啪啪打脸啊，一步到位你妹啊 -> 说一句：在这里我们一步到位，加载过程直接到初始化阶段，不用等这些指令来触发。
 	# 说两句：对于指向“类型”【Class对象】、类变量、类方法的直接引用可能是指向方法区的本地指针
 	def __resolution(self):
 		# 1.类或接口的解析
@@ -89,7 +89,6 @@ class Bootstrap(object):
 		# 3.类方法的解析
 		# 4.接口方法的解析
 		self.classInfo.handlerCpinfo()
-
 
 
 	# 初始化阶段 - 把类变量初始化为正确的初始值，执行类构造器<clinit>方法，如果有父类，则需要先执行父类的<clinit>方法
@@ -128,81 +127,71 @@ class ClassFile(Base):
 		self.method_info = class_args.get('method_info',[])
 		self.attributes_count = class_args.get('attributes_count',0)# u2 
 		self.attribute_info = class_args.get('attribute_info',[])
-
-	# 获取绝对路径
-	def __getAbsolutePath(self,_class):
-		print APP_HOME
-		# 先到 JAVA_HOME 里面查找，找不到再根据父类路径查找
-		_absolute_path = JAVA_HOME % _class
-		if not os.path.exists(_absolute_path):
-			_absolute_path = APP_HOME % _class
-		# print '_absolute_path:',_absolute_path
-		return _absolute_path
-
-	# 加载启动类，初始加载需要指定路径来初始化APP_PATH，而loadClassFile()方法只需指定class就行
-	def initLoad(self,path):
-		global APP_HOME,MAIN_CLASS
-		# 包路径外的绝对路径,只执行一次，因为要根据 this_class 的包路径来切割绝对路径，所以放在这里进行初始化
-		# if APP_HOME is None:
-		# print '===abspath:',os.path.abspath(path)
-		# print self.this_class
-		self.__load(path)
-		# print '===isLinux:',Base.ISLINUX
-		abspath = os.path.abspath(path)
-		# print '===abspath:',abspath
-		# 判断是否linux系统
-		if not Base.ISLINUX:
-			# linux和windows的文件路径分隔符不一样，这里统一为linux的分隔符【/】
-			abspath = abspath.replace('\\','/')
-		APP_HOME = abspath[:abspath.find(self.this_class)]+'%s.class'
-		# if MAIN_CLASS is None:
-		MAIN_CLASS = self.this_class
-		# print MAIN_CLASS,APP_HOME
-
+		
 	# 加载类，根据java class名称读取相应java class文件的内容
 	def loadClass(self,_class):
-		if classFiles.has_key(_class):
-			print '================loadClass============== has_key:',_class
-			return classFiles[_class]
-		_path = self.__getAbsolutePath(_class)
-		return self.__load(_path)
-		
-	# 装载阶段 - 根据绝对路径查找并装载类型的二进制数据
-	def __load(self,path):
-		print 'load class file :',path
-		if not os.path.exists(path):
-			print 'ERROR XXXXXXXXXXXXXXXXXXXX%s' % path
-			return
-		data = []
-		with open(path,'rb') as _file:
-			data = []
-			while True:
-				b = _file.read(1)
-				# 到达文件结尾，直接跳出
-				if len(b) == 0:
-					break
-				# 回车符直接打印，不需要转码【被自己坑，class里面就没有一个多余的字符】
-				# elif b == '\n':
-				# 	print 'line is end'
-				# 	data.append(b)
-				#将编码转化为16进制数据添加进data数组
-				else:
-					data.append('0x%.2x' % ord(b)) # "0x%.2X" % ord(b)
-					# data.append('%.2d' % ord(b))
-		# print data
-		class_args = ClassParser(data)._cls_args
+		if Base.classFiles.has_key(_class):
+			# print '================has loaded class==============:',_class
+			return Base.classFiles[_class]
+		# 存放class文件二进制内容
+		class_content = []
+		# 如果class在JRE中
+		if Base.JRE_CLASSES.__contains__(_class):
+			self.__loadJreClass(_class,class_content)
+		else:
+			self.__loadAppClass(_class,class_content)
+		# print class_content
+		class_args = ClassParser(class_content)._cls_args
 		# print 'class_args:',class_args
 		self.__init(class_args)
 		# 每个被装载的类文件
-		classFiles[self.this_class]=self
+		Base.classFiles[self.this_class]=self
 		# 处理父类:当父类不为空，并且还未被加载
-		if self.super_class is not None and not classFiles.has_key(self.super_class):
-			# 做一次第归
-			_super = ClassFile()
-			_super.loadClass(self.super_class)
-			self.super_class_file = _super
+		# if self.super_class is not None and not Base.classFiles.has_key(self.super_class):
+		# 	# 做一次第归
+		# 	_super = ClassFile()
+		# 	_super.loadClass(self.super_class)
+		# 	self.super_class_file = _super
 		return self
-			
+
+	# 加载JRE的class文件
+	def __loadJreClass(self,_class,class_content):
+		_temp_index = Base.JRE_CLASSES[_class]
+		_zip_handle = Base.JRE_JARS[_temp_index]
+		# print _zip_handle.printdir()
+		# 读取文件内容
+		# _class名称后面加上.class，是因为在JRE_CLASSES集合中和class二进制文件中保存的都是不加后缀的
+		# 但是_zip_handle句柄中映射的文件却是要带后缀名的，故而如此。
+		with _zip_handle.open(_class+'.class','r') as _file:
+			self.__readFile(_file,class_content)
+		
+	# 加载应用的class文件 - 根据绝对路径查找并装载类型的二进制数据
+	def __loadAppClass(self,_class,class_content):
+		_absolute_path = Base.APP_CLASS_PATH % _class
+		print 'load class file :',_absolute_path
+		# 如果文件不存在，则抛出异常
+		if not os.path.exists(_absolute_path):
+			raise ClassFileNotFoundError(_absolute_path)
+		# 读取文件内容
+		with open(_absolute_path,'rb') as _file:
+			self.__readFile(_file,class_content)
+		
+	# 读取二进制文件
+	def __readFile(self,_file,_file_content):
+		while True:
+			b = _file.read(1)
+			# 到达文件结尾，直接跳出
+			if len(b) == 0:
+				break
+			# 回车符直接打印，不需要转码【被自己坑，class里面就没有一个多余的字符】
+			# elif b == '\n':
+			# 	print 'line is end'
+			# 	_file_content.append(b)
+			#将编码转化为16进制数据添加进data数组
+			else:
+				_file_content.append('%.2x' % ord(b)) # "0x%.2X" % ord(b)
+				# data.append('%.2d' % ord(b))
+
 	# pirnt class with accessFlags
 	def printClass(self):
 		# print '===============following is class================'
@@ -232,16 +221,18 @@ class ClassFile(Base):
 		# 	print x.name
 		# 	if x.Code is not None:
 		# 		print x.Code.__dict__
-		print '===============following is classFiles================'
-		print len(classFiles)
-		for k,v in classFiles.items():
+		print '===============following is Base.classFiles================'
+		print len(Base.classFiles)
+		for k,v in Base.classFiles.items():
 			print k#,v.__dict__
+
 
 if __name__ == '__main__':
 	# 加载APP启动类
-	path = '../cls/test.class'
-	Bootstrap(path)
-	# c = ClassFile()
-	# c.initLoad(path)
-	# c.printClass()
+	path = 'cls/test'
+	# path = 'java/io/IOException'
+	# Bootstrap(path)
+	c = ClassFile()
+	c.loadClass(path)
+	c.printClass()
 	# print c.__dict__

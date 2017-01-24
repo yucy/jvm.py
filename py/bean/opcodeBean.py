@@ -86,3 +86,14 @@ class Monitor(object):
 		# print "type:", _type
         # print "value:", value
         # print "trace:", traceback
+
+if __name__ == '__main__':
+	mo = Monitor()
+	mo.lock('a')
+	mo.unLock('a')
+	mo.lock('b')
+	mo.lock('b')
+	mo.lock('b')
+	
+	mo.unLock('b')
+	print mo.count
