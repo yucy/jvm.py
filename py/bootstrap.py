@@ -147,11 +147,11 @@ class ClassFile(Base):
 		# 每个被装载的类文件
 		Base.classFiles[self.this_class]=self
 		# 处理父类:当父类不为空，并且还未被加载
-		# if self.super_class is not None and not Base.classFiles.has_key(self.super_class):
-		# 	# 做一次第归
-		# 	_super = ClassFile()
-		# 	_super.loadClass(self.super_class)
-		# 	self.super_class_file = _super
+		if self.super_class is not None and not Base.classFiles.has_key(self.super_class):
+			# 做一次第归
+			_super = ClassFile()
+			_super.loadClass(self.super_class)
+			self.super_class_file = _super
 		return self
 
 	# 加载JRE的class文件
@@ -198,18 +198,17 @@ class ClassFile(Base):
 		# print c.this_class
 		# print c.__dict__
 		# print '----is or not a interface:',c.isInterface()
-		print 'cp_info:',self.cp_info
-		print 'cp_tag:',self.cp_tag
-		# print '===============following is field_info================'
-		# for x in self.field_info:
-		# 	x.access_flags = printAccessFlag('field',x.access_flags)
-		# 	print x.__dict__
-		# 	for y in x.attributes:
-		# 		print y.__dict__
+		# print 'cp_info:',self.cp_info
+		# print 'cp_tag:',self.cp_tag
+		print '===============following is field_info================'
+		for x in self.field_info:
+			print printAccessFlag('field',x.access_flags),x.__dict__
+			for y in x.attributes:
+				print y.__dict__
 		# print '===============following is method_info================'
 		# for x in self.method_info:
 		# 	print x.name
-		# 	x.access_flags = printAccessFlag('method',x.access_flags)
+			# print printAccessFlag('method',x.access_flags),x.__dict__
 		# 	print x.__dict__
 		# 	if x.Code:
 		# 		print x.Code.__dict__

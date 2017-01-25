@@ -9,7 +9,7 @@ from zipfile import ZipFile
 class Laucher(Base):
 	def __init__(self,_class_path,_main_class):
 		# 初始化Base
-		super(Laucher, self).__init__()
+		# super(Laucher, self).__init__()
 		# 启动class路径
 		self.class_path = _class_path
 		# 启动class
@@ -85,6 +85,4 @@ if __name__ == '__main__':
 	class_path = '../'
 	main_class = 'cls.test'
 	lau = Laucher(class_path,main_class)
-	# lau.jre()
-	# lau.getExtJar()
 	lau.start()

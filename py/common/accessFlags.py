@@ -162,7 +162,7 @@ def checkClassAccess(_access,num):
 	return checkAccess(accessValue,num)
 
 def checkAccess(accessValue,num):
-	# 将十进制的数据转换成2进制，去掉头标识【0b】后反置
+	# 将十进制的数据转换成2进制，bin(num)会生成类似【0b1001】的数据，去掉头标识【0b】后反置
 	s = reverse(bin(num).replace('0b',''))
 	# 检索出非零字符的位置下标,并根据位置下标来取2的N次方
 	_index = [pow(2,i) for i in xrange(len(s)) if s[i] != '0']
