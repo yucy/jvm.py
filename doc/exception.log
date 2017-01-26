@@ -9,7 +9,10 @@
 解决：	因为launcher导入了bootstrap，而bootstrap里面导入了struct.parser_s模块。此模块目录和zipfile的模块
 		目录重名了，都是【struct】，将struct.parser_s模块改名为bean.parserBean就成了。
 ======================================================================================================
-
+异常：linux环境下，AttributeError: ZipExtFile instance has no attribute '__exit__'
+分析：Ext文件系统下，zipfile的api也有相应的改变
+解决：不用【with _zip_handle.open(...) as _file】来进行环境管理，改用【_file = _zip_handle.open(_class+'.class','r')】
+	  然后手动关掉 _file.close()
 ======================================================================================================
 
 ======================================================================================================

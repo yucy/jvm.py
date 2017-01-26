@@ -4,7 +4,10 @@ from sys import argv
 from common.base import Base
 from bootstrap import Bootstrap
 from zipfile import ZipFile
-		
+
+# 初始加载器BOOTSTRAP需要加载的jar包，我们这里采用懒加载模式，即：用到时再加载
+BOOTSTRAP_JARS = ['rt.jar','jsse.jar','jce.jar','charsets.jar','jfr.jar']
+
 # 启动JVM类
 class Laucher(Base):
 	def __init__(self,_class_path,_main_class):
@@ -38,7 +41,8 @@ class Laucher(Base):
 			# linux和windows的文件路径分隔符不一样，这里统一为linux的分隔符【/】
 			abspath = abspath.replace('\\','/')
 		Base.APP_CLASS_PATH = abspath+'/%s.class'
-		print Base.MAIN_CLASS,Base.APP_CLASS_PATH
+		print 'main_class:\t%s\napp_path:\t%s\njre_home:\t%s\n-------------------------------'\
+				 % (Base.MAIN_CLASS,Base.APP_CLASS_PATH,Base.JRE_HOME)
 
 	# 缓存jre里的类名集合
 	def __scanJRE(self):
@@ -58,7 +62,7 @@ class Laucher(Base):
 		# print '====================',_jar_path
 		# 遍历目录下的文件/文件夹
 		for jar in os.listdir(_jar_path):
-			if jar in Base.BOOTSTRAP_JARS:
+			if jar in BOOTSTRAP_JARS:
 				_index = len(Base.JRE_JARS)
 				_absolute_jar_path = _jar_path+jar
 				# print '++++++++++++++++++++++++',_absolute_jar_path
@@ -70,11 +74,9 @@ class Laucher(Base):
 				# _zip.close() # close 或者 del 并不能立即释放内存，可以用gc.collect()
 
 	# 执行该 APP启动类的main方法
-	def executeMethod(self):
+	def execute(self):
 		print 234
 		return False or True
-
-	
 
 # JVM 启动入口
 if __name__ == '__main__':
@@ -86,3 +88,4 @@ if __name__ == '__main__':
 	main_class = 'cls.test'
 	lau = Laucher(class_path,main_class)
 	lau.start()
+	lau.execute()

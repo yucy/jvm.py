@@ -24,16 +24,16 @@ class Bootstrap(Base):
 	def __init__(self, _class_name):
 		self.class_name = _class_name
 		self.is_basic = False
-		if not Base.methodArea.has_key(self.class_name):
+		if not Base.METHOD_AREA.has_key(self.class_name):
 			self.do()
 			
 
 	def do(self):
-		# print Base.methodArea
+		# print Base.METHOD_AREA
 		# 最终放入方法区的内容
 		self.classInfo = ClassInfo()
 		# 放入方法区
-		Base.methodArea[self.class_name] = self.classInfo
+		Base.METHOD_AREA[self.class_name] = self.classInfo
 		self.__load()
 		# 基础数据类型不加载
 		if self.is_basic:
@@ -61,7 +61,7 @@ class Bootstrap(Base):
 				self.class_name = self.class_name[1:-1]
 		# 解析好的class二进制文件内容
 		_c_file = ClassFile().loadClass(self.class_name)
-		_c_file.printClass()
+		# _c_file.printClass()
 		# 初始化方法区的一些基本属性
 		self.classInfo.initBaseInfo(_c_file)
 
@@ -100,7 +100,7 @@ class Bootstrap(Base):
 	def init(self):
 		pass
 
-		
+# ============================================================================================================================
 # 类文件，并非Class实例
 class ClassFile(Base):
 
@@ -130,9 +130,10 @@ class ClassFile(Base):
 		
 	# 加载类，根据java class名称读取相应java class文件的内容
 	def loadClass(self,_class):
-		if Base.classFiles.has_key(_class):
+		if Base.CLASS_FILES.has_key(_class):
 			# print '================has loaded class==============:',_class
-			return Base.classFiles[_class]
+			return Base.CLASS_FILES[_class]
+		print 'load class :',_class
 		# 存放class文件二进制内容
 		class_content = []
 		# 如果class在JRE中
@@ -145,9 +146,9 @@ class ClassFile(Base):
 		# print 'class_args:',class_args
 		self.__init(class_args)
 		# 每个被装载的类文件
-		Base.classFiles[self.this_class]=self
+		Base.CLASS_FILES[self.this_class]=self
 		# 处理父类:当父类不为空，并且还未被加载
-		if self.super_class is not None and not Base.classFiles.has_key(self.super_class):
+		if self.super_class is not None and not Base.CLASS_FILES.has_key(self.super_class):
 			# 做一次第归
 			_super = ClassFile()
 			_super.loadClass(self.super_class)
@@ -162,13 +163,16 @@ class ClassFile(Base):
 		# 读取文件内容
 		# _class名称后面加上.class，是因为在JRE_CLASSES集合中和class二进制文件中保存的都是不加后缀的
 		# 但是_zip_handle句柄中映射的文件却是要带后缀名的，故而如此。
-		with _zip_handle.open(_class+'.class','r') as _file:
-			self.__readFile(_file,class_content)
+		# 此处如果用【with _zip_handle.open(_class+'.class','r') as _file:】，在linux环境下会报错：
+		# AttributeError: ZipExtFile instance has no attribute '__exit__'
+		_file = _zip_handle.open(_class+'.class','r')
+		self.__readFile(_file,class_content)
+		_file.close()
 		
 	# 加载应用的class文件 - 根据绝对路径查找并装载类型的二进制数据
 	def __loadAppClass(self,_class,class_content):
 		_absolute_path = Base.APP_CLASS_PATH % _class
-		print 'load class file :',_absolute_path
+		# print '============_absolute_path:',_absolute_path
 		# 如果文件不存在，则抛出异常
 		if not os.path.exists(_absolute_path):
 			raise ClassFileNotFoundError(_absolute_path)
@@ -208,7 +212,7 @@ class ClassFile(Base):
 		# print '===============following is method_info================'
 		# for x in self.method_info:
 		# 	print x.name
-			# print printAccessFlag('method',x.access_flags),x.__dict__
+		#	print printAccessFlag('method',x.access_flags),x.__dict__
 		# 	print x.__dict__
 		# 	if x.Code:
 		# 		print x.Code.__dict__
@@ -220,9 +224,9 @@ class ClassFile(Base):
 		# 	print x.name
 		# 	if x.Code is not None:
 		# 		print x.Code.__dict__
-		print '===============following is Base.classFiles================'
-		print len(Base.classFiles)
-		for k,v in Base.classFiles.items():
+		print '===============following is Base.CLASS_FILES================'
+		print len(Base.CLASS_FILES)
+		for k,v in Base.CLASS_FILES.items():
 			print k#,v.__dict__
 
 

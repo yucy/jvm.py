@@ -170,9 +170,6 @@ def checkAccess(accessValue,num):
 		return True
 	return False
 
-
-
-
 # 反置字符串
 def reverse(string):
 	return string[::-1]

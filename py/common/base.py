@@ -9,7 +9,7 @@ class Base(object):
 	# JVM 全局类型定义
 	[BOOLEAN,FLOAT,DOUBLE,BYTE,CHAR,SHORT,INT,LONG,OBJECTREF,ARRAY] = [bool,float,float,int,chr,int,int,long,object,list]
 	# 方法区类型映射
-	method_argtype={
+	METHOD_ARGTYPE={
 		'B': BYTE, # 有符号字节型数
 		'C': CHAR, # Unicode 字符,UTF-16 编码
 		'D': DOUBLE, # 双精度浮点数
@@ -23,20 +23,16 @@ class Base(object):
 	}
 	# 判断是否linux系统
 	ISLINUX = 'Linux' in platform.system()
-
 	# 被装载的类文件
-	classFiles = {}
+	CLASS_FILES = {}
 	# 临时方法区，存放cinit_s.ClassInfo信息
-	methodArea = {}
+	METHOD_AREA = {}
 	# 临时堆，存放类实例
-	heap = {}
-
+	HEAP_AREA = {}
 	# JRE 类路径，读取环境变量【JAVA_HOME】
 	JRE_HOME = os.getenv('JAVA_HOME')+'/jre/lib/'
-	# 初始加载器BOOTSTRAP需要加载的jar包，我们这里采用懒加载模式，即：用到时再加载
-	BOOTSTRAP_JARS = ['rt.jar','jsse.jar','jce.jar','charsets.jar','jfr.jar']
 	# 应用类路径
-	APP_CLASS_PATH = 'E:/git/github/jvm.py/%s.class'
+	APP_CLASS_PATH = None
 	# 应用启动类
 	MAIN_CLASS = None
 	# jre的jar文件句柄集合
@@ -45,6 +41,7 @@ class Base(object):
 	JRE_CLASSES = {}
 
 	def __init__(self):
+		print '***************Base.init()***************'
 		pass
 		
 	# 类方法，参数位类本身，只有类可以调用

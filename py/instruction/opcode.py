@@ -26,7 +26,6 @@ param_d = {
 # 5 0xc4 wide->若后面第一个参数是iinc指令，则总参数数量为5
 # n 0xaa,0xab -> tableswitch,lookupswitch 指令后面第2-3个参数来确认参数数量
 
-
 # 根据codes数组来执行方法
 class ExecMethod(object):
 	def __init__(self,_codes, _locals,_cpinfo):
@@ -1442,6 +1441,8 @@ class Opcode(Base):
 				self.__push(return_value)
 
 	# 调用实例方法,依据实例的类型进行分派
+	# 虚方法：除去静态方法、私有方法、final方法、父类方法和实例构造器之外的方法
+	# 非虚方法的调用版本都是唯一的，也就是说不用去接口类或者父类中进行多态选择
 	def invokevirtual(self,indexbyte1,indexbyte2):
 		# „,objectref,[arg1,[arg2 ...]] →
 		# „
@@ -1485,7 +1486,7 @@ class Opcode(Base):
 		# „,result
 		self.xrem(Base.INT)
 
-	# 结束方法,并返回一个 int 类型数据
+	# 结束方法,并返回一个 int 类型数据，压入调用者的操作数栈
 	def ireturn(self):
 		# „,value →
 		# [empty]
@@ -1951,6 +1952,8 @@ class Opcode(Base):
 		# TODO _field 需要转化为真实的field字段名称
 		setattr(objectref,_field,value)
 
+	# 方法正常退出时，调用者的PC计数器的值可以作为返回地址，栈帧中很可能会保存这个计数器值
+	# 而异常退出时，返回地址是要通过异常处理器表来确定的，栈帧中一般不会保存这部分信息
 	# 代码片段中返回
 	def ret(self,index):
 		# 无变化
