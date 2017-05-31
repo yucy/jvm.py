@@ -19,7 +19,7 @@ class Laucher(Base):
 		Base.MAIN_CLASS = _main_class.replace('.','/')
 		# class path
 		self.initClassPath()
-		# JRE
+		# 缓存jre里的类名集合
 		self.__scanJRE()
 		
 	def start(self):
@@ -65,17 +65,22 @@ class Laucher(Base):
 			if jar in BOOTSTRAP_JARS:
 				_index = len(Base.JRE_JARS)
 				_absolute_jar_path = _jar_path+jar
-				# print '++++++++++++++++++++++++',_absolute_jar_path
+				# print '++++++++++++++++++++++++',_absolute_jar_path,_index
 				_zip_handle = ZipFile(_absolute_jar_path)
 				# 保存jar文件句柄
 				Base.JRE_JARS.append(_zip_handle)
-				# 保存class文件和jar路径在_jars集合中的下标
+				# 保存class文件和jar路径在_jars集合中的下标，__loadJreClass时，会根据此下标来获取_zip_handle
 				Base.JRE_CLASSES.update([(_c[:_c.index('.class')],_index) for _c in _zip_handle.namelist() if _c.endswith('class')])
-				# _zip.close() # close 或者 del 并不能立即释放内存，可以用gc.collect()
+				# _zip_handle.close() # close 或者 del 并不能立即释放内存，可以用gc.collect()
 
 	# 执行该 APP启动类的main方法
 	def execute(self):
-		print 234
+		# for i in Base.JRE_JARS:
+		# 	print i
+		# for className,index in Base.JRE_CLASSES.items():
+		# 	if self.startWith(className,'javax') :
+		# 		print className,index
+		print 'JRE_CLASSES数量：',len( Base.JRE_CLASSES) # 19516个，class文件很多
 		return False or True
 
 # JVM 启动入口
@@ -87,5 +92,5 @@ if __name__ == '__main__':
 	class_path = '../'
 	main_class = 'cls.test'
 	lau = Laucher(class_path,main_class)
-	lau.start()
+	# lau.start()
 	lau.execute()

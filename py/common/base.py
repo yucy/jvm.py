@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import platform,os,sys
+# from exceptions import ValueError
 
 # JVM 全局基类
 class Base(object):
@@ -43,7 +44,27 @@ class Base(object):
 	def __init__(self):
 		print '***************Base.init()***************'
 		pass
-		
+	
+	# 判断字符串source是否以part开头
+	def startWith(self,source,part):
+		return self.__getoffset__(source,part) == 0
+
+	# 判断字符串source是否包含part
+	def contain(self,source,part):
+		return self.__getoffset__(source,part) >= 0
+
+	# 获取part在source中的位置，单独写这么个方法，是因为如果part不在source中，python会抛出ValueError异常，坑比
+	def __getoffset__(self,source,part):
+		offset = -1
+		if source == None or part == None:
+			return offset;
+		try:
+			offset = source.index(part)
+		except Exception, e:
+			if not isinstance(e,ValueError):
+				raise e
+		return offset
+
 	# 类方法，参数位类本身，只有类可以调用
 	@classmethod
 	def initJvm(c):
